@@ -30,7 +30,7 @@ public class SwaggerConfiguration {
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-				.title("bootshiro:"+" Restful APIs")
+				.title("ai:"+" Restful APIs")
 				.description("restful apis docs")
 				.termsOfServiceUrl("usThe.com").version("1.0").build();
 	}

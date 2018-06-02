@@ -9,7 +9,7 @@ public class Sim {
 
     private String description;
 
-    private Long userId;
+    private String userId;
 
     public Long getId() {
         return id;
@@ -43,11 +43,11 @@ public class Sim {
         this.description = description == null ? null : description.trim();
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserId(String userId) {
+        this.userId = userId == null ? null : userId.trim();
     }
 }

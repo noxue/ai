@@ -29,6 +29,8 @@ public class AuthUser {
 
     private Byte createWhere;
 
+    private String pid;
+
     public String getUid() {
         return uid;
     }
@@ -131,5 +133,13 @@ public class AuthUser {
 
     public void setCreateWhere(Byte createWhere) {
         this.createWhere = createWhere;
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid == null ? null : pid.trim();
     }
 }

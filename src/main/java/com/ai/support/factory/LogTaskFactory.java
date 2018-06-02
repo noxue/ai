@@ -20,8 +20,8 @@ import java.util.TimerTask;
 public class LogTaskFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogTaskFactory.class);
-    private static AuthOperationLogMapper operationLogMapper = SpringContextHolder.getBean(AuthOperationLogMapper.class);
-    private static AuthAccountLogMapper accountLogMapper = SpringContextHolder.getBean(AuthAccountLogMapper.class);
+    private static AuthOperationLogMapper operationLogMapper = SpringContextHolder.getBean("authOperationLogMapper");
+    private static AuthAccountLogMapper accountLogMapper = SpringContextHolder.getBean("authAccountLogMapper");
 
     private LogTaskFactory() {
 

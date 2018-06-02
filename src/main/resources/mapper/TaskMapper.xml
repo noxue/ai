@@ -3,7 +3,7 @@
 <mapper namespace="com.ai.dao.TaskMapper">
   <resultMap id="BaseResultMap" type="com.ai.domain.bo.Task">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="template_id" jdbcType="BIGINT" property="templateId" />
     <result column="thread" jdbcType="INTEGER" property="thread" />
     <result column="total" jdbcType="INTEGER" property="total" />
@@ -14,82 +14,10 @@
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="test" jdbcType="BIT" property="test" />
   </resultMap>
-  <sql id="Example_Where_Clause">
-    <where>
-      <foreach collection="oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
-            </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Update_By_Example_Where_Clause">
-    <where>
-      <foreach collection="example.oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
-            </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
   <sql id="Base_Column_List">
     id, user_id, template_id, thread, total, called, created_at, start_at, finish_at, 
     status, test
   </sql>
-  <select id="selectByExample" parameterType="com.ai.domain.bo.TaskExample" resultMap="BaseResultMap">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    from task
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -100,12 +28,6 @@
     delete from task
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.ai.domain.bo.TaskExample">
-    delete from task
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </delete>
   <insert id="insert" parameterType="com.ai.domain.bo.Task">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
@@ -114,7 +36,7 @@
       total, called, created_at, 
       start_at, finish_at, status, 
       test)
-    values (#{userId,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}, #{thread,jdbcType=INTEGER}, 
+    values (#{userId,jdbcType=VARCHAR}, #{templateId,jdbcType=BIGINT}, #{thread,jdbcType=INTEGER}, 
       #{total,jdbcType=INTEGER}, #{called,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
       #{startAt,jdbcType=TIMESTAMP}, #{finishAt,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, 
       #{test,jdbcType=BIT})
@@ -158,7 +80,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
-        #{userId,jdbcType=BIGINT},
+        #{userId,jdbcType=VARCHAR},
       </if>
       <if test="templateId != null">
         #{templateId,jdbcType=BIGINT},
@@ -189,75 +111,11 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.ai.domain.bo.TaskExample" resultType="java.lang.Long">
-    select count(*) from task
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </select>
-  <update id="updateByExampleSelective" parameterType="map">
-    update task
-    <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=BIGINT},
-      </if>
-      <if test="record.userId != null">
-        user_id = #{record.userId,jdbcType=BIGINT},
-      </if>
-      <if test="record.templateId != null">
-        template_id = #{record.templateId,jdbcType=BIGINT},
-      </if>
-      <if test="record.thread != null">
-        thread = #{record.thread,jdbcType=INTEGER},
-      </if>
-      <if test="record.total != null">
-        total = #{record.total,jdbcType=INTEGER},
-      </if>
-      <if test="record.called != null">
-        called = #{record.called,jdbcType=INTEGER},
-      </if>
-      <if test="record.createdAt != null">
-        created_at = #{record.createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.startAt != null">
-        start_at = #{record.startAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.finishAt != null">
-        finish_at = #{record.finishAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.status != null">
-        status = #{record.status,jdbcType=TINYINT},
-      </if>
-      <if test="record.test != null">
-        test = #{record.test,jdbcType=BIT},
-      </if>
-    </set>
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map">
-    update task
-    set id = #{record.id,jdbcType=BIGINT},
-      user_id = #{record.userId,jdbcType=BIGINT},
-      template_id = #{record.templateId,jdbcType=BIGINT},
-      thread = #{record.thread,jdbcType=INTEGER},
-      total = #{record.total,jdbcType=INTEGER},
-      called = #{record.called,jdbcType=INTEGER},
-      created_at = #{record.createdAt,jdbcType=TIMESTAMP},
-      start_at = #{record.startAt,jdbcType=TIMESTAMP},
-      finish_at = #{record.finishAt,jdbcType=TIMESTAMP},
-      status = #{record.status,jdbcType=TINYINT},
-      test = #{record.test,jdbcType=BIT}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.ai.domain.bo.Task">
     update task
     <set>
       <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
+        user_id = #{userId,jdbcType=VARCHAR},
       </if>
       <if test="templateId != null">
         template_id = #{templateId,jdbcType=BIGINT},
@@ -291,7 +149,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.Task">
     update task
-    set user_id = #{userId,jdbcType=BIGINT},
+    set user_id = #{userId,jdbcType=VARCHAR},
       template_id = #{templateId,jdbcType=BIGINT},
       thread = #{thread,jdbcType=INTEGER},
       total = #{total,jdbcType=INTEGER},
