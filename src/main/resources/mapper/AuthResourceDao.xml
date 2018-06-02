@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.dao.AuthResourceDao">
+    <resultMap id="BaseResultMap" type="com.ai.domain.bo.AuthResource">
+        <id column="ID" jdbcType="INTEGER" property="id"/>
+        <result column="CODE" jdbcType="VARCHAR" property="code"/>
+        <result column="NAME" jdbcType="VARCHAR" property="name"/>
+        <result column="PARENT_ID" jdbcType="INTEGER" property="parentId"/>
+        <result column="URI" jdbcType="VARCHAR" property="uri"/>
+        <result column="TYPE" jdbcType="SMALLINT" property="type"/>
+        <result column="METHOD" jdbcType="VARCHAR" property="method"/>
+        <result column="ICON" jdbcType="VARCHAR" property="icon"/>
+        <result column="STATUS" jdbcType="SMALLINT" property="status"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID, CODE, NAME, PARENT_ID, URI, TYPE, METHOD, ICON, STATUS, CREATE_TIME, UPDATE_TIME
+  </sql>
+
+    <select id="selectRoleRules" resultType="com.ai.shiro.rule.RolePermRule">
+    select  CONCAT(re.URI, "==",UCASE(re.method)) as url,GROUP_CONCAT(rol.CODE ORDER BY re.URI) as needRoles
+    from auth_resource re
+    LEFT JOIN auth_role_resource ro on re.id = ro.RESOURCE_ID
+    LEFT JOIN auth_role rol on ro.ROLE_ID = rol.ID
+    where re.type = 2
+    GROUP BY
+    re.URI,re.ID
+  </select>
+
+    <select id="selectAuthorityMenusByUid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select distinct d.* from auth_user a
+    join auth_user_role b on a.uid = b.user_id
+    join auth_role_resource c on b.role_id = c.role_id
+    join auth_resource d on c.resource_id = d.id
+    where a.uid = #{uid,jdbcType=VARCHAR} and d.type = 1 and d.status = 1
+  </select>
+
+    <select id="selectMenus" resultMap="BaseResultMap">
+        select a.* from auth_resource a
+        where a.type = 1
+    </select>
+
+    <select id="selectApiTeamList" resultMap="BaseResultMap">
+        select * from auth_resource a
+        where a.type = 3
+    </select>
+
+    <select id="selectApiList" resultMap="BaseResultMap">
+        select a.* from auth_resource a
+        where a.type = 2
+    </select>
+
+    <select id="selectApiListByTeamId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select a.* from auth_resource a
+        where a.parent_id = #{teamId,jdbcType=INTEGER} and a.type in (2,3)
+    </select>
+
+    <select id="selectApisByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select distinct a.* from auth_resource a
+        join auth_role_resource b on a.id = b.resource_id
+        where b.role_id = #{roleId,jdbcType=INTEGER} and a.type = 2
+    </select>
+
+    <select id="selectMenusByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select distinct a.* from auth_resource a
+        join auth_role_resource b on a.id = b.resource_id
+        where b.role_id = #{roleId,jdbcType=INTEGER} and a.type = 1
+    </select>
+
+    <select id="selectNotAuthorityApisByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select a.*
+        from auth_resource a
+        where a.type = 2 and not exists (
+          select 1 from auth_role_resource b
+		  where a.id = b.resource_id and b.role_id = #{roleId,jdbcType=INTEGER}
+		)
+    </select>
+
+    <select id="selectNotAuthorityMenusByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select a.*
+        from auth_resource a
+        where a.type = 1 and not exists (
+          select 1 from auth_role_resource b
+		  where a.id = b.resource_id and b.role_id = #{roleId,jdbcType=INTEGER}
+		)
+    </select>
+
+</mapper>

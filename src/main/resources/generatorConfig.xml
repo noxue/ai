@@ -6,7 +6,7 @@
 
     <context id="DB2Tables" targetRuntime="MyBatis3">
         <!--避免生成重复代码的插件-->
-        <plugin type="com.usthe.bootshiro.plugin.OverIsMergeablePlugin"/>
+        <plugin type="com.ai.plugin.OverIsMergeablePlugin"/>
 
         <!--是否在代码中显示注释-->
         <commentGenerator>
@@ -16,15 +16,15 @@
 
 
         <!--数据库链接地址账号密码-->
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:12345/usthe" userId="root"
-                        password="admin">
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/ai" userId="root"
+                        password="root">
         </jdbcConnection>
         <!--不知道做什么用的。。。反正贴上来了~-->
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
         <!--生成pojo类存放位置-->
-        <javaModelGenerator targetPackage="com.usthe.bootshiro.domain.bo" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.ai.domain.bo" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -33,7 +33,7 @@
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
         <!--生成mapper类存放位置-->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.usthe.bootshiro.dao" targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.ai.dao" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
@@ -78,6 +78,50 @@
             <property name="my.isgen.usekeys" value="true"/>
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>
+
+
+
+
+        <table tableName="app" domainObjectName="App">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="gateway" domainObjectName="Gateway">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="gateway_report" domainObjectName="GatewayReport">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="permission" domainObjectName="Permission">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="role" domainObjectName="Role">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="role_permission" domainObjectName="RolePermission"/>
+
+        <table tableName="role_user" domainObjectName="RoleUser"/>
+        <table tableName="sim" domainObjectName="Sim">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="sim_user" domainObjectName="SimUser"/>
+        <table tableName="task" domainObjectName="Task">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="task_list" domainObjectName="TaskList">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="template" domainObjectName="Template">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="user" domainObjectName="User">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="user_schedule" domainObjectName="UserSchedule">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="voice" domainObjectName="Voice">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
 
     </context>

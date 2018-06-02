@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.dao.AuthRoleResourceDao">
+
+  <delete id="deleteByUniqueKey">
+    delete from auth_role_resource
+    where role_id = #{roleId,jdbcType=INTEGER} and resource_id = #{resourceId,jdbcType=INTEGER}
+  </delete>
+</mapper>
