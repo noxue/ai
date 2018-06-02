@@ -1,6 +1,5 @@
 package com.ai.shiro.filter;
 
-
 import com.alibaba.fastjson.JSON;
 import com.ai.domain.vo.Message;
 import com.ai.shiro.token.PasswordToken;
