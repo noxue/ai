@@ -19,10 +19,10 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 @MapperScan("com.ai.dao")
 @EnableCaching
 @ServletComponentScan
-public class BootshiroApplication {
+public class AiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BootshiroApplication.class, args);
+		SpringApplication.run(AiApplication.class, args);
 	}
 
 	@Bean

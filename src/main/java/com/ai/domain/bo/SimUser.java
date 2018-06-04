@@ -1,9 +1,19 @@
 package com.ai.domain.bo;
 
 public class SimUser {
+    private Long id;
+
     private String userId;
 
     private Long simId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUserId() {
         return userId;

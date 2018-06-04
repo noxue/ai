@@ -1,4 +1,4 @@
-package com.ai.controller;
+package com.ai.controller.web.v1;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -21,7 +21,7 @@ import java.util.List;
  * @Date 12:20 2018/4/22
  */
 @RestController
-@RequestMapping("/log")
+@RequestMapping("/web/api/v1/log")
 public class LogController extends BasicAction {
 
     @Autowired

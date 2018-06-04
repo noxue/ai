@@ -13,6 +13,8 @@ public class Gateway {
 
     private String description;
 
+    private String userId;
+
     public Long getId() {
         return id;
     }
@@ -59,5 +61,13 @@ public class Gateway {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId == null ? null : userId.trim();
     }
 }

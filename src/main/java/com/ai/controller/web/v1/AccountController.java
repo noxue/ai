@@ -1,4 +1,4 @@
-package com.ai.controller;
+package com.ai.controller.web.v1;
 
 import com.ai.util.*;
 import com.ai.domain.bo.AuthUser;
@@ -7,7 +7,6 @@ import com.ai.service.AccountService;
 import com.ai.service.UserService;
 import com.ai.support.factory.LogTaskFactory;
 import com.ai.support.manager.LogExeManager;
-import com.ai.util.*;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.web.util.WebUtils;
@@ -33,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @Date 14:40 2018/3/8
  */
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/web/api/v1/account")
 public class AccountController extends BasicAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);

@@ -2,16 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ai.dao.SimUserMapper">
   <resultMap id="BaseResultMap" type="com.ai.domain.bo.SimUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="sim_id" jdbcType="BIGINT" property="simId" />
   </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, sim_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sim_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sim_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
   <insert id="insert" parameterType="com.ai.domain.bo.SimUser">
-    insert into sim_user (user_id, sim_id)
-    values (#{userId,jdbcType=VARCHAR}, #{simId,jdbcType=BIGINT})
+    insert into sim_user (id, user_id, sim_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=VARCHAR}, #{simId,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.SimUser">
     insert into sim_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
       <if test="userId != null">
         user_id,
       </if>
@@ -20,6 +39,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
       <if test="userId != null">
         #{userId,jdbcType=VARCHAR},
       </if>
@@ -28,4 +50,22 @@
       </if>
     </trim>
   </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ai.domain.bo.SimUser">
+    update sim_user
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="simId != null">
+        sim_id = #{simId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.SimUser">
+    update sim_user
+    set user_id = #{userId,jdbcType=VARCHAR},
+      sim_id = #{simId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

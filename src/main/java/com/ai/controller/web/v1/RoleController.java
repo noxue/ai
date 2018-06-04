@@ -1,4 +1,4 @@
-package com.ai.controller;
+package com.ai.controller.web.v1;
 
 import com.ai.shiro.filter.ShiroFilterChainManager;
 import com.github.pagehelper.PageHelper;
@@ -10,7 +10,6 @@ import com.ai.domain.vo.Message;
 import com.ai.service.ResourceService;
 import com.ai.service.RoleService;
 import com.ai.service.UserService;
-import com.ai.shiro.filter.ShiroFilterChainManager;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,7 @@ import java.util.Map;
  * @Description 
  * @Date 20:02 2018/3/20
  */
-@RequestMapping("/role")
+@RequestMapping("/web/api/v1/role")
 @RestController
 public class RoleController extends BasicAction {
 
