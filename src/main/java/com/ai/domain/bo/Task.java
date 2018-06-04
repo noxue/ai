@@ -5,7 +5,7 @@ import java.util.Date;
 public class Task {
     private Long id;
 
-    private Long userId;
+    private String userId;
 
     private Long templateId;
 
@@ -33,12 +33,12 @@ public class Task {
         this.id = id;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserId(String userId) {
+        this.userId = userId == null ? null : userId.trim();
     }
 
     public Long getTemplateId() {

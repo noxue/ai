@@ -6,10 +6,10 @@
     <result column="number" jdbcType="VARCHAR" property="number" />
     <result column="gateway_id" jdbcType="BIGINT" property="gatewayId" />
     <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, number, gateway_id, description, user_id
+    id, `number`, gateway_id, description, user_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -25,10 +25,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into sim (number, gateway_id, description, 
+    insert into sim (`number`, gateway_id, description, 
       user_id)
     values (#{number,jdbcType=VARCHAR}, #{gatewayId,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR}, 
-      #{userId,jdbcType=BIGINT})
+      #{userId,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.Sim">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -37,7 +37,7 @@
     insert into sim
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="number != null">
-        number,
+        `number`,
       </if>
       <if test="gatewayId != null">
         gateway_id,
@@ -60,7 +60,7 @@
         #{description,jdbcType=VARCHAR},
       </if>
       <if test="userId != null">
-        #{userId,jdbcType=BIGINT},
+        #{userId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -68,7 +68,7 @@
     update sim
     <set>
       <if test="number != null">
-        number = #{number,jdbcType=VARCHAR},
+        `number` = #{number,jdbcType=VARCHAR},
       </if>
       <if test="gatewayId != null">
         gateway_id = #{gatewayId,jdbcType=BIGINT},
@@ -77,17 +77,17 @@
         description = #{description,jdbcType=VARCHAR},
       </if>
       <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
+        user_id = #{userId,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.Sim">
     update sim
-    set number = #{number,jdbcType=VARCHAR},
+    set `number` = #{number,jdbcType=VARCHAR},
       gateway_id = #{gatewayId,jdbcType=BIGINT},
       description = #{description,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=BIGINT}
+      user_id = #{userId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

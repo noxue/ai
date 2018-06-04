@@ -10,7 +10,7 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, ip, port, app_id, description
+    id, `name`, ip, port, app_id, description
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -26,7 +26,7 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into gateway (name, ip, port, 
+    insert into gateway (`name`, ip, port, 
       app_id, description)
     values (#{name,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{port,jdbcType=INTEGER}, 
       #{appId,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR})
@@ -38,7 +38,7 @@
     insert into gateway
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="name != null">
-        name,
+        `name`,
       </if>
       <if test="ip != null">
         ip,
@@ -75,7 +75,7 @@
     update gateway
     <set>
       <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
+        `name` = #{name,jdbcType=VARCHAR},
       </if>
       <if test="ip != null">
         ip = #{ip,jdbcType=VARCHAR},
@@ -94,7 +94,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.Gateway">
     update gateway
-    set name = #{name,jdbcType=VARCHAR},
+    set `name` = #{name,jdbcType=VARCHAR},
       ip = #{ip,jdbcType=VARCHAR},
       port = #{port,jdbcType=INTEGER},
       app_id = #{appId,jdbcType=BIGINT},

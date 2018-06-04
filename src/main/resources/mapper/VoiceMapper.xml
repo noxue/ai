@@ -7,7 +7,7 @@
     <result column="pcm" jdbcType="VARCHAR" property="pcm" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, path, pcm
+    id, `path`, pcm
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -23,7 +23,7 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into voice (path, pcm)
+    insert into voice (`path`, pcm)
     values (#{path,jdbcType=VARCHAR}, #{pcm,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.Voice">
@@ -33,7 +33,7 @@
     insert into voice
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="path != null">
-        path,
+        `path`,
       </if>
       <if test="pcm != null">
         pcm,
@@ -52,7 +52,7 @@
     update voice
     <set>
       <if test="path != null">
-        path = #{path,jdbcType=VARCHAR},
+        `path` = #{path,jdbcType=VARCHAR},
       </if>
       <if test="pcm != null">
         pcm = #{pcm,jdbcType=VARCHAR},
@@ -62,7 +62,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.Voice">
     update voice
-    set path = #{path,jdbcType=VARCHAR},
+    set `path` = #{path,jdbcType=VARCHAR},
       pcm = #{pcm,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

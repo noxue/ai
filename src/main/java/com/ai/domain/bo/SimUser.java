@@ -1,16 +1,16 @@
 package com.ai.domain.bo;
 
 public class SimUser {
-    private Long userId;
+    private String userId;
 
     private Long simId;
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserId(String userId) {
+        this.userId = userId == null ? null : userId.trim();
     }
 
     public Long getSimId() {

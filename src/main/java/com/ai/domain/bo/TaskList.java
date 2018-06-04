@@ -1,7 +1,7 @@
 package com.ai.domain.bo;
 
 public class TaskList {
-    private Integer id;
+    private Long id;
 
     private Long taskId;
 
@@ -19,11 +19,11 @@ public class TaskList {
 
     private String content;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

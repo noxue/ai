@@ -15,7 +15,8 @@
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, CODE, NAME, PARENT_ID, URI, TYPE, METHOD, ICON, STATUS, CREATE_TIME, UPDATE_TIME
+    ID, CODE, `NAME`, PARENT_ID, URI, `TYPE`, `METHOD`, ICON, `STATUS`, CREATE_TIME, 
+    UPDATE_TIME
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -28,9 +29,9 @@
     where ID = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="com.ai.domain.bo.AuthResource" useGeneratedKeys="true">
-    insert into auth_resource (CODE, NAME, PARENT_ID, 
-      URI, TYPE, METHOD, 
-      ICON, STATUS, CREATE_TIME, 
+    insert into auth_resource (CODE, `NAME`, PARENT_ID, 
+      URI, `TYPE`, `METHOD`, 
+      ICON, `STATUS`, CREATE_TIME, 
       UPDATE_TIME)
     values (#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, 
       #{uri,jdbcType=VARCHAR}, #{type,jdbcType=SMALLINT}, #{method,jdbcType=VARCHAR}, 
@@ -44,7 +45,7 @@
         CODE,
       </if>
       <if test="name != null">
-        NAME,
+        `NAME`,
       </if>
       <if test="parentId != null">
         PARENT_ID,
@@ -53,16 +54,16 @@
         URI,
       </if>
       <if test="type != null">
-        TYPE,
+        `TYPE`,
       </if>
       <if test="method != null">
-        METHOD,
+        `METHOD`,
       </if>
       <if test="icon != null">
         ICON,
       </if>
       <if test="status != null">
-        STATUS,
+        `STATUS`,
       </if>
       <if test="createTime != null">
         CREATE_TIME,
@@ -111,7 +112,7 @@
         CODE = #{code,jdbcType=VARCHAR},
       </if>
       <if test="name != null">
-        NAME = #{name,jdbcType=VARCHAR},
+        `NAME` = #{name,jdbcType=VARCHAR},
       </if>
       <if test="parentId != null">
         PARENT_ID = #{parentId,jdbcType=INTEGER},
@@ -120,16 +121,16 @@
         URI = #{uri,jdbcType=VARCHAR},
       </if>
       <if test="type != null">
-        TYPE = #{type,jdbcType=SMALLINT},
+        `TYPE` = #{type,jdbcType=SMALLINT},
       </if>
       <if test="method != null">
-        METHOD = #{method,jdbcType=VARCHAR},
+        `METHOD` = #{method,jdbcType=VARCHAR},
       </if>
       <if test="icon != null">
         ICON = #{icon,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        STATUS = #{status,jdbcType=SMALLINT},
+        `STATUS` = #{status,jdbcType=SMALLINT},
       </if>
       <if test="createTime != null">
         CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
@@ -143,13 +144,13 @@
   <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.AuthResource">
     update auth_resource
     set CODE = #{code,jdbcType=VARCHAR},
-      NAME = #{name,jdbcType=VARCHAR},
+      `NAME` = #{name,jdbcType=VARCHAR},
       PARENT_ID = #{parentId,jdbcType=INTEGER},
       URI = #{uri,jdbcType=VARCHAR},
-      TYPE = #{type,jdbcType=SMALLINT},
-      METHOD = #{method,jdbcType=VARCHAR},
+      `TYPE` = #{type,jdbcType=SMALLINT},
+      `METHOD` = #{method,jdbcType=VARCHAR},
       ICON = #{icon,jdbcType=VARCHAR},
-      STATUS = #{status,jdbcType=SMALLINT},
+      `STATUS` = #{status,jdbcType=SMALLINT},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
     where ID = #{id,jdbcType=INTEGER}
