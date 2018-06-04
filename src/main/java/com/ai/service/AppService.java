@@ -13,4 +13,8 @@ public interface AppService {
 
     boolean isAppExistByName(String name);
 
+    boolean editApp(App app);
+
+    boolean delApp(long id);
+
 }

@@ -39,4 +39,14 @@ public class AppServiceImpl implements AppService {
         App app = appDao.selectByName(name);
         return app != null ? Boolean.TRUE : Boolean.FALSE;
     }
+
+    @Override
+    public boolean editApp(App app) {
+        return appMapper.updateByPrimaryKey(app) ==1 ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
+    public boolean delApp(long id) {
+        return appMapper.deleteByPrimaryKey(id) ==1 ? Boolean.TRUE : Boolean.FALSE;
+    }
 }
