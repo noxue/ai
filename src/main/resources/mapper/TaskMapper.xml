@@ -15,8 +15,8 @@
     <result column="test" jdbcType="BIT" property="test" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, template_id, thread, total, called, created_at, start_at, finish_at, 
-    status, test
+    id, user_id, template_id, thread, total, `called`, created_at, start_at, finish_at, 
+    `status`, test
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -33,8 +33,8 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into task (user_id, template_id, thread, 
-      total, called, created_at, 
-      start_at, finish_at, status, 
+      total, `called`, created_at, 
+      start_at, finish_at, `status`, 
       test)
     values (#{userId,jdbcType=VARCHAR}, #{templateId,jdbcType=BIGINT}, #{thread,jdbcType=INTEGER}, 
       #{total,jdbcType=INTEGER}, #{called,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
@@ -60,7 +60,7 @@
         total,
       </if>
       <if test="called != null">
-        called,
+        `called`,
       </if>
       <if test="createdAt != null">
         created_at,
@@ -72,7 +72,7 @@
         finish_at,
       </if>
       <if test="status != null">
-        status,
+        `status`,
       </if>
       <if test="test != null">
         test,
@@ -127,7 +127,7 @@
         total = #{total,jdbcType=INTEGER},
       </if>
       <if test="called != null">
-        called = #{called,jdbcType=INTEGER},
+        `called` = #{called,jdbcType=INTEGER},
       </if>
       <if test="createdAt != null">
         created_at = #{createdAt,jdbcType=TIMESTAMP},
@@ -139,7 +139,7 @@
         finish_at = #{finishAt,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=TINYINT},
+        `status` = #{status,jdbcType=TINYINT},
       </if>
       <if test="test != null">
         test = #{test,jdbcType=BIT},
@@ -153,11 +153,11 @@
       template_id = #{templateId,jdbcType=BIGINT},
       thread = #{thread,jdbcType=INTEGER},
       total = #{total,jdbcType=INTEGER},
-      called = #{called,jdbcType=INTEGER},
+      `called` = #{called,jdbcType=INTEGER},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       start_at = #{startAt,jdbcType=TIMESTAMP},
       finish_at = #{finishAt,jdbcType=TIMESTAMP},
-      status = #{status,jdbcType=TINYINT},
+      `status` = #{status,jdbcType=TINYINT},
       test = #{test,jdbcType=BIT}
     where id = #{id,jdbcType=BIGINT}
   </update>

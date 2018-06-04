@@ -18,24 +18,24 @@
     <result column="pid" jdbcType="VARCHAR" property="pid" />
   </resultMap>
   <sql id="Base_Column_List">
-    uid, username, password, salt, real_name, avatar, phone, email, sex, status, CREATE_TIME, 
-    UPDATE_TIME, CREATE_WHERE, pid
+    `uid`, username, `password`, salt, real_name, avatar, phone, email, sex, `status`, 
+    CREATE_TIME, UPDATE_TIME, CREATE_WHERE, pid
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from auth_user
-    where uid = #{uid,jdbcType=VARCHAR}
+    where `uid` = #{uid,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from auth_user
-    where uid = #{uid,jdbcType=VARCHAR}
+    where `uid` = #{uid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.ai.domain.bo.AuthUser">
-    insert into auth_user (uid, username, password, 
+    insert into auth_user (`uid`, username, `password`, 
       salt, real_name, avatar, 
       phone, email, sex, 
-      status, CREATE_TIME, UPDATE_TIME, 
+      `status`, CREATE_TIME, UPDATE_TIME, 
       CREATE_WHERE, pid)
     values (#{uid,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{salt,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, 
@@ -47,13 +47,13 @@
     insert into auth_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="uid != null">
-        uid,
+        `uid`,
       </if>
       <if test="username != null">
         username,
       </if>
       <if test="password != null">
-        password,
+        `password`,
       </if>
       <if test="salt != null">
         salt,
@@ -74,7 +74,7 @@
         sex,
       </if>
       <if test="status != null">
-        status,
+        `status`,
       </if>
       <if test="createTime != null">
         CREATE_TIME,
@@ -141,7 +141,7 @@
         username = #{username,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
+        `password` = #{password,jdbcType=VARCHAR},
       </if>
       <if test="salt != null">
         salt = #{salt,jdbcType=VARCHAR},
@@ -162,7 +162,7 @@
         sex = #{sex,jdbcType=TINYINT},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=TINYINT},
+        `status` = #{status,jdbcType=TINYINT},
       </if>
       <if test="createTime != null">
         CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
@@ -177,23 +177,23 @@
         pid = #{pid,jdbcType=VARCHAR},
       </if>
     </set>
-    where uid = #{uid,jdbcType=VARCHAR}
+    where `uid` = #{uid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.AuthUser">
     update auth_user
     set username = #{username,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=VARCHAR},
       salt = #{salt,jdbcType=VARCHAR},
       real_name = #{realName,jdbcType=VARCHAR},
       avatar = #{avatar,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       sex = #{sex,jdbcType=TINYINT},
-      status = #{status,jdbcType=TINYINT},
+      `status` = #{status,jdbcType=TINYINT},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       CREATE_WHERE = #{createWhere,jdbcType=TINYINT},
       pid = #{pid,jdbcType=VARCHAR}
-    where uid = #{uid,jdbcType=VARCHAR}
+    where `uid` = #{uid,jdbcType=VARCHAR}
   </update>
 </mapper>

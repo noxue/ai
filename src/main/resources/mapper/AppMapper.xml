@@ -8,7 +8,7 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, key, name, description
+    id, `key`, `name`, description
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -24,7 +24,7 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into app (key, name, description
+    insert into app (`key`, `name`, description
       )
     values (#{key,jdbcType=CHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}
       )
@@ -36,10 +36,10 @@
     insert into app
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="key != null">
-        key,
+        `key`,
       </if>
       <if test="name != null">
-        name,
+        `name`,
       </if>
       <if test="description != null">
         description,
@@ -61,10 +61,10 @@
     update app
     <set>
       <if test="key != null">
-        key = #{key,jdbcType=CHAR},
+        `key` = #{key,jdbcType=CHAR},
       </if>
       <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
+        `name` = #{name,jdbcType=VARCHAR},
       </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
@@ -74,8 +74,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.App">
     update app
-    set key = #{key,jdbcType=CHAR},
-      name = #{name,jdbcType=VARCHAR},
+    set `key` = #{key,jdbcType=CHAR},
+      `name` = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

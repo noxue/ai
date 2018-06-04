@@ -22,8 +22,8 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into task_list (task_id, mobile, voice, 
-      status, time, type, 
-      share, content)
+      `status`, `time`, `type`, 
+      `share`, content)
     values (#{taskId,jdbcType=BIGINT}, #{mobile,jdbcType=CHAR}, #{voice,jdbcType=VARCHAR}, 
       #{status,jdbcType=TINYINT}, #{time,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
       #{share,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR})
@@ -44,16 +44,16 @@
         voice,
       </if>
       <if test="status != null">
-        status,
+        `status`,
       </if>
       <if test="time != null">
-        time,
+        `time`,
       </if>
       <if test="type != null">
-        type,
+        `type`,
       </if>
       <if test="share != null">
-        share,
+        `share`,
       </if>
       <if test="content != null">
         content,

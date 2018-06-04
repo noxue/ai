@@ -10,7 +10,7 @@
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, CODE, NAME, STATUS, CREATE_TIME, UPDATE_TIME
+    ID, CODE, `NAME`, `STATUS`, CREATE_TIME, UPDATE_TIME
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -23,7 +23,7 @@
     where ID = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="com.ai.domain.bo.AuthRole" useGeneratedKeys="true">
-    insert into auth_role (CODE, NAME, STATUS, 
+    insert into auth_role (CODE, `NAME`, `STATUS`, 
       CREATE_TIME, UPDATE_TIME)
     values (#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
@@ -35,10 +35,10 @@
         CODE,
       </if>
       <if test="name != null">
-        NAME,
+        `NAME`,
       </if>
       <if test="status != null">
-        STATUS,
+        `STATUS`,
       </if>
       <if test="createTime != null">
         CREATE_TIME,
@@ -72,10 +72,10 @@
         CODE = #{code,jdbcType=VARCHAR},
       </if>
       <if test="name != null">
-        NAME = #{name,jdbcType=VARCHAR},
+        `NAME` = #{name,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        STATUS = #{status,jdbcType=SMALLINT},
+        `STATUS` = #{status,jdbcType=SMALLINT},
       </if>
       <if test="createTime != null">
         CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
@@ -89,8 +89,8 @@
   <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.AuthRole">
     update auth_role
     set CODE = #{code,jdbcType=VARCHAR},
-      NAME = #{name,jdbcType=VARCHAR},
-      STATUS = #{status,jdbcType=SMALLINT},
+      `NAME` = #{name,jdbcType=VARCHAR},
+      `STATUS` = #{status,jdbcType=SMALLINT},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
     where ID = #{id,jdbcType=INTEGER}
