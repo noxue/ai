@@ -20,7 +20,7 @@ public class AESUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(AESUtil.class);
 
     // 默认加密秘钥 AES加密秘钥为约定16位，小于16位会报错
-    private static final String ENCODE_RULES = "0nhjn8tlaq2x1q96";
+    private static final String ENCODE_RULES = "wj1k79av3rgt189f";
 
     // 默认算法
     private static final String ALGORITHM_STR = "AES/CBC/PKCS5Padding";

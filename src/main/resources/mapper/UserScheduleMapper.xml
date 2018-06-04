@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ai.dao.UserScheduleMapper">
   <resultMap id="BaseResultMap" type="com.ai.domain.bo.UserSchedule">
-    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="start_at" jdbcType="TIMESTAMP" property="startAt" />
     <result column="end_at" jdbcType="TIMESTAMP" property="endAt" />
     <result column="repeat" jdbcType="TINYINT" property="repeat" />
@@ -10,7 +10,7 @@
   <insert id="insert" parameterType="com.ai.domain.bo.UserSchedule">
     insert into user_schedule (user_id, start_at, end_at, 
       repeat)
-    values (#{userId,jdbcType=VARCHAR}, #{startAt,jdbcType=TIMESTAMP}, #{endAt,jdbcType=TIMESTAMP}, 
+    values (#{userId,jdbcType=BIGINT}, #{startAt,jdbcType=TIMESTAMP}, #{endAt,jdbcType=TIMESTAMP}, 
       #{repeat,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.UserSchedule">
@@ -31,7 +31,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
-        #{userId,jdbcType=VARCHAR},
+        #{userId,jdbcType=BIGINT},
       </if>
       <if test="startAt != null">
         #{startAt,jdbcType=TIMESTAMP},

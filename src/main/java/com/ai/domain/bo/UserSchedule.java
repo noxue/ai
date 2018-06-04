@@ -3,7 +3,7 @@ package com.ai.domain.bo;
 import java.util.Date;
 
 public class UserSchedule {
-    private String userId;
+    private Long userId;
 
     private Date startAt;
 
@@ -11,12 +11,12 @@ public class UserSchedule {
 
     private Byte repeat;
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Date getStartAt() {

@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.ai.domain.bo.Template">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
   </resultMap>
@@ -35,7 +35,7 @@
     </selectKey>
     insert into template (name, user_id, status, 
       created_at, content)
-    values (#{name,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+    values (#{name,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, #{status,jdbcType=TINYINT}, 
       #{createdAt,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.Template">
@@ -65,7 +65,7 @@
         #{name,jdbcType=VARCHAR},
       </if>
       <if test="userId != null">
-        #{userId,jdbcType=VARCHAR},
+        #{userId,jdbcType=BIGINT},
       </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
@@ -85,7 +85,7 @@
         name = #{name,jdbcType=VARCHAR},
       </if>
       <if test="userId != null">
-        user_id = #{userId,jdbcType=VARCHAR},
+        user_id = #{userId,jdbcType=BIGINT},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=TINYINT},
@@ -102,7 +102,7 @@
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ai.domain.bo.Template">
     update template
     set name = #{name,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=BIGINT},
       status = #{status,jdbcType=TINYINT},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       content = #{content,jdbcType=LONGVARCHAR}
@@ -111,7 +111,7 @@
   <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.Template">
     update template
     set name = #{name,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=BIGINT},
       status = #{status,jdbcType=TINYINT},
       created_at = #{createdAt,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

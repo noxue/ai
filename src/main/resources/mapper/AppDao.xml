@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.dao.AppDao">
+  <resultMap id="BaseResultMap" type="com.ai.domain.bo.App">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="key" jdbcType="CHAR" property="key" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id,`key`, `name`, description
+  </sql>
+  <select id="getAppsList"  resultType="com.ai.domain.bo.App">
+    select
+    <include refid="Base_Column_List" />
+    from app
+    where 1=1
+  </select>
+  <select id="selectByName" parameterType="java.lang.String" resultType="com.ai.domain.bo.App">
+        select
+        id,`key`,`name`,description
+        from app a where a.`name` = #{name,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

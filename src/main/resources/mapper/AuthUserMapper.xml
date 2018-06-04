@@ -15,11 +15,10 @@
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="CREATE_WHERE" jdbcType="TINYINT" property="createWhere" />
-    <result column="pid" jdbcType="VARCHAR" property="pid" />
   </resultMap>
   <sql id="Base_Column_List">
     uid, username, password, salt, real_name, avatar, phone, email, sex, status, CREATE_TIME, 
-    UPDATE_TIME, CREATE_WHERE, pid
+    UPDATE_TIME, CREATE_WHERE
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -36,12 +35,12 @@
       salt, real_name, avatar, 
       phone, email, sex, 
       status, CREATE_TIME, UPDATE_TIME, 
-      CREATE_WHERE, pid)
+      CREATE_WHERE)
     values (#{uid,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{salt,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, 
       #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT}, 
       #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{createWhere,jdbcType=TINYINT}, #{pid,jdbcType=VARCHAR})
+      #{createWhere,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.AuthUser">
     insert into auth_user
@@ -85,9 +84,6 @@
       <if test="createWhere != null">
         CREATE_WHERE,
       </if>
-      <if test="pid != null">
-        pid,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="uid != null">
@@ -128,9 +124,6 @@
       </if>
       <if test="createWhere != null">
         #{createWhere,jdbcType=TINYINT},
-      </if>
-      <if test="pid != null">
-        #{pid,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -173,9 +166,6 @@
       <if test="createWhere != null">
         CREATE_WHERE = #{createWhere,jdbcType=TINYINT},
       </if>
-      <if test="pid != null">
-        pid = #{pid,jdbcType=VARCHAR},
-      </if>
     </set>
     where uid = #{uid,jdbcType=VARCHAR}
   </update>
@@ -192,8 +182,7 @@
       status = #{status,jdbcType=TINYINT},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
-      CREATE_WHERE = #{createWhere,jdbcType=TINYINT},
-      pid = #{pid,jdbcType=VARCHAR}
+      CREATE_WHERE = #{createWhere,jdbcType=TINYINT}
     where uid = #{uid,jdbcType=VARCHAR}
   </update>
 </mapper>

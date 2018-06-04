@@ -7,7 +7,7 @@ public class Template {
 
     private String name;
 
-    private String userId;
+    private Long userId;
 
     private Byte status;
 
@@ -31,12 +31,12 @@ public class Template {
         this.name = name == null ? null : name.trim();
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Byte getStatus() {

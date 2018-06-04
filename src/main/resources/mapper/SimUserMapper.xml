@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ai.dao.SimUserMapper">
   <resultMap id="BaseResultMap" type="com.ai.domain.bo.SimUser">
-    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="sim_id" jdbcType="BIGINT" property="simId" />
   </resultMap>
   <insert id="insert" parameterType="com.ai.domain.bo.SimUser">
     insert into sim_user (user_id, sim_id)
-    values (#{userId,jdbcType=VARCHAR}, #{simId,jdbcType=BIGINT})
+    values (#{userId,jdbcType=BIGINT}, #{simId,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.SimUser">
     insert into sim_user
@@ -21,7 +21,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
-        #{userId,jdbcType=VARCHAR},
+        #{userId,jdbcType=BIGINT},
       </if>
       <if test="simId != null">
         #{simId,jdbcType=BIGINT},

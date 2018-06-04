@@ -3,7 +3,7 @@
 <mapper namespace="com.ai.dao.TaskMapper">
   <resultMap id="BaseResultMap" type="com.ai.domain.bo.Task">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="template_id" jdbcType="BIGINT" property="templateId" />
     <result column="thread" jdbcType="INTEGER" property="thread" />
     <result column="total" jdbcType="INTEGER" property="total" />
@@ -36,7 +36,7 @@
       total, called, created_at, 
       start_at, finish_at, status, 
       test)
-    values (#{userId,jdbcType=VARCHAR}, #{templateId,jdbcType=BIGINT}, #{thread,jdbcType=INTEGER}, 
+    values (#{userId,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}, #{thread,jdbcType=INTEGER}, 
       #{total,jdbcType=INTEGER}, #{called,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
       #{startAt,jdbcType=TIMESTAMP}, #{finishAt,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, 
       #{test,jdbcType=BIT})
@@ -80,7 +80,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
-        #{userId,jdbcType=VARCHAR},
+        #{userId,jdbcType=BIGINT},
       </if>
       <if test="templateId != null">
         #{templateId,jdbcType=BIGINT},
@@ -115,7 +115,7 @@
     update task
     <set>
       <if test="userId != null">
-        user_id = #{userId,jdbcType=VARCHAR},
+        user_id = #{userId,jdbcType=BIGINT},
       </if>
       <if test="templateId != null">
         template_id = #{templateId,jdbcType=BIGINT},
@@ -149,7 +149,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.Task">
     update task
-    set user_id = #{userId,jdbcType=VARCHAR},
+    set user_id = #{userId,jdbcType=BIGINT},
       template_id = #{templateId,jdbcType=BIGINT},
       thread = #{thread,jdbcType=INTEGER},
       total = #{total,jdbcType=INTEGER},

@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 
@@ -24,6 +26,5 @@ public class BootshiroApplicationTests {
 		template.opsForValue().set("hahahaha","lallal",10, TimeUnit.SECONDS);
 		Assert.assertEquals("lallal",template.opsForValue().get("hahahaha"));
 	}
-
 
 }
