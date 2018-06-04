@@ -33,6 +33,14 @@ CREATE TABLE `app` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='机器人客户端表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `app`
+--
+
+LOCK TABLES `app` WRITE;
+/*!40000 ALTER TABLE `app` DISABLE KEYS */;
+/*!40000 ALTER TABLE `app` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `auth_account_log`
@@ -50,8 +58,18 @@ CREATE TABLE `auth_account_log` (
   `MESSAGE` varchar(255) DEFAULT NULL COMMENT '具体消息',
   `IP` varchar(255) DEFAULT NULL COMMENT '登录ip',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='登录注册登出记录';
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='登录注册登出记录';
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_account_log`
+--
+
+LOCK TABLES `auth_account_log` WRITE;
+/*!40000 ALTER TABLE `auth_account_log` DISABLE KEYS */;
+INSERT INTO `auth_account_log` VALUES (17,'用户登录日志','tom','2018-04-22 13:22:39',1,NULL,'10.0.75.2'),(18,'用户登录日志','admin','2018-06-02 17:42:59',1,'登录成功','127.0.0.1');
+/*!40000 ALTER TABLE `auth_account_log` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `auth_operation_log`
@@ -70,9 +88,18 @@ CREATE TABLE `auth_operation_log` (
   `SUCCEED` tinyint(4) DEFAULT NULL COMMENT '是否执行成功(0失败1成功)',
   `MESSAGE` varchar(255) DEFAULT NULL COMMENT '具体消息备注',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='操作日志';
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='操作日志';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `auth_operation_log`
+--
+
+LOCK TABLES `auth_operation_log` WRITE;
+/*!40000 ALTER TABLE `auth_operation_log` DISABLE KEYS */;
+INSERT INTO `auth_operation_log` VALUES (17,'业务操作日志','tom','/resource/menus','GET','2018-04-22 16:05:05',1,NULL),(18,'业务操作日志','tom','/resource/menus','GET','2018-04-22 16:05:09',1,NULL),(19,'业务操作日志','tom','/resource/api/-1/1/10','GET','2018-04-22 16:08:15',1,NULL);
+/*!40000 ALTER TABLE `auth_operation_log` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `auth_resource`
@@ -94,12 +121,18 @@ CREATE TABLE `auth_resource` (
   `CREATE_TIME` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `UPDATE_TIME` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='资源信息表(菜单,资源)';
+) ENGINE=InnoDB AUTO_INCREMENT=146 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='资源信息表(菜单,资源)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `auth_resource`
 --
+
+LOCK TABLES `auth_resource` WRITE;
+/*!40000 ALTER TABLE `auth_resource` DISABLE KEYS */;
+INSERT INTO `auth_resource` VALUES (101,'ACCOUNT_LOGIN','用户登录',103,'/account/login',2,'POST',NULL,1,NULL,NULL),(103,'GROUP_ACCOUNT','账户系列',110,'',3,'POST',NULL,1,NULL,NULL),(104,'USER_MAGE','用户管理',-1,'',1,'POST','fa fa-user',1,NULL,NULL),(106,'RESOURCE_MAGE','资源配置',-1,'',1,'POST','fa fa-pie-chart',1,NULL,NULL),(107,'MENU_MANAGE','菜单管理',106,'/index/menu',1,'POST','fa fa-th',1,NULL,NULL),(109,'API_MANAGE','API管理',106,'/index/api',1,NULL,'fa fa-share',1,'2018-04-07 09:40:24','2018-04-07 09:40:24'),(110,'CATEGORY_GROUP','分类集合(API类别请放入此集合)',-1,NULL,3,NULL,NULL,1,'2018-04-07 14:27:58','2018-04-07 14:27:58'),(112,'ACCOUNT_REGISTER','用户注册',103,'/account/register',2,'POST',NULL,1,'2018-04-07 16:21:45','2018-04-07 16:21:45'),(115,'GROUP_USER','用户系列',110,'',3,'GET',NULL,1,'2018-04-07 16:31:01','2018-04-07 16:31:01'),(117,'ROLE_MANAGE','角色管理',106,'/index/role',1,NULL,'fa fa-adjust',1,'2018-04-08 05:36:31','2018-04-08 05:36:31'),(118,'GROUP_RESOURCE','资源系列',110,NULL,3,NULL,NULL,1,'2018-04-09 02:29:14','2018-04-09 02:29:14'),(119,'USER_ROLE_APPID','获取对应用户角色',115,'/user/role/*/*/*',2,'GET',NULL,1,'2018-04-12 03:07:22','2018-04-12 03:07:22'),(120,'USER_LIST','获取用户列表',115,'/user/list',2,'GET',NULL,1,'2018-04-12 03:08:30','2018-04-12 03:08:30'),(121,'USER_AUTHORITY_ROLE','给用户授权添加角色',115,'/user/authority/role',2,'POST',NULL,1,'2018-04-12 03:15:56','2018-04-12 03:15:56'),(122,'USER_AUTHORITY_ROLE','删除已经授权的用户角色',115,'/user/authority/role',2,'DELETE',NULL,1,'2018-04-12 03:29:03','2018-04-12 03:29:03'),(123,'RESOURCE_AUTORITYMENU','获取用户被授权菜单',118,'/resource/authorityMenu',2,'GET',NULL,1,'2018-04-12 05:30:03','2018-04-12 05:30:03'),(124,'RESOURCE_MENUS','获取全部菜单列',118,'/resource/menus',2,'GET',NULL,1,'2018-04-12 05:42:46','2018-04-12 05:42:46'),(125,'RESOURCE_MENU','增加菜单',118,'/resource/menu',2,'POST',NULL,1,'2018-04-12 06:15:39','2018-04-12 06:15:39'),(126,'RESOURCE_MENU','修改菜单',118,'/resource/menu',2,'PUT',NULL,1,'2018-04-12 06:16:35','2018-04-12 06:16:35'),(127,'RESOURCE_MENU','删除菜单',118,'/resource/menu',2,'DELETE',NULL,1,'2018-04-12 06:17:18','2018-04-12 06:17:18'),(128,'RESOURCE_API','获取API list',118,'/resource/api/*/*/*',2,'GET',NULL,1,'2018-04-12 06:18:02','2018-04-12 06:18:02'),(129,'RESOURCE_API','增加API',118,'/resource/api',2,'POST',NULL,1,'2018-04-12 06:18:42','2018-04-12 06:18:42'),(130,'RESOURCE_API','修改API',118,'/resource/api',2,'PUT',NULL,1,'2018-04-12 06:19:32','2018-04-12 06:19:32'),(131,'RESOURCE_API','删除API',118,'/resource/api',2,'DELETE',NULL,1,'2018-04-12 06:20:03','2018-04-12 06:20:03'),(132,'GROUP_ROLE','角色系列',110,NULL,3,NULL,NULL,1,'2018-04-12 06:22:02','2018-04-12 06:22:02'),(133,'ROLE_USER','获取角色关联用户列表',132,'/role/user/*/*/*',2,'GET',NULL,1,'2018-04-12 06:22:59','2018-04-12 06:22:59'),(134,'ROLE_USER','获取角色未关联用户列表',132,'/role/user/-/*/*/*',2,'GET',NULL,1,'2018-04-12 06:24:09','2018-04-12 06:24:09'),(135,'ROLE_API','获取角色关联API资源',132,'/role/api/*/*/*',2,'GET',NULL,1,'2018-04-12 06:25:32','2018-04-12 06:25:32'),(136,'ROLE_API','获取角色未关联API资源',132,'/role/api/-/*/*/*',2,'GET',NULL,1,'2018-04-12 06:26:12','2018-04-12 06:26:12'),(137,'ROLE_MENU','获取角色关联菜单资源',132,'role/menu/*/*/*',2,'GET',NULL,1,'2018-04-12 06:27:20','2018-04-12 06:27:20'),(138,'ROLE_MENU','获取角色未关联菜单资源',132,'/role/menu/-/*/*/*',2,'GET',NULL,1,'2018-04-12 06:27:56','2018-04-12 06:27:56'),(139,'ROLE_AUTHORITY_RESOURCE','授权资源给角色',132,'/role/authority/resource',2,'POST',NULL,1,'2018-04-12 06:29:45','2018-04-12 06:29:45'),(140,'ROLE_AUTHORITY_RESOURCE','删除角色的授权资源',132,'/role/authority/resource',2,'DELETE',NULL,1,'2018-04-12 06:31:12','2018-04-12 06:31:12'),(141,'ROLE','获取角色LIST',132,'role/*/*',2,'GET',NULL,1,'2018-04-12 06:32:34','2018-04-12 06:32:34'),(142,'ROLE','添加角色',132,'role',2,'POST',NULL,1,'2018-04-12 06:33:25','2018-04-12 06:33:25'),(143,'USER','更新角色',132,'role',2,'PUT',NULL,1,'2018-04-12 06:34:27','2018-04-12 06:34:27'),(144,'ROLE','删除角色',132,'role',2,'DELETE',NULL,1,'2018-04-12 06:35:15','2018-04-12 06:35:15'),(145,'LOG_WATCH','日志记录',104,'/index/log',1,NULL,'fa fa-rss-square',1,'2018-04-22 08:12:24','2018-04-22 08:12:24');
+/*!40000 ALTER TABLE `auth_resource` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `auth_role`
@@ -116,7 +149,7 @@ CREATE TABLE `auth_role` (
   `CREATE_TIME` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `UPDATE_TIME` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='角色信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='角色信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,7 +158,7 @@ CREATE TABLE `auth_role` (
 
 LOCK TABLES `auth_role` WRITE;
 /*!40000 ALTER TABLE `auth_role` DISABLE KEYS */;
-INSERT INTO `auth_role` VALUES (1,'role_admin','管理员角色',1,NULL,NULL),(2,'role_agent','代理角色',1,NULL,NULL),(3,'role_company','企业角色',1,NULL,NULL),(4,'role_user','企业内部角色',1,NULL,NULL);
+INSERT INTO `auth_role` VALUES (100,'role_admin','管理员角色',1,NULL,NULL),(102,'role_agent','代理角色',1,NULL,NULL),(103,'role_company','企业角色',1,NULL,NULL),(104,'role_user','企业内部角色',1,NULL,NULL);
 /*!40000 ALTER TABLE `auth_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -144,7 +177,7 @@ CREATE TABLE `auth_role_resource` (
   `UPDATE_TIME` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`ID`) USING BTREE,
   UNIQUE KEY `ROLE_ID` (`ROLE_ID`,`RESOURCE_ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='资源角色关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='资源角色关联表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -210,7 +243,7 @@ CREATE TABLE `auth_user_role` (
   `UPDATE_TIME` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`ID`) USING BTREE,
   UNIQUE KEY `USER_ID` (`USER_ID`,`ROLE_ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='用户角色关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='用户角色关联表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,11 +270,14 @@ CREATE TABLE `gateway` (
   `port` int(11) NOT NULL COMMENT '网关端口',
   `app_id` bigint(20) NOT NULL COMMENT '客户端编号，表示该网关属于哪个app管理。不允许一个网关多个app管理的情况',
   `description` varchar(512) DEFAULT NULL COMMENT '备注网关信息，方便后期管理。',
+  `user_id` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `gateway_id_uindex` (`id`),
   UNIQUE KEY `gateway_name_uindex` (`name`),
   KEY `gateway_app_id_fk` (`app_id`),
-  CONSTRAINT `gateway_app_id_fk` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE
+  KEY `gateway_auth_user_uid_fk` (`user_id`),
+  CONSTRAINT `gateway_app_id_fk` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `gateway_auth_user_uid_fk` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`uid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='网关信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -320,8 +356,10 @@ DROP TABLE IF EXISTS `sim_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sim_user` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_id` varchar(30) NOT NULL,
   `sim_id` bigint(20) NOT NULL COMMENT '表示user_id编号指定的用户可以使用的卡的编号',
+  PRIMARY KEY (`id`),
   KEY `sim_user_sim_id_fk` (`sim_id`),
   KEY `sim_user_user_id_fk` (`user_id`),
   CONSTRAINT `sim_user_auth_user_uid_fk` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`uid`) ON DELETE CASCADE,
@@ -355,7 +393,7 @@ CREATE TABLE `task` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '床建任务的时间',
   `start_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '任务开始的时间',
   `finish_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '任务结束的时间',
-  `status` tinyint(4) DEFAULT '1' COMMENT '0 已结束。 1 未开始  2 执行中  3 暂停中  4 执行失败，被客户端获取，但是客户端很久（半小时）没有更新拨打状态的情况',
+  `status` tinyint(4) DEFAULT '1' COMMENT '0 已结束。 1 未开始 2 已准备好等待开始  3 执行中  4 暂停中  5 执行失败，被客户端获取，但是客户端很久（半小时）没有更新拨打状态的情况',
   `test` tinyint(1) DEFAULT '0' COMMENT '记录是否是测试任务，用于实现单呼叫，单呼的优先级最高，优先拨打测试客户',
   PRIMARY KEY (`id`),
   UNIQUE KEY `task_id_uindex` (`id`),
@@ -493,4 +531,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-06-02 17:49:53
+-- Dump completed on 2018-06-04 16:06:10
