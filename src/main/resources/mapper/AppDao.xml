@@ -10,11 +10,15 @@
   <sql id="Base_Column_List">
     id,`key`, `name`, description
   </sql>
-  <select id="getAppsList"  resultType="com.ai.domain.bo.App">
+  <select id="getAppsList" parameterType="java.lang.String"  resultType="com.ai.domain.bo.App">
+
     select
     <include refid="Base_Column_List" />
     from app
     where 1=1
+    <if test="_parameter != null and _parameter != ''">
+      AND `name` LIKE  CONCAT('%',#{_parameter},'%')
+    </if>
   </select>
   <select id="selectByName" parameterType="java.lang.String" resultType="com.ai.domain.bo.App">
         select

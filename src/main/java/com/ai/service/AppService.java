@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AppService {
 
-    PageInfo<App> findAllApp(int pageNum, int pageSize);
+    PageInfo<App> findAllApp(int pageNum, int pageSize,String name);
 
     boolean registerApp(App app);
 
@@ -16,5 +16,7 @@ public interface AppService {
     boolean editApp(App app);
 
     boolean delApp(long id);
+
+    App getAppById(long id);
 
 }

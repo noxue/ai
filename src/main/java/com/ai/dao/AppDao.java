@@ -8,7 +8,7 @@ import java.util.List;
 public interface AppDao extends AppMapper{
 
     //获取所有app
-    List<App> getAppsList();
+    List<App> getAppsList(String name);
     //根据name查找app
     App selectByName(String name);
 

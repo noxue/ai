@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.springframework.util.StringUtils;
 
@@ -30,22 +32,6 @@ public class AppController {
 
     @Autowired
     private AppService appService;
-
-    /* *
-     * @Description 分页获取所有app
-     * @Param [] null
-     * @Return com.ai.domain.bo.app.java
-     */
-    @ApiOperation(value = "获取app", notes = "分页获取所有app")
-    @ResponseBody
-    @GetMapping("/all")
-    public Object findAllApp(
-            @RequestParam(name = "pageNum", required = false, defaultValue = "1")
-                    int pageNum,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "15")
-                    int pageSize){
-        return appService.findAllApp(pageNum,pageSize);
-    }
 
     @ApiOperation(value = "新增app", notes = "增加一个新的、name不可重复的app，")
     @ResponseBody
@@ -69,10 +55,10 @@ public class AppController {
         app.setName(name);
 
         if (appService.registerApp(app)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "1", "/all/add", "registerApp", (short) 3003, "新增成功"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/add", "registerApp", (short) 3003, "新增成功"));
             return new Message().ok(3003, "新增成功");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "1", "/all/add", "registerApp", (short) 3004, "新增失败"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/add", "registerApp", (short) 3004, "新增失败"));
             return new Message().ok(3004, "新增失败");
         }
     }
@@ -96,10 +82,10 @@ public class AppController {
         app.setDescription(description);
         app.setName(name);
         if (appService.editApp(app)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "1", "/all/edit", "editApp", (short) 3006, "编辑成功"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/edit", "editApp", (short) 3006, "编辑成功"));
             return new Message().ok(3006, "编辑成功");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "1", "/all/edit", "editApp", (short) 3007, "编辑失败"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/edit", "editApp", (short) 3007, "编辑失败"));
             return new Message().ok(3007, "编辑失败");
         }
     }
@@ -116,11 +102,61 @@ public class AppController {
         }
 
         if (appService.delApp(Long.parseLong(id))) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "1", "/all/del", "delApp", (short) 3008, "删除成功"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/del", "delApp", (short) 3008, "删除成功"));
             return new Message().ok(3008, "删除成功");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "1", "/all/del", "delApp", (short) 3009, "删除失败"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/del", "delApp", (short) 3009, "删除失败"));
             return new Message().ok(3009, "删除失败");
+        }
+    }
+
+    /* *
+     * @Description 分页获取所有app
+     * @Param [] name
+     * @Return com.ai.domain.bo.app.java
+     */
+    @ApiOperation(value = "分页获取app", notes = "模糊查询分页获取app信息")
+    @ResponseBody
+    @PostMapping("/all")
+    public Object findAllApp(HttpServletRequest request, HttpServletResponse response,
+            @RequestParam(name = "pageNum", required = false, defaultValue = "1")
+                    int pageNum,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "15")
+                    int pageSize){
+
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String name =params.get("name");
+        if(appService.findAllApp(pageNum,pageSize,name)!=null){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/all", "findAllApp", (short) 3010, "查询成功"));
+            return new Message().ok(3003, "查询成功").addData("appList",appService.findAllApp(pageNum,pageSize,name));
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/all", "findAllApp", (short) 3011, "查询失败"));
+            return new Message().ok(3004, "查询失败");
+        }
+    }
+
+    /* *
+     * @Description 根据id获取app信息
+     * @Param [] id
+     * @Return com.ai.domain.bo.app.java
+     */
+    @ApiOperation(value = "获取app", notes = "根据id获取app信息")
+    @ResponseBody
+    @PostMapping("/select")
+    public Object selectAppById(HttpServletRequest request, HttpServletResponse response){
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String id =params.get("id");
+        if ( StringUtils.isEmpty(id)) {
+            // 必须信息缺一不可,返回注册账号信息缺失
+            return new Message().error(3005, "app信息缺失");
+        }
+        App app = appService.getAppById(Long.parseLong(id));
+        if (app !=null){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/select", "findAllApp", (short) 3010, "查询成功"));
+            return new Message().ok(3010, "查询成功").addData("app",app);
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/select", "findAllApp", (short) 3011, "查询失败"));
+            return new Message().ok(3011, "查询失败");
         }
     }
 
