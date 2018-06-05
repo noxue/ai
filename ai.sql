@@ -412,14 +412,14 @@ LOCK TABLES `task` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `task_list`
+-- Table structure for table `task_user`
 --
 
-DROP TABLE IF EXISTS task_user;
+DROP TABLE IF EXISTS `task_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `task_list` (
-  `id` bigint(20) DEFAULT NULL,
+CREATE TABLE `task_user` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `task_id` bigint(20) NOT NULL COMMENT '任务编号',
   `content` text COMMENT '用于描述任务执行结果的json字符串',
   `mobile` char(15) NOT NULL COMMENT '要拨打的电话号码',
@@ -427,17 +427,46 @@ CREATE TABLE `task_list` (
   `status` tinyint(4) DEFAULT '1' COMMENT '任务状态  0 通话完毕。 1 任务未执行。 2 任务被客户端获取。',
   `time` int(11) DEFAULT '0' COMMENT '通话时长，单位（秒）',
   `type` tinyint(4) DEFAULT '0' COMMENT '什么类型的客户，具体根据模板中定义的分类索引来比较。',
-  `share` tinyint(1) DEFAULT '0' COMMENT '是否公开该客户，默认不公开，只有自己和公司账号能看到'
+  `share` tinyint(1) DEFAULT '0' COMMENT '是否公开该客户，默认不公开，只有自己和公司账号能看到',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `task_user_id_uindex` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务报告结果';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `task_list`
+-- Dumping data for table `task_user`
 --
 
-LOCK TABLES task_user WRITE;
-/*!40000 ALTER TABLE task_user DISABLE KEYS */;
-/*!40000 ALTER TABLE task_user ENABLE KEYS */;
+LOCK TABLES `task_user` WRITE;
+/*!40000 ALTER TABLE `task_user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `task_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `task_user_report`
+--
+
+DROP TABLE IF EXISTS `task_user_report`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `task_user_report` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `task_user_id` bigint(20) NOT NULL COMMENT '任务客户编号',
+  `content` text NOT NULL COMMENT '每一个客户的执行记录，用json保存',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `task_user_report_id_uindex` (`id`),
+  KEY `task_user_report_task_user_id_fk` (`task_user_id`),
+  CONSTRAINT `task_user_report_task_user_id_fk` FOREIGN KEY (`task_user_id`) REFERENCES `task_user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `task_user_report`
+--
+
+LOCK TABLES `task_user_report` WRITE;
+/*!40000 ALTER TABLE `task_user_report` DISABLE KEYS */;
+/*!40000 ALTER TABLE `task_user_report` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -506,9 +535,11 @@ CREATE TABLE `voice` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `path` varchar(100) NOT NULL COMMENT '原始wav文件的路径',
   `pcm` varchar(100) DEFAULT NULL COMMENT 'pcm文件路径，客户录音不需要保存pcm，所以可以为null',
+  `pcm_hash` varchar(50) NOT NULL COMMENT 'wav源文件的sha1摘要信息，用于记录文件是否改变，如果文件改变，才需要下载到客户端，这样可以节省宽带',
   PRIMARY KEY (`id`),
   UNIQUE KEY `voice_id_uindex` (`id`),
   UNIQUE KEY `voice_path_uindex` (`path`),
+  UNIQUE KEY `voice_path_hash_uindex` (`pcm_hash`),
   UNIQUE KEY `voice_pcm_uindex` (`pcm`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='机器人音频文件，以及通话客户录音文件';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -531,4 +562,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-06-04 16:20:46
+-- Dump completed on 2018-06-05 11:10:12
