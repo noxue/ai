@@ -62,7 +62,7 @@ public class ShiroFilterChainManager {
         List<String> defalutAnon = Arrays.asList("/css/**","/js/**");
         defalutAnon.forEach(ignored -> filterChain.put(ignored,"anon"));
         // -------------auth 默认需要认证过滤器的URL 走auth--PasswordFilter
-        List<String> defalutAuth = Arrays.asList("/account/**");
+        List<String> defalutAuth = Arrays.asList("/web/api/v1/account/**");
         defalutAuth.forEach(auth -> filterChain.put(auth,"auth"));
         // -------------dynamic 动态URL
         if (shiroFilterRulesProvider != null) {
