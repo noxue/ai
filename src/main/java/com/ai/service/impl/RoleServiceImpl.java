@@ -66,4 +66,9 @@ public class RoleServiceImpl implements RoleService {
     public List<AuthRole> getRoleList() throws DataAccessException {
         return authRoleMapper.selectRoles();
     }
+
+    @Override
+    public List<AuthRole> getRolesById(int id) {
+        return authRoleMapper.selectRolesById(id);
+    }
 }

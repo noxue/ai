@@ -1,6 +1,7 @@
 package com.ai.service;
 
 import com.ai.domain.bo.AuthUser;
+import com.ai.domain.bo.AuthUserRole;
 import com.ai.domain.vo.Account;
 
 /* *
@@ -14,4 +15,6 @@ public interface AccountService {
     boolean isAccountExistByUid(String uid);
     boolean registerAccount(AuthUser account);
     String loadAccountRole(String appId);
+    String loadAccountRoleId(String appId);
+    boolean insertAuthUserRole(AuthUserRole aur);
 }

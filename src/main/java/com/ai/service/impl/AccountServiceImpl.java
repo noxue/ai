@@ -2,13 +2,17 @@ package com.ai.service.impl;
 
 import com.ai.dao.AuthUserDao;
 import com.ai.dao.AuthUserMapper;
+import com.ai.dao.AuthUserRoleDao;
 import com.ai.domain.bo.AuthUser;
+import com.ai.domain.bo.AuthUserRole;
 import com.ai.domain.vo.Account;
 import com.ai.service.AccountService;
 import com.ai.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 /* *
  * @Author tomsun28
@@ -23,6 +27,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthUserRoleDao authUserRoleDao;
 
     @Override
     public Account loadAccount(String appId) throws DataAccessException {
@@ -51,5 +58,14 @@ public class AccountServiceImpl implements AccountService {
         return userMapper.selectUserRoles(appId);
     }
 
+    @Override
+    public String loadAccountRoleId(String appId) throws DataAccessException {
 
+        return userMapper.selectUserRolesId(appId);
+    }
+
+    @Override
+    public boolean insertAuthUserRole(AuthUserRole aur) {
+        return authUserRoleDao.insert(aur)==1? Boolean.TRUE : Boolean.FALSE;
+    }
 }
