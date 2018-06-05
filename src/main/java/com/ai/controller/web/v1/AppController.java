@@ -1,4 +1,4 @@
-package com.ai.controller;
+package com.ai.controller.web.v1;
 
 import com.ai.domain.bo.App;
 import com.ai.domain.vo.Message;
@@ -25,8 +25,8 @@ import org.springframework.util.StringUtils;
  * @2018年6月4日9:55:36
  */
 @RestController
-@RequestMapping("/app")
-public class AppController {
+@RequestMapping("/web/api/v1/app")
+public class AppController extends BasicAction{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppController.class);
 

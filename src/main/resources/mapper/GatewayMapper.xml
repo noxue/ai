@@ -8,9 +8,10 @@
     <result column="port" jdbcType="INTEGER" property="port" />
     <result column="app_id" jdbcType="BIGINT" property="appId" />
     <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, ip, port, app_id, description
+    id, `name`, ip, port, app_id, description, user_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -27,9 +28,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into gateway (`name`, ip, port, 
-      app_id, description)
+      app_id, description, user_id
+      )
     values (#{name,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{port,jdbcType=INTEGER}, 
-      #{appId,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR})
+      #{appId,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.Gateway">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -52,6 +55,9 @@
       <if test="description != null">
         description,
       </if>
+      <if test="userId != null">
+        user_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -68,6 +74,9 @@
       </if>
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -89,6 +98,9 @@
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -98,7 +110,8 @@
       ip = #{ip,jdbcType=VARCHAR},
       port = #{port,jdbcType=INTEGER},
       app_id = #{appId,jdbcType=BIGINT},
-      description = #{description,jdbcType=VARCHAR}
+      description = #{description,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

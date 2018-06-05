@@ -1,4 +1,4 @@
-package com.ai.controller;
+package com.ai.controller.web.v1;
 
 import com.ai.util.TreeUtil;
 import com.github.pagehelper.PageHelper;
@@ -7,7 +7,6 @@ import com.ai.domain.bo.AuthResource;
 import com.ai.domain.vo.MenuTreeNode;
 import com.ai.domain.vo.Message;
 import com.ai.service.ResourceService;
-import com.ai.util.TreeUtil;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,7 @@ import java.util.List;
  * @Date 21:36 2018/3/17
  */
 @RestController
-@RequestMapping("/resource")
+@RequestMapping("/web/api/v1/resource")
 public class ResourceController extends BasicAction{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceController.class);

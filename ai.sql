@@ -415,7 +415,7 @@ UNLOCK TABLES;
 -- Table structure for table `task_list`
 --
 
-DROP TABLE IF EXISTS `task_list`;
+DROP TABLE IF EXISTS task_user;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `task_list` (
@@ -435,9 +435,9 @@ CREATE TABLE `task_list` (
 -- Dumping data for table `task_list`
 --
 
-LOCK TABLES `task_list` WRITE;
-/*!40000 ALTER TABLE `task_list` DISABLE KEYS */;
-/*!40000 ALTER TABLE `task_list` ENABLE KEYS */;
+LOCK TABLES task_user WRITE;
+/*!40000 ALTER TABLE task_user DISABLE KEYS */;
+/*!40000 ALTER TABLE task_user ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

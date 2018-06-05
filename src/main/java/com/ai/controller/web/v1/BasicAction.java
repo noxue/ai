@@ -1,4 +1,4 @@
-package com.ai.controller;
+package com.ai.controller.web.v1;
 
 import com.ai.util.RequestResponseUtil;
 import com.ai.util.RequestResponseUtil;

@@ -1,4 +1,4 @@
-package com.ai.controller;
+package com.ai.controller.web.v1;
 
 import com.ai.util.JsonWebTokenUtil;
 import com.github.pagehelper.PageHelper;
@@ -8,7 +8,6 @@ import com.ai.domain.vo.Message;
 import com.ai.service.UserService;
 import com.ai.support.factory.LogTaskFactory;
 import com.ai.support.manager.LogExeManager;
-import com.ai.util.JsonWebTokenUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
@@ -28,7 +27,7 @@ import java.util.Set;
  * @Date 21:05 2018/3/17
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/web/api/v1/user")
 public class UserController extends BasicAction{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
