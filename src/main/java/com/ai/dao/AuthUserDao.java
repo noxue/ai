@@ -9,6 +9,8 @@ public interface AuthUserDao extends AuthUserMapper{
 
     String selectUserRoles(String appId) throws DataAccessException;
 
+    String selectUserRolesId(String appId) throws DataAccessException;
+
     AuthUser selectByUniqueKey(String appId) throws DataAccessException;
 
     List<AuthUser> selectUserList() throws DataAccessException;

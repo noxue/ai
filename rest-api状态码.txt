@@ -12,6 +12,9 @@
 1006: jwt_real_token过期,jwt_refresh_token过期(通知客户端重新登录)-----expired jwt
 1007: jwt_token认证失败无效(包括用户认证失败或者jwt令牌错误无效或者用户未登录)----error jwt
 1008: jwt token无权限访问此资源----no permission
+1009：当前角色无权操作
+1010: 插入用户角色关联表失败
+1011: 用户名只允许字母和数字，长度在4到30之间
 ...  
   
 // 用户相关  

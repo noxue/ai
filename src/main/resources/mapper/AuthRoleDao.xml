@@ -13,4 +13,10 @@
   <select id="selectRoles" resultMap="BaseResultMap">
     select * from auth_role
   </select>
+
+  <select id="selectRolesById" resultType="com.ai.domain.bo.AuthRole">
+    select id,`name` from auth_role
+    where id &lt; #{_parameter}
+  </select>
+
 </mapper>

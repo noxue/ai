@@ -23,4 +23,6 @@ public interface RoleService {
     boolean deleteAuthorityRoleResource(Integer roleId, Integer resourceId);
 
     List<AuthRole> getRoleList();
+
+    List<AuthRole> getRolesById(int id);
 }
