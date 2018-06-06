@@ -1,26 +1,28 @@
 package com.ai.service.impl;
 
+import com.ai.config.UploadConfig;
 import com.ai.dao.VoiceDao;
 import com.ai.domain.bo.Voice;
 import com.ai.service.VoiceService;
+import com.ai.util.CommandUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-@Configuration
 @Service
 public class VoiceServiceImpl implements VoiceService {
 
     @Autowired
     VoiceDao voiceDao;
 
+    @Autowired
+    UploadConfig uploadConfig;
 
     @Override
     public boolean addVoice(Voice voice) {
@@ -29,33 +31,71 @@ public class VoiceServiceImpl implements VoiceService {
     }
 
     @Override
-    public Voice findVoice(Long id) {
-        return voiceDao.selectByPrimaryKey(id);
+    public Voice findVoice(String hash) {
+        return voiceDao.selectByPrimaryKey(hash);
     }
 
     @Override
-    public boolean upload(MultipartFile voice) throws IOException,IllegalStateException {
+    public Voice upload(MultipartFile voice) {
 
-        // 这里只是简单例子，文件直接输出到项目路径下。
-        // 实际项目中，文件需要输出到指定位置，需要在增加代码处理。
-        // 还有关于文件格式限制、文件大小限制，详见：中配置。
-        BufferedOutputStream out = new BufferedOutputStream(
-                new FileOutputStream(new File(voice.getOriginalFilename())));
-        out.write(voice.getBytes());
-        out.flush();
-        out.close();
+        String fileName = voice.getOriginalFilename();
+        int size = (int) voice.getSize();
 
-//        String fileName = voice.getOriginalFilename();
-//        int size = (int) voice.getSize();
-//        System.out.println(fileName + "-->" + size);
-//
-//        String path = "static/upload" ;
-//        File dest = new File(path + "/" + fileName);
-//        if(!dest.getParentFile().exists()){ //判断文件父目录是否存在
-//            dest.getParentFile().mkdir();
-//        }
-//
-//        voice.transferTo(dest); //保存文件
-        return true;
+
+        try {
+            String name = DigestUtils.sha1Hex(voice.getInputStream());
+
+            // 如果已经存在，就不用再继续操作，直接返回即可
+            Voice vv = findVoice(name);
+            if (vv!=null) {
+                return vv;
+            }
+
+            // 根据日期生成年月日目录结构
+            String subDir = new SimpleDateFormat(File.separatorChar + "yyyy" + File.separatorChar + "MM" + File.separatorChar + "dd" + File.separatorChar).format(new Date());
+
+            String path = uploadConfig.getPath();
+            // wavPath保存相对路径
+            String wavPath = subDir + name + voice.getOriginalFilename().substring(voice.getOriginalFilename().lastIndexOf("."));
+            File dest = new File(path + wavPath);
+
+            if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
+                dest.getParentFile().mkdirs();
+            }
+            voice.transferTo(dest); //保存文件
+            String pcmPath = subDir + name + ".pcm";
+
+            // 这里需要绝对路径来处理，所以前面加上path
+            boolean ok = new CommandUtil().wavToPcm(path + wavPath, path + pcmPath);
+
+            if (!ok) {
+                return null;
+            }
+
+            Voice voice1 = new Voice();
+            //保存相对路径即可
+            voice1.setPath(wavPath);
+            voice1.setPcm(pcmPath);
+            voice1.setHash(name);
+
+            voiceDao.insert(voice1);
+
+            return voice1;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean allowUpload(String filename) {
+
+        int pos = filename.lastIndexOf(".");
+        if (pos == -1) {
+            return false;
+        }
+
+        return uploadConfig.getAllowList().contains(filename.substring(pos + 1));
     }
 }

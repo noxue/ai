@@ -1,6 +1,7 @@
 package com.ai.controller.web.v1;
 
 
+import com.ai.domain.bo.Voice;
 import com.ai.domain.vo.Message;
 import com.ai.service.VoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,21 +27,14 @@ public class VoiceController {
     @PostMapping("/upload")
     public Message uploadVoice(@RequestParam("voice") MultipartFile voice) {
 
-        if(voice.isEmpty()) {
-            return new Message().error(3201,"文件不能为空，请确认voice不为空");
+        if (voice.isEmpty()) {
+            return new Message().error(3201, "文件不能为空，请确认voice不为空");
         }
 
-        try {
-            voiceService.upload(voice);
-            return new Message().ok(3200,"上传成功");
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-            return new Message().error(3202,"上传失败");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new Message().error(3203,"上传失败");
-        } catch (MultipartException e){
-            return new Message().error(3204,"数据类型不正确");
+        Voice v = voiceService.upload(voice);
+        if(v!=null){
+            return new Message().ok(3200,"上传成功").addData("voice",v).addData("voice",v);
         }
+        return new Message().error(3201, "上传失败");
     }
 }
