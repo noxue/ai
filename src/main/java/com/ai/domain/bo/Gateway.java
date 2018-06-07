@@ -9,11 +9,11 @@ public class Gateway {
 
     private Integer port;
 
-    private Long appId;
+    private Long app_id;
 
     private String description;
 
-    private String userId;
+    private String user_id;
 
     public Long getId() {
         return id;
@@ -48,11 +48,11 @@ public class Gateway {
     }
 
     public Long getAppId() {
-        return appId;
+        return app_id;
     }
 
     public void setAppId(Long appId) {
-        this.appId = appId;
+        this.app_id = appId;
     }
 
     public String getDescription() {
@@ -64,10 +64,10 @@ public class Gateway {
     }
 
     public String getUserId() {
-        return userId;
+        return user_id;
     }
 
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.user_id = userId == null ? null : userId.trim();
     }
 }
