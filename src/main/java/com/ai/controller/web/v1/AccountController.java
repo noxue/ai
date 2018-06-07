@@ -20,15 +20,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -157,8 +155,8 @@ public class AccountController extends BasicAction {
     @PostMapping("/register")
     public Message accountRegister(HttpServletRequest request, HttpServletResponse response) {
 
-        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String appId = request.getHeader("appId");
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         AuthUser authUser = new AuthUser();
         String uid = params.get("uid");
         String roleId = params.get("roleId");
@@ -183,7 +181,10 @@ public class AccountController extends BasicAction {
         authUser.setUid(uid);
 
         // 从Redis取出密码传输加密解密秘钥
-        String tokenKey = redisTemplate.opsForValue().get("TOKEN_KEY_" + IpUtil.getIpFromRequest(WebUtils.toHttp(request)).toUpperCase() + userKey);
+        //String tokenKey = redisTemplate.opsForValue().get("TOKEN_KEY_" + IpUtil.getIpFromRequest(WebUtils.toHttp(request)).toUpperCase() + userKey);
+        //测试使用，在请求时 将tokenKey放入body中
+        String tokenKey = params.get("tokenKey");
+
         String realPassword = AESUtil.aesDecode(password, tokenKey);
         String salt = CommonUtil.getRandomString(6);
         // 存储到数据库的密码为 MD5(原密码+盐值)
@@ -212,15 +213,11 @@ public class AccountController extends BasicAction {
             authUser.setCreateWhere(Byte.valueOf(params.get("createWhere")));
         }
         authUser.setStatus((byte) 1);
-        if (accountService.registerAccount(authUser)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 1, "注册成功"));
-            //return new Message().ok(2002, "注册成功");
-        } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "注册失败"));
-            return new Message().ok(1111, "注册失败");
-        }
+
+
         //获取当前角色的权限信息
-        List<AuthRole> roleList= roleService.getRolesById(Integer.parseInt(appId));
+        String authRoleId = accountService.loadAccountRoleId(appId);
+        List<AuthRole> roleList = roleService.getRolesById(Integer.parseInt(authRoleId));
         if(roleList ==null){
             return new Message().ok(1009, "注册失败");
         }
@@ -231,6 +228,14 @@ public class AccountController extends BasicAction {
             }
         }
         if(flag){
+            //插入用户表
+            if (accountService.registerAccount(authUser)) {
+                LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 1, "注册成功"));
+                //return new Message().ok(2002, "注册成功");
+            } else {
+                LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "注册失败"));
+                return new Message().ok(1111, "注册失败");
+            }
             //插入表auth_user_role
             AuthUserRole aur = new AuthUserRole();
             aur.setRoleId(Integer.parseInt(roleId));
@@ -250,23 +255,4 @@ public class AccountController extends BasicAction {
         }
     }
 
-
-
-    @ApiOperation(value = "权限信息", notes = "获取当前登陆用户的所有权限信息")
-    @PostMapping("/roles")
-    public Message accountRoles(HttpServletRequest request) {
-        String appId = request.getHeader("appId");
-        if (StringUtils.isEmpty(appId)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(1111, "账户信息缺失");
-        }
-        String roleId = accountService.loadAccountRoleId(appId);
-        if (roleService.getRolesById(Integer.parseInt(roleId)) != null) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(appId, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 1, "获取成功"));
-            return new Message().ok(2002, "获取成功").addData("roleList",roleService.getRolesById(Integer.parseInt(appId)));
-        } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(appId, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "获取失败"));
-            return new Message().ok(1111, "获取失败");
-        }
-    }
 }

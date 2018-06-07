@@ -55,10 +55,10 @@ public class AppController extends BasicAction{
         app.setName(name);
 
         if (appService.registerApp(app)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/add", "registerApp", (short) 3003, "新增成功"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/add", "registerApp", (short) 3003, "新增成功"));
             return new Message().ok(3003, "新增成功");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/add", "registerApp", (short) 3004, "新增失败"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/add", "registerApp", (short) 3004, "新增失败"));
             return new Message().ok(3004, "新增失败");
         }
     }
@@ -77,15 +77,19 @@ public class AppController extends BasicAction{
             // 必须信息缺一不可,返回注册账号信息缺失
             return new Message().error(3005, "app信息缺失");
         }
+        if (appService.isAppExistByName(name)) {
+            // name已存在
+            return new Message().error(3002, "名称已存在");
+        }
         app.setId(Long.parseLong(id));
         app.setKey(key);
         app.setDescription(description);
         app.setName(name);
         if (appService.editApp(app)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/edit", "editApp", (short) 3006, "编辑成功"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/edit", "editApp", (short) 3006, "编辑成功"));
             return new Message().ok(3006, "编辑成功");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/edit", "editApp", (short) 3007, "编辑失败"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/edit", "editApp", (short) 3007, "编辑失败"));
             return new Message().ok(3007, "编辑失败");
         }
     }
@@ -102,10 +106,10 @@ public class AppController extends BasicAction{
         }
 
         if (appService.delApp(Long.parseLong(id))) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/del", "delApp", (short) 3008, "删除成功"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/del", "delApp", (short) 3008, "删除成功"));
             return new Message().ok(3008, "删除成功");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/all/del", "delApp", (short) 3009, "删除失败"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/del", "delApp", (short) 3009, "删除失败"));
             return new Message().ok(3009, "删除失败");
         }
     }
@@ -152,10 +156,10 @@ public class AppController extends BasicAction{
         }
         App app = appService.getAppById(Long.parseLong(id));
         if (app !=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/select", "findAllApp", (short) 3010, "查询成功"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/select", "selectAppById", (short) 3010, "查询成功"));
             return new Message().ok(3010, "查询成功").addData("app",app);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/select", "findAllApp", (short) 3011, "查询失败"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/select", "selectAppById", (short) 3011, "查询失败"));
             return new Message().ok(3011, "查询失败");
         }
     }

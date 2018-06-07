@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.dao.GatewayDao">
+  <resultMap id="BaseResultMap" type="com.ai.domain.bo.Gateway">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="port" jdbcType="INTEGER" property="port" />
+    <result column="app_id" jdbcType="BIGINT" property="appId" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, ip, port, app_id, description, user_id
+  </sql>
+  <select id="getGatewaysList" parameterType="java.lang.String"  resultType="com.ai.domain.bo.Gateway">
+    select
+    id, `name`, ip, port, app_id as appid, description, user_id as userid
+    from gateway
+    where 1=1
+    <if test="_parameter != null and _parameter != ''">
+      AND `user_id` LIKE  CONCAT('%',#{_parameter},'%')
+    </if>
+  </select>
+
+</mapper>
