@@ -1,20 +1,18 @@
 package com.ai.domain.bo;
 
 public class Voice {
-    private Long id;
+    private String hash;
 
     private String path;
 
     private String pcm;
 
-    private String pcmHash;
-
-    public Long getId() {
-        return id;
+    public String getHash() {
+        return hash;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setHash(String hash) {
+        this.hash = hash == null ? null : hash.trim();
     }
 
     public String getPath() {
@@ -31,13 +29,5 @@ public class Voice {
 
     public void setPcm(String pcm) {
         this.pcm = pcm == null ? null : pcm.trim();
-    }
-
-    public String getPcmHash() {
-        return pcmHash;
-    }
-
-    public void setPcmHash(String pcmHash) {
-        this.pcmHash = pcmHash == null ? null : pcmHash.trim();
     }
 }

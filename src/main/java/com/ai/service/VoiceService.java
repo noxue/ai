@@ -7,6 +7,13 @@ import java.io.IOException;
 
 public interface VoiceService {
     boolean addVoice(Voice voice);
-    Voice findVoice(Long id);
-    boolean upload(MultipartFile voice) throws IOException,IllegalStateException;
+    Voice findVoice(String hash);
+
+    /**
+     * 根据文件后缀判断是否允许上传
+     * @param filename  文件名
+     * @return  返回true表示
+     */
+    boolean allowUpload(String filename);
+    Voice upload(MultipartFile voice);
 }

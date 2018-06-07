@@ -532,15 +532,12 @@ DROP TABLE IF EXISTS `voice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `voice` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `hash` varchar(50) NOT NULL COMMENT 'wav源文件的sha1摘要信息，用于记录文件是否改变，如果文件改变，才需要下载到客户端，这样可以节省宽带',
   `path` varchar(100) NOT NULL COMMENT '原始wav文件的路径',
   `pcm` varchar(100) DEFAULT NULL COMMENT 'pcm文件路径，客户录音不需要保存pcm，所以可以为null',
-  `pcm_hash` varchar(50) NOT NULL COMMENT 'wav源文件的sha1摘要信息，用于记录文件是否改变，如果文件改变，才需要下载到客户端，这样可以节省宽带',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `voice_id_uindex` (`id`),
-  UNIQUE KEY `voice_path_uindex` (`path`),
-  UNIQUE KEY `voice_path_hash_uindex` (`pcm_hash`),
-  UNIQUE KEY `voice_pcm_uindex` (`pcm`)
+  PRIMARY KEY (`hash`),
+  UNIQUE KEY `voice_hash_uindex` (`hash`),
+  UNIQUE KEY `voice_path_uindex` (`path`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='机器人音频文件，以及通话客户录音文件';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -550,6 +547,7 @@ CREATE TABLE `voice` (
 
 LOCK TABLES `voice` WRITE;
 /*!40000 ALTER TABLE `voice` DISABLE KEYS */;
+INSERT INTO `voice` VALUES ('6957a64e136f5cf0f3f5eebf9f77bba9ac32c821','\\2018\\06\\06\\6957a64e136f5cf0f3f5eebf9f77bba9ac32c821.wav','\\2018\\06\\06\\6957a64e136f5cf0f3f5eebf9f77bba9ac32c821.pcm');
 /*!40000 ALTER TABLE `voice` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -562,4 +560,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-06-05 11:10:12
+-- Dump completed on 2018-06-06 11:01:44
