@@ -1,7 +1,9 @@
 package com.ai.controller.web.v1;
 
 import com.ai.domain.bo.Gateway;
+import com.ai.domain.bo.GatewayReport;
 import com.ai.domain.vo.Message;
+import com.ai.service.GatewayReportService;
 import com.ai.service.GatewayService;
 import com.ai.support.factory.LogTaskFactory;
 import com.ai.support.manager.LogExeManager;
@@ -30,6 +32,9 @@ public class GatewayController extends BasicAction{
 
     @Autowired
     private GatewayService gatewayService;
+
+    @Autowired
+    private GatewayReportService gatewayReportService;
 
     @ApiOperation(value = "新增Gateway", notes = "增加一个新的、新增Gateway")
     @ResponseBody
@@ -131,7 +136,7 @@ public class GatewayController extends BasicAction{
     /* *
      * @Description 条件分页获取所有gateway信息
      * @Param [] uid
-     * @Return com.ai.domain.bo.条件分页获取所有gateway信息.java
+     * @Return com.ai.domain.bo.条件分页获取所有gateway.java
      */
     @ApiOperation(value = "分页获取gateway", notes = "模糊查询分页获取gateway信息")
     @ResponseBody
@@ -158,7 +163,7 @@ public class GatewayController extends BasicAction{
      * @Param [] id
      * @Return com.ai.domain.bo.Gateway.java
      */
-    @ApiOperation(value = "获取app", notes = "根据id获取app信息")
+    @ApiOperation(value = "获取Gateway", notes = "根据id获取Gateway信息")
     @ResponseBody
     @PostMapping("/select")
     public Object selectGatewayById(HttpServletRequest request, HttpServletResponse response){
@@ -175,6 +180,99 @@ public class GatewayController extends BasicAction{
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/select", "selectGatewayById", (short) 3011, "查询失败"));
             return new Message().ok(3011, "查询失败");
+        }
+    }
+
+    @ApiOperation(value = "新增网关报告", notes = "新增网关报告信息")
+    @ResponseBody
+    @PostMapping("/report/add")
+    public Message addGatewayReport(HttpServletRequest request, HttpServletResponse response){
+
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        GatewayReport gatewayReport = new GatewayReport();
+        String gatewayId = params.get("gatewayId");
+        String detail = params.get("detail");
+        String description = params.get("description");
+        if (StringUtils.isEmpty(description) || StringUtils.isEmpty(gatewayId)) {
+            //验证信息
+            return new Message().error(3112, "信息缺失");
+        }
+        gatewayReport.setDescription(description);
+        gatewayReport.setGatewayId(Long.parseLong(gatewayId));
+        gatewayReport.setDetail(detail);
+        if (gatewayReportService.registerGatewayReport(gatewayReport)) {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/add", "addGatewayReport", (short) 3101, "新增成功"));
+            return new Message().ok(3103, "新增成功");
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/add", "addGatewayReport", (short) 3102, "新增失败"));
+            return new Message().ok(3104, "新增失败");
+        }
+    }
+
+    @ApiOperation(value = "删除gatewayReport", notes = "删除gatewayReport信息")
+    @ResponseBody
+    @PostMapping("/report/del")
+    public Message delGatewayReport(HttpServletRequest request, HttpServletResponse response){
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String id =params.get("id");
+        if (StringUtils.isEmpty(id)) {
+            // 必须信息缺一不可,返回注册账号信息缺失
+            return new Message().error(3105, "网关信息缺失");
+        }
+
+        if (gatewayReportService.delReport(Long.parseLong(id))) {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/del", "delGatewayReport", (short) 3108, "删除成功"));
+            return new Message().ok(3108, "删除成功");
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/del", "delGatewayReport", (short) 3109, "删除失败"));
+            return new Message().ok(3109, "删除失败");
+        }
+    }
+
+    /* *
+     * @Description 根据id获取GatewayReport信息
+     * @Param [] id
+     * @Return com.ai.domain.bo.GatewayReport.java
+     */
+    @ApiOperation(value = "获取GatewayReport", notes = "根据id获取GatewayReport信息")
+    @ResponseBody
+    @PostMapping("/report/select")
+    public Object selectGatewayReportById(HttpServletRequest request, HttpServletResponse response){
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String id =params.get("id");
+        if ( StringUtils.isEmpty(id)) {
+            // 必须信息缺一不可,返回注册账号信息缺失
+            return new Message().error(3105, "网关信息缺失");
+        }
+        GatewayReport gatewayReport = gatewayReportService.getGatewayReoprtById(Long.parseLong(id));
+        if (gatewayReport !=null){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/select", "selectGatewayReportById", (short) 3010, "查询成功"));
+            return new Message().ok(3010, "查询成功").addData("gatewayReport",gatewayReport);
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/select", "selectGatewayReportById", (short) 3011, "查询失败"));
+            return new Message().ok(3011, "查询失败");
+        }
+    }
+
+    /* *
+     * @Description 条件分页获取所有gatewayReport信息
+     * @Param []
+     * @Return com.ai.domain.bo.条件分页获取所有gatewayReport信息
+     */
+    @ApiOperation(value = "分页获取gatewayReport", notes = "模糊查询分页获取gatewayReport信息")
+    @ResponseBody
+    @PostMapping("/report/all")
+    public Object findAllGatewayReport(HttpServletRequest request, HttpServletResponse response,
+                              @RequestParam(name = "pageNum", required = false, defaultValue = "1")
+                                      int pageNum,
+                              @RequestParam(name = "pageSize", required = false, defaultValue = "15")
+                                      int pageSize){
+        if(gatewayReportService.findAllGatewayReport(pageNum,pageSize)!=null){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/all", "findAllGatewayReport", (short) 3110, "查询成功"));
+            return new Message().ok(3103, "查询成功").addData("gatewayReportList",gatewayReportService.findAllGatewayReport(pageNum,pageSize));
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/all", "findAllGatewayReport", (short) 3111, "查询失败"));
+            return new Message().ok(3104, "查询失败");
         }
     }
 

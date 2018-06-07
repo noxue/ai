@@ -15,7 +15,7 @@
   </sql>
   <select id="getGatewaysList" parameterType="java.lang.String"  resultType="com.ai.domain.bo.Gateway">
     select
-    <include refid="Base_Column_List" />
+    id, `name`, ip, port, app_id as appid, description, user_id as userid
     from gateway
     where 1=1
     <if test="_parameter != null and _parameter != ''">
