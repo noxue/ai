@@ -4,7 +4,7 @@
 
 ## 本项目基于以下项目开发
  
-gitee(main rep):  
+gitee(main rep):        
  
  [bootshiro](https://gitee.com/tomsun28/bootshiro)  
  [usthe](https://gitee.com/tomsun28/usthe) 

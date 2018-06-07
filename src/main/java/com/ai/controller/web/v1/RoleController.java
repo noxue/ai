@@ -1,6 +1,10 @@
 package com.ai.controller.web.v1;
 
+import com.ai.service.AccountService;
 import com.ai.shiro.filter.ShiroFilterChainManager;
+import com.ai.support.factory.LogTaskFactory;
+import com.ai.support.manager.LogExeManager;
+import com.ai.util.IpUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ai.domain.bo.AuthResource;
@@ -11,11 +15,14 @@ import com.ai.service.ResourceService;
 import com.ai.service.RoleService;
 import com.ai.service.UserService;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +48,9 @@ public class RoleController extends BasicAction {
 
     @Autowired
     private ShiroFilterChainManager shiroFilterChainManager;
+
+    @Autowired
+    private AccountService accountService;
 
     @SuppressWarnings("unchecked")
     @ApiOperation(value = "获取角色关联的(roleId)对应用户列表",httpMethod = "GET")
@@ -172,4 +182,39 @@ public class RoleController extends BasicAction {
     }
 
 
+    @ApiOperation(value = "权限信息", notes = "获取当前登陆用户的所有权限信息")
+    @PostMapping("/roles")
+    public Message accountRoles(HttpServletRequest request) {
+        String appId = request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回注册账号信息缺失
+            return new Message().error(1111, "账户信息缺失");
+        }
+        String roleId = accountService.loadAccountRoleId(appId);
+        List<AuthRole> roleList = new ArrayList<>();
+        roleList = roleService.getRolesById(Integer.parseInt(roleId));
+
+        class RoleKv{
+            public int id;
+            public String name;
+
+            public RoleKv(int id, String name) {
+                this.id = id;
+                this.name = name;
+            }
+        }
+
+        List<RoleKv> rkv = new ArrayList<>();
+        for (AuthRole role:roleList) {
+            rkv.add(new RoleKv(role.getId(),role.getName()));
+        }
+
+        if (roleList != null) {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(appId, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 1, "获取成功"));
+            return new Message().ok(2002, "获取成功").addData("roleList",rkv);
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(appId, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "获取失败"));
+            return new Message().ok(1111, "获取失败");
+        }
+    }
 }
