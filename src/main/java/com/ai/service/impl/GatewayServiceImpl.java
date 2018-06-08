@@ -27,7 +27,7 @@ public class GatewayServiceImpl implements GatewayService {
     @Override
     public PageInfo<Gateway> findAllGate(int pageNum, int pageSize, String uid) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Gateway> gatewaysList = gatewayDao.getGatewaysList(uid);
+        List<Gateway> gatewaysList = gatewayDao.getGatewaysListByUid(uid);
         PageInfo result = new PageInfo(gatewaysList);
         return result;
     }

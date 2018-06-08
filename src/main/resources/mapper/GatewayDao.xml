@@ -13,13 +13,13 @@
   <sql id="Base_Column_List">
     id, `name`, ip, port, app_id, description, user_id
   </sql>
-  <select id="getGatewaysList" parameterType="java.lang.String"  resultType="com.ai.domain.bo.Gateway">
+  <select id="getGatewaysListByUid" parameterType="java.lang.String"  resultType="com.ai.domain.bo.Gateway">
     select
     id, `name`, ip, port, app_id as appid, description, user_id as userid
     from gateway
     where 1=1
     <if test="_parameter != null and _parameter != ''">
-      AND `user_id` LIKE  CONCAT('%',#{_parameter},'%')
+      AND `user_id` = #{_parameter}
     </if>
   </select>
 
