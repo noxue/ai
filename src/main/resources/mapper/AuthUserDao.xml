@@ -34,7 +34,7 @@
     FROM auth_user usr
     JOIN auth_user_role uro ON usr.uid = uro.USER_ID
     JOIN auth_role rol ON uro.ROLE_ID = rol.ID
-    WHERE usr.uid ='admin'
+    WHERE usr.uid =  #{uid,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByUniqueKey" parameterType="java.lang.String" resultMap="BaseResultMap">

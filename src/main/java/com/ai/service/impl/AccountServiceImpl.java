@@ -13,6 +13,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /* *
  * @Author tomsun28
@@ -67,5 +68,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean insertAuthUserRole(AuthUserRole aur) {
         return authUserRoleDao.insert(aur)==1? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
+    public List<AuthUserRole> selectAuthUserRoleByUserId(String userId) {
+        return authUserRoleDao.selectAuthUserRoleByUserId(userId);
     }
 }

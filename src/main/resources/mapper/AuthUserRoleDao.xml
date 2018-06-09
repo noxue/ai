@@ -15,4 +15,12 @@
   <delete id="deleteByUniqueKey" parameterType="com.ai.domain.bo.AuthUserRole">
     delete from auth_user_role  where user_id = #{userId} and role_id = #{roleId}
   </delete>
+
+
+  <select id="selectAuthUserRoleByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from auth_user_role
+    where USER_ID = #{_parameter,jdbcType=VARCHAR}
+  </select>
 </mapper>
