@@ -1,6 +1,7 @@
 package com.ai.controller.web.v1;
 
 import com.ai.domain.bo.App;
+import com.ai.domain.bo.Task;
 import com.ai.domain.bo.TaskUser;
 import com.ai.domain.vo.Message;
 import com.ai.service.AppService;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,20 +47,27 @@ public class ExcelController extends BasicAction{
 
     @ResponseBody
     @PostMapping("/ex")
-    public void excel(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void excel(@RequestParam("file") MultipartFile file) throws Exception {
+
+
+        FileInputStream fis = (FileInputStream)file.getInputStream();
+
         //用流的方式先读取到你想要的excel的文件
-        FileInputStream fis=new FileInputStream(new File("D://ceshi.xls"));
+        //FileInputStream fis=new FileInputStream(new File("D://phoneTaskUser.xls"));
         //解析excel
         POIFSFileSystem pSystem=new POIFSFileSystem(fis);
         //获取整个excel
         HSSFWorkbook hb=new HSSFWorkbook(pSystem);
-        //System.out.println(hb.getNumCellStyles());
         //获取第一个表单sheet
         HSSFSheet sheet=hb.getSheetAt(0);
         //获取第一行
         int firstrow=    sheet.getFirstRowNum();
         //获取最后一行
         int lastrow=    sheet.getLastRowNum();
+        String space ="";
+        List<String> phone=new ArrayList<>();
+        List<String> name= new ArrayList<>();
+        List<String> remark=new ArrayList<>();
         //循环行数依次获取列数
         for (int i = firstrow; i < lastrow+1; i++) {
             //获取哪一行i
@@ -69,29 +78,34 @@ public class ExcelController extends BasicAction{
                 //获取这一行的最后一列
                 int lastcell=    row.getLastCellNum();
                 //创建一个集合，用处将每一行的每一列数据都存入集合中
-                List<String> list=new ArrayList<>();
-                for (int j = firstcell; j <lastcell; j++) {
-                    //获取第j列
-                    Cell cell=row.getCell(j);
+                //for (int j = firstcell; j <lastcell; j++) {
+                //获取第j列
+                Cell cell1=row.getCell(1);
+                name.add( cell1 == null ? space : cell1.toString());
+                Cell cell2=row.getCell(2);
+                phone.add( cell2 == null ? space: cell2.toString());
+                Cell cell3=row.getCell(3);
+                remark.add( cell3== null ? space : cell3.toString());
 
-                    if (cell!=null) {
-                        System.out.print(cell+"\t");
-                        list.add(cell.toString());
-                    }
-                }
-
-                TaskUser user=new TaskUser();
-                if (list.size()>0) {
-                    user.setTaskId(Long.parseLong("1"));
-                    user.setMobile(list.get(1));
-                }
-                if(taskUserService.addTaskUser(user)){
-                    System.out.println(1);
-                }else{
-                    System.out.println(2);
-                }
+                // }
             }
         }
+        List<TaskUser> list = new ArrayList<>();
+        for (int j=1;j<phone.size();j++){
+            TaskUser user=new TaskUser();
+            user.setTaskId(Long.parseLong("1"));
+            user.setMobile(phone.get(j));
+            user.setName(name.get(j));
+            user.setRemark(remark.get(j));
+            list.add(user);
+        }
+
+        if(taskUserService.insertTaskUserList(list)){
+            System.out.println(1);
+        }else{
+            System.out.println(2);
+        }
+
         fis.close();
     }
 }

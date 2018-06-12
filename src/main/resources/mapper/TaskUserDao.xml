@@ -10,12 +10,14 @@
     <result column="time" jdbcType="INTEGER" property="time" />
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="share" jdbcType="BIT" property="share" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ai.domain.bo.TaskUser">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, task_id, mobile, voice, `status`, `time`, `type`, `share`
+    id, task_id, mobile, voice, `status`, `time`, `type`, `share`, `name`, remark
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -36,4 +38,14 @@
     </if>
     order by u.id desc ;
   </select>
+
+
+  <insert id="insertBatch">
+    INSERT INTO task_user
+    (task_id, name, mobile,remark)
+    VALUES
+    <foreach collection ="list" item="TaskUser" separator =",">
+      (#{TaskUser.taskId}, #{TaskUser.name}, #{TaskUser.mobile}, #{TaskUser.remark})
+    </foreach >
+  </insert>
 </mapper>

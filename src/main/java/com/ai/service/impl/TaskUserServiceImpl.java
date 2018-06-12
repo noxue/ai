@@ -55,4 +55,9 @@ public class TaskUserServiceImpl implements TaskUserService {
     public TaskUser getTaskUserById(long id) {
         return taskUserMapper.selectByPrimaryKey(id);
     }
+
+    @Override
+    public boolean insertTaskUserList(List<TaskUser> list) {
+        return taskUserMapper.insertBatch(list) == 1 ? Boolean.TRUE :Boolean.FALSE;
+    }
 }

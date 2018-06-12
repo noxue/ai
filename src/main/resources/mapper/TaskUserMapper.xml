@@ -10,12 +10,14 @@
     <result column="time" jdbcType="INTEGER" property="time" />
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="share" jdbcType="BIT" property="share" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ai.domain.bo.TaskUser">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, task_id, mobile, voice, `status`, `time`, `type`, `share`
+    id, task_id, mobile, voice, `status`, `time`, `type`, `share`, `name`, remark
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -38,10 +40,12 @@
     </selectKey>
     insert into task_user (task_id, mobile, voice, 
       `status`, `time`, `type`, 
-      `share`, content)
+      `share`, `name`, remark, content
+      )
     values (#{taskId,jdbcType=BIGINT}, #{mobile,jdbcType=CHAR}, #{voice,jdbcType=VARCHAR}, 
       #{status,jdbcType=TINYINT}, #{time,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
-      #{share,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR})
+      #{share,jdbcType=BIT}, #{name,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.TaskUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -70,6 +74,12 @@
       <if test="share != null">
         `share`,
       </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
       <if test="content != null">
         content,
       </if>
@@ -95,6 +105,12 @@
       </if>
       <if test="share != null">
         #{share,jdbcType=BIT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
       <if test="content != null">
         #{content,jdbcType=LONGVARCHAR},
@@ -125,6 +141,12 @@
       <if test="share != null">
         `share` = #{share,jdbcType=BIT},
       </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="content != null">
         content = #{content,jdbcType=LONGVARCHAR},
       </if>
@@ -140,6 +162,8 @@
       `time` = #{time,jdbcType=INTEGER},
       `type` = #{type,jdbcType=TINYINT},
       `share` = #{share,jdbcType=BIT},
+      `name` = #{name,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -151,7 +175,9 @@
       `status` = #{status,jdbcType=TINYINT},
       `time` = #{time,jdbcType=INTEGER},
       `type` = #{type,jdbcType=TINYINT},
-      `share` = #{share,jdbcType=BIT}
+      `share` = #{share,jdbcType=BIT},
+      `name` = #{name,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

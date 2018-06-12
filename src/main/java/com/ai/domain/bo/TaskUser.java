@@ -17,6 +17,10 @@ public class TaskUser {
 
     private Boolean share;
 
+    private String name;
+
+    private String remark;
+
     private String content;
 
     public Long getId() {
@@ -81,6 +85,22 @@ public class TaskUser {
 
     public void setShare(Boolean share) {
         this.share = share;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
     }
 
     public String getContent() {
