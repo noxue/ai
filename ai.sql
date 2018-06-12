@@ -331,7 +331,6 @@ CREATE TABLE `sim` (
   `user_id` varchar(30) NOT NULL COMMENT '属于哪个账号，限制只有属于该账号创建的账号才能使用该卡。',
   PRIMARY KEY (`id`),
   UNIQUE KEY `sim_id_uindex` (`id`),
-  UNIQUE KEY `sim_number_uindex` (`number`),
   KEY `sim_gateway_id_fk` (`gateway_id`),
   KEY `sim_user_id_fk` (`user_id`),
   CONSTRAINT `sim_auth_user_uid_fk` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`uid`) ON DELETE CASCADE,
@@ -423,6 +422,8 @@ CREATE TABLE `task_user` (
   `task_id` bigint(20) NOT NULL COMMENT '任务编号',
   `content` text COMMENT '用于描述任务执行结果的json字符串',
   `mobile` char(15) NOT NULL COMMENT '要拨打的电话号码',
+  `name` varchar(20) DEFAULT NULL COMMENT '客户姓名',
+  `remark` varchar(255) DEFAULT NULL COMMENT '客户备注',
   `voice` varchar(100) DEFAULT NULL COMMENT '从头到尾整段录音的存放路径',
   `status` tinyint(4) DEFAULT '1' COMMENT '任务状态  0 通话完毕。 1 任务未执行。 2 任务被客户端获取。',
   `time` int(11) DEFAULT '0' COMMENT '通话时长，单位（秒）',
@@ -430,7 +431,7 @@ CREATE TABLE `task_user` (
   `share` tinyint(1) DEFAULT '0' COMMENT '是否公开该客户，默认不公开，只有自己和公司账号能看到',
   PRIMARY KEY (`id`),
   UNIQUE KEY `task_user_id_uindex` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务报告结果';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务电话用户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -589,4 +590,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-06-07 16:40:33
+-- Dump completed on 2018-06-12 15:11:46
