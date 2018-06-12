@@ -23,34 +23,47 @@
 2003: 用户不存在  
 
 // App相关
-3001: 名称不可以为空
-3002: 名称已存在
-3003: 新增成功
-3004：新增失败
-3005：app信息缺失
-3006：编辑成功
-3007：编辑失败
-3008: 删除成功
-3009: 删除失败
-3010：查询成功
-3011：查询失败
+3001: App name不可以为空
+3002: App名称已被占用
+3003: App新增成功
+3004：App新增失败appService.registerApp(app)执行时异常
+3005：app信息缺失 name，key，id 为空
+3006：App信息编辑成功
+3007：App信息编辑失败appService.editApp(app)执行时异常
+3008: 该App信息删除成功
+3009: 该App信息删除失败appService.delApp(Long.parseLong(id))执行时异常
+3010：app信息分页查询成功
+3011：查询失败appService.findAllApp(pageNum,pageSize,name)执行时异常
+3012：id为空
+3013：查询成功
+3014：appService.getAppById(Long.parseLong(id))执行时异常
 
   
 // 网关相关
-3100：关键信息不全
-3102：名称已存在
-3103: 新增成功
-3104：新增失败
-3105：网关信息缺失
-3106：编辑成功
-3107：编辑失败
-3108: 删除成功
-3109: 删除失败
-3110：查询成功
-3111：查询失败
+3100：网关关键信息不全 name,ip,port,userid,app_id 参数为空
+3101：网关名称已被占用
+3102: 网关新增成功
+3103：网关新增失败，gatewayService.registerGate(gateway)执行时异常
+3104：网关关键信息不全 name,ip,port,userid,app_id,id 参数为空
+3105：网关信息编辑成功
+3106：gatewayService.editGate(gateway)执行时异常
+3107：id为空
+3108: 网关删除成功
+3109: 网关删除失败，gatewayService.delGate(Long.parseLong(id))执行时异常
+3110：网关列表信息查询成功
+3111：网关查询失败，gatewayService.findAllGate(pageNum,pageSize,uid)
 
 //网关错误报告
-3112：缺少关键参数
+3112：缺少关键参数 gatewayId，description 为空
+3113：新增网关错误信息成功
+3114：gatewayReportService.registerGatewayReport(gatewayReport)执行失败
+3115：网关错误信息删除成功
+3116：gatewayReportService.delReport(Long.parseLong(id))执行时异常
+3117：查询成功
+3118：gatewayReportService.getGatewayReoprtById(Long.parseLong(id))执行时异常
+3119：网关错误报告列表查询成功
+3120：gatewayReportService.findAllGatewayReport(pageNum,pageSize)执行时异常，查询失败
+
 
 // 声音相关
 3200:上传成功
@@ -58,27 +71,100 @@
 
 
 //sim卡相关
-4001：信息不足，关键参数为空
-4002：新增成功
-4003：新增失败
-4004：修改成功
-4005：修改失败
-4006：删除成功
-4007：删除失败
-4008：分页查询成功
-4009：分页查询失败
+4000：number，gateway_id，user_id，description 关键参数为空
+4001：sim新增成功
+4002：simService.registerSim(sim)执行失败
+4003：number，gateway_id，user_id，description，id 关键参数为空
+4004：sim修改成功
+4005：simService.editSim(sim)执行时异常 ，sim修改失败
+4006：id为空
+4007：sim删除成功
+4008：simService.delSim(Long.parseLong(id))执行时异常，sim删除失败
+4009：分页查询成功
+4010：simService.findAllSim(pageNum,pageSize,uid)执行时异常，分页查询失败
+4011：查询成功
+4012：simService.getSimById(Long.parseLong(id))执行时异常，操作失败
+
+
+//sim_user相关
+4013:sim_id,user_id 必要信息为空
+4014：新增成功
+4015：simService.registerSimUser(simUser)执行时异常，操作失败
+4016：sim_id,userid为空
+4017：编辑成功
+4018：simService.editSimUser(simUser) 执行时异常，操作失败
+4019：删除成功
+4020：simService.delSimUser(Long.parseLong(id))执行时异常，操作失败
+
 
 //模板相关
-4400：新增成功
-4401：新增失败
-4402：非空参数为空
-4403: 模板名称不可以重复
-4404：编辑成功
-4405：编辑失败
-4406：删除成功
-4407：删除失败
-4408：查询成功
-4409：查询失败
+4400：name，appId，content 必要参数为空
+4401：模板名称不可以重复
+4402：新增成功
+4403: templateService.registerTemplate(template)执行失败
+4404：name，appId，content，id 必要参数为空
+4405：模板编辑成功
+4406：templateService.editTemplate(template)执行失败
+4407：id为空
+4408：模板删除成功
+4409：templateService.delTemplate(Long.parseLong(id))执行失败
+4410：模板列表信息查询操作成功
+4411：templateService.findAllTemlate(pageNum,pageSize,appId)执行失败
+4412：模板信息查询操作成功
+4413：templateService.getTemplateById(Long.parseLong(id))执行失败
+
+
+
+
+//TaskUserReport相关
+5000：非空参数为空（task_user_id，content）
+5001：必要参数id为空
+5002：TaskUserReport新增成功
+5003：TaskUserReport新增失败 执行taskUserReportService.getTaskUserReportById(Long.parseLong(id)) 失败
+5004：id为空
+5005：TaskUserReport获取TaskUserReport成功
+5006：taskUserReportService.getTaskUserReportById(Long.parseLong(id))执行失败
+
+//Task相关
+5007：参数 user_id，template_id，total 为空
+5008：task新增成功
+5009：taskService.registerTask(task) 执行失败
+5018：id，status 必要参数为空
+5019：task状态更新成功
+5020：taskService.editTask(task)执行失败
+5021：id为空
+5022：task信息查询成功
+5023：taskService.getTaskById(Long.parseLong(id))执行失败
+5024：appId为空
+5025：查询成功
+5026：taskService.findAllTaskByAppId(pageNum,pageSize,appId)执行失败
+5027：taskUserService.findAllTaskUser(pageNum,pageSize,appId,test,type,share)执行失败
+
+
+
+//TaskUser相关
+5010：mobile，task_id 必要参数为空
+5011：新增TaskUser成功
+5012：taskUserService.addTaskUser(taskUser)执行失败
+5013：id为空
+5014：编辑成功
+5015：taskUserService.editTaskUser(taskUser)执行失败
+5016：id，mobile 必要参数为空
+5017：taskUserService.editTaskUser(taskUser)执行失败
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

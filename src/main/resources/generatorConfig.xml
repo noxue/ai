@@ -136,7 +136,7 @@
                selectByExampleQueryId="false">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
-        <table tableName="task_list" domainObjectName="TaskList" enableCountByExample="false"
+        <table tableName="task_user" domainObjectName="TaskUser" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
@@ -158,6 +158,12 @@
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
         <table tableName="user_order" domainObjectName="UserOrder" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
+        <table tableName="task_user_report" domainObjectName="TaskUserReport" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>

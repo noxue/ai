@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.dao.TaskUserMapper">
+  <resultMap id="BaseResultMap" type="com.ai.domain.bo.TaskUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="task_id" jdbcType="BIGINT" property="taskId" />
+    <result column="mobile" jdbcType="CHAR" property="mobile" />
+    <result column="voice" jdbcType="VARCHAR" property="voice" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="time" jdbcType="INTEGER" property="time" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="share" jdbcType="BIT" property="share" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ai.domain.bo.TaskUser">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, task_id, mobile, voice, `status`, `time`, `type`, `share`
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from task_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from task_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ai.domain.bo.TaskUser">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into task_user (task_id, mobile, voice, 
+      `status`, `time`, `type`, 
+      `share`, content)
+    values (#{taskId,jdbcType=BIGINT}, #{mobile,jdbcType=CHAR}, #{voice,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{time,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
+      #{share,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ai.domain.bo.TaskUser">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into task_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="taskId != null">
+        task_id,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="voice != null">
+        voice,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="time != null">
+        `time`,
+      </if>
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="share != null">
+        `share`,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="taskId != null">
+        #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=CHAR},
+      </if>
+      <if test="voice != null">
+        #{voice,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="share != null">
+        #{share,jdbcType=BIT},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ai.domain.bo.TaskUser">
+    update task_user
+    <set>
+      <if test="taskId != null">
+        task_id = #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=CHAR},
+      </if>
+      <if test="voice != null">
+        voice = #{voice,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="time != null">
+        `time` = #{time,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="share != null">
+        `share` = #{share,jdbcType=BIT},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ai.domain.bo.TaskUser">
+    update task_user
+    set task_id = #{taskId,jdbcType=BIGINT},
+      mobile = #{mobile,jdbcType=CHAR},
+      voice = #{voice,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=TINYINT},
+      `time` = #{time,jdbcType=INTEGER},
+      `type` = #{type,jdbcType=TINYINT},
+      `share` = #{share,jdbcType=BIT},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.TaskUser">
+    update task_user
+    set task_id = #{taskId,jdbcType=BIGINT},
+      mobile = #{mobile,jdbcType=CHAR},
+      voice = #{voice,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=TINYINT},
+      `time` = #{time,jdbcType=INTEGER},
+      `type` = #{type,jdbcType=TINYINT},
+      `share` = #{share,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

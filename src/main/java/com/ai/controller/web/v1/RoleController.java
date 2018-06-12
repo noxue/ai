@@ -187,7 +187,7 @@ public class RoleController extends BasicAction {
     public Message accountRoles(HttpServletRequest request) {
         String appId = request.getHeader("appId");
         if (StringUtils.isEmpty(appId)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
+            // 必须信息缺一不可,返回账号信息缺失
             return new Message().error(1111, "账户信息缺失");
         }
         String roleId = accountService.loadAccountRoleId(appId);

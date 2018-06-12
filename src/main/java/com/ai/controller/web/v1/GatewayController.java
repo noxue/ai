@@ -51,12 +51,12 @@ public class GatewayController extends BasicAction{
         String app_id = params.get("app_id");
         if (StringUtils.isEmpty(name) ||StringUtils.isEmpty(ip) ||StringUtils.isEmpty(port)
                 ||StringUtils.isEmpty(user_id) ||StringUtils.isEmpty(app_id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(3100, "信息缺失");
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3100, "网关信息缺失");
         }
         if (gatewayService.isGateExistByName(name)) {
             // name已存在
-            return new Message().error(3002, "名称已存在");
+            return new Message().error(3101, "名称已被占用");
         }
 
         gateway.setName(name);
@@ -68,10 +68,10 @@ public class GatewayController extends BasicAction{
 
         if (gatewayService.registerGate(gateway)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/add", "addGateway", (short) 3101, "新增成功"));
-            return new Message().ok(3103, "新增成功");
+            return new Message().ok(3102, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/add", "addGateway", (short) 3102, "新增失败"));
-            return new Message().ok(3104, "新增失败");
+            return new Message().ok(3103, "新增失败");
         }
     }
 
@@ -89,13 +89,13 @@ public class GatewayController extends BasicAction{
         String user_id = params.get("user_id");
         String app_id = params.get("app_id");
         if (StringUtils.isEmpty(name) ||StringUtils.isEmpty(ip) ||StringUtils.isEmpty(port)
-                ||StringUtils.isEmpty(user_id) ||StringUtils.isEmpty(app_id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(3100, "信息缺失");
+                ||StringUtils.isEmpty(user_id) ||StringUtils.isEmpty(app_id) ||StringUtils.isEmpty(id)) {
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3104, "网关信息缺失");
         }
         if (gatewayService.isGateExistByName(name)) {
             // name已存在
-            return new Message().error(3002, "名称已存在");
+            return new Message().error(3001, "名称已存在");
         }
         gateway.setId(Long.parseLong(id));
         gateway.setName(name);
@@ -106,10 +106,10 @@ public class GatewayController extends BasicAction{
         gateway.setAppId(Long.parseLong(app_id));
         if (gatewayService.editGate(gateway)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/edit", "editGate", (short) 3106, "编辑成功"));
-            return new Message().ok(3106, "编辑成功");
+            return new Message().ok(3015, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/edit", "editGate", (short) 3107, "编辑失败"));
-            return new Message().ok(3107, "编辑失败");
+            return new Message().ok(3106, "编辑失败");
         }
     }
 
@@ -120,8 +120,8 @@ public class GatewayController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         if (StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(3105, "网关信息缺失");
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3017, "网关信息缺失");
         }
 
         if (gatewayService.delGate(Long.parseLong(id))) {
@@ -148,13 +148,14 @@ public class GatewayController extends BasicAction{
                     int pageSize){
 
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        //uid非必要参数，未做非空判断
         String uid =params.get("uid");
         if(gatewayService.findAllGate(pageNum,pageSize,uid)!=null){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/all", "findAllGate", (short) 3110, "查询成功"));
-            return new Message().ok(3103, "查询成功").addData("gatewayList",gatewayService.findAllGate(pageNum,pageSize,uid));
+            return new Message().ok(3110, "查询成功").addData("gatewayList",gatewayService.findAllGate(pageNum,pageSize,uid));
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/all", "findAllGate", (short) 3111, "查询失败"));
-            return new Message().ok(3104, "查询失败");
+            return new Message().ok(3111, "查询失败");
         }
     }
 
@@ -170,8 +171,8 @@ public class GatewayController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         if ( StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(3105, "网管信息缺失");
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3105, "网关信息缺失");
         }
         Gateway gateway = gatewayService.getGateById(Long.parseLong(id));
         if (gateway !=null){
@@ -195,7 +196,7 @@ public class GatewayController extends BasicAction{
         String description = params.get("description");
         if (StringUtils.isEmpty(description) || StringUtils.isEmpty(gatewayId)) {
             //验证信息
-            return new Message().error(3112, "信息缺失");
+            return new Message().error(3112, "网关信息缺失");
         }
         gatewayReport.setDescription(description);
         gatewayReport.setGatewayId(Long.parseLong(gatewayId));
@@ -216,16 +217,16 @@ public class GatewayController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         if (StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(3105, "网关信息缺失");
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3107, "网关信息缺失");
         }
-
+        //执行删除操作
         if (gatewayReportService.delReport(Long.parseLong(id))) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/del", "delGatewayReport", (short) 3108, "删除成功"));
-            return new Message().ok(3108, "删除成功");
+            return new Message().ok(3115, "删除成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/del", "delGatewayReport", (short) 3109, "删除失败"));
-            return new Message().ok(3109, "删除失败");
+            return new Message().ok(3116, "删除失败");
         }
     }
 
@@ -241,16 +242,16 @@ public class GatewayController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         if ( StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(3105, "网关信息缺失");
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3107, "网关信息缺失");
         }
         GatewayReport gatewayReport = gatewayReportService.getGatewayReoprtById(Long.parseLong(id));
         if (gatewayReport !=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/select", "selectGatewayReportById", (short) 3010, "查询成功"));
-            return new Message().ok(3010, "查询成功").addData("gatewayReport",gatewayReport);
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/select", "selectGatewayReportById", (short) 3017, "查询成功"));
+            return new Message().ok(3017, "查询成功").addData("gatewayReport",gatewayReport);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/select", "selectGatewayReportById", (short) 3011, "查询失败"));
-            return new Message().ok(3011, "查询失败");
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/select", "selectGatewayReportById", (short) 3018, "查询失败"));
+            return new Message().ok(3018, "查询失败");
         }
     }
 

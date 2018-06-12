@@ -45,8 +45,8 @@ public class SimController extends BasicAction{
         String user_id = params.get("user_id");
         if (StringUtils.isEmpty(number) || StringUtils.isEmpty(gateway_id)
                 || StringUtils.isEmpty(user_id)|| StringUtils.isEmpty(description)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(4001, "信息不足");
+            // 必须信息缺一不可,返回信息不足
+            return new Message().error(4000, "信息不足");
         }
         sim.setDescription(description);
         sim.setGatewayId(Long.parseLong(gateway_id));
@@ -55,10 +55,10 @@ public class SimController extends BasicAction{
 
         if (simService.registerSim(sim)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/add", "addSim", (short) 3003, "新增成功"));
-            return new Message().ok(4002, "新增成功");
+            return new Message().ok(4001, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/add", "addSim", (short) 3004, "新增失败"));
-            return new Message().ok(4003, "新增失败");
+            return new Message().ok(4002, "新增失败");
         }
     }
 
@@ -75,8 +75,8 @@ public class SimController extends BasicAction{
         String id = params.get("id");
         if (StringUtils.isEmpty(number)|| StringUtils.isEmpty(description)|| StringUtils.isEmpty(id)
                 || StringUtils.isEmpty(gateway_id)|| StringUtils.isEmpty(user_id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(4001, "信息不足");
+            // 必须信息缺一不可,返回信息不足
+            return new Message().error(4003, "信息不足");
         }
         sim.setId(Long.parseLong(id));
         sim.setNumber(number);
@@ -99,16 +99,16 @@ public class SimController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         if (StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(4001, "信息不足");
+            // 必须信息缺一不可,返回信息不足
+            return new Message().error(4006, "信息不足");
         }
 
         if (simService.delSim(Long.parseLong(id))) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/del", "delSim", (short) 4006, "删除成功"));
-            return new Message().ok(4006, "删除成功");
+            return new Message().ok(4007, "删除成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/del", "delSim", (short) 4007, "删除失败"));
-            return new Message().ok(4007, "删除失败");
+            return new Message().ok(4008, "删除失败");
         }
     }
 
@@ -130,10 +130,10 @@ public class SimController extends BasicAction{
         String uid =params.get("uid");
         if(simService.findAllSim(pageNum,pageSize,uid)!=null){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/all", "findAllSim", (short) 4008, "查询成功"));
-            return new Message().ok(4008, "查询成功").addData("simList",simService.findAllSim(pageNum,pageSize,uid));
+            return new Message().ok(4009, "查询成功").addData("simList",simService.findAllSim(pageNum,pageSize,uid));
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/all", "simList", (short) 4009, "查询失败"));
-            return new Message().ok(4009, "查询失败");
+            return new Message().ok(4010, "查询失败");
         }
     }
 
@@ -149,16 +149,16 @@ public class SimController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         if ( StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(4001, "信息不足");
+            // 必须信息缺一不可,返回信息不足
+            return new Message().error(4006, "信息不足");
         }
         Sim sim = simService.getSimById(Long.parseLong(id));
         if (sim !=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/select", "selectSimById", (short) 3010, "查询成功"));
-            return new Message().ok(3010, "查询成功").addData("sim",sim);
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/select", "selectSimById", (short) 4011, "查询成功"));
+            return new Message().ok(4011, "查询成功").addData("sim",sim);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/select", "selectSimById", (short) 3011, "查询失败"));
-            return new Message().ok(3011, "查询失败");
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/select", "selectSimById", (short) 4012, "查询失败"));
+            return new Message().ok(4012, "查询失败");
         }
     }
 
@@ -174,18 +174,18 @@ public class SimController extends BasicAction{
         String user_id = params.get("user_id");
         String sim_id = params.get("sim_id");
         if (StringUtils.isEmpty(user_id) || StringUtils.isEmpty(sim_id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(4001, "信息不足");
+            // 必须信息缺一不可,返回信息不足
+            return new Message().error(4013, "信息不足");
         }
         simUser.setSimId(Long.parseLong(sim_id));
         simUser.setUserId(user_id);
 
         if (simService.registerSimUser(simUser)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/add", "addSimUser", (short) 4002, "新增成功"));
-            return new Message().ok(4002, "新增成功");
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/add", "addSimUser", (short) 4014, "新增成功"));
+            return new Message().ok(4014, "新增成功");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/add", "addSimUser", (short) 4003, "新增失败"));
-            return new Message().ok(4003, "新增失败");
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/add", "addSimUser", (short) 4015, "新增失败"));
+            return new Message().ok(4015, "新增失败");
         }
     }
 
@@ -199,18 +199,18 @@ public class SimController extends BasicAction{
         String user_id = params.get("user_id");
         String id = params.get("id");
         if (StringUtils.isEmpty(sim_id)|| StringUtils.isEmpty(user_id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(4001, "信息不足");
+            // 必须信息缺一不可,返回信息不足
+            return new Message().error(4016, "信息不足");
         }
         simUser.setId(Long.parseLong(id));
         simUser.setSimId(Long.parseLong(sim_id));
         simUser.setUserId(user_id);
         if (simService.editSimUser(simUser)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/edit", "editSimUser", (short) 4004, "编辑成功"));
-            return new Message().ok(4004, "编辑成功");
+            return new Message().ok(4017, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/edit", "editSimUser", (short) 4005, "编辑失败"));
-            return new Message().ok(4005, "编辑失败");
+            return new Message().ok(4018, "编辑失败");
         }
     }
 
@@ -222,16 +222,16 @@ public class SimController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         if (StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(4001, "信息不足");
+            // 必须信息缺一不可,返回信息不足
+            return new Message().error(4006, "信息不足");
         }
 
         if (simService.delSimUser(Long.parseLong(id))) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/del", "delSimUser", (short) 4006, "删除成功"));
-            return new Message().ok(4006, "删除成功");
+            return new Message().ok(4019, "删除成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/del", "delSimUser", (short) 4007, "删除失败"));
-            return new Message().ok(4007, "删除失败");
+            return new Message().ok(4020, "删除失败");
         }
     }
 }

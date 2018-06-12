@@ -1,12 +1,8 @@
 package com.ai.controller.web.v1;
 
-import com.ai.domain.bo.AuthUser;
-import com.ai.domain.bo.AuthUserRole;
 import com.ai.domain.bo.Template;
 import com.ai.domain.vo.Message;
-import com.ai.service.AccountService;
 import com.ai.service.TemplateService;
-import com.ai.service.UserService;
 import com.ai.support.factory.LogTaskFactory;
 import com.ai.support.manager.LogExeManager;
 import com.ai.util.RequestResponseUtil;
@@ -20,13 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /* *
  * @Author ws
  * @Description add新增,get读取,put完整更新,patch部分更新,del删除
- * 2018年6月8日15:43:45
+ * 2018年6月11日15:04:39
  */
 @RestController
 @RequestMapping("/web/api/v1/template")
@@ -36,9 +31,6 @@ public class TemplateController extends BasicAction{
 
     @Autowired
     private TemplateService templateService;
-
-
-
 
     @ApiOperation(value = "新增Template", notes = "增加一个Template模板信息")
     @ResponseBody
@@ -51,11 +43,11 @@ public class TemplateController extends BasicAction{
         String content = params.get("content");
         String name = params.get("name");
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(appId) || StringUtils.isEmpty(content)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(3001, "名称不可以为空");
+            // 必须信息缺一不可,返回信息不全
+            return new Message().error(4400, "信息不全");
         }
         if(templateService.isTemplateExistByName(name)){
-            return new Message().error(4403, "模板名称不可以重复");
+            return new Message().error(4401, "该名称已被占用");
         }
 
         template.setUserId(appId);
@@ -65,11 +57,11 @@ public class TemplateController extends BasicAction{
         template.setCreatedAt(new Date());
 
         if (templateService.registerTemplate(template)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/add", "addTemplate", (short) 4400, "新增成功"));
-            return new Message().ok(4400, "新增成功");
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/add", "addTemplate", (short) 4402, "新增成功"));
+            return new Message().ok(4402, "新增成功");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/add", "addTemplate", (short) 4401, "新增失败"));
-            return new Message().ok(4401, "新增失败");
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/add", "addTemplate", (short) 4403, "新增失败"));
+            return new Message().ok(4403, "新增失败");
         }
     }
 
@@ -84,11 +76,11 @@ public class TemplateController extends BasicAction{
         String content = params.get("content");
         String name = params.get("name");
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(appId) || StringUtils.isEmpty(content)|| StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(3001, "名称不可以为空");
+            // 必须信息缺一不可,返回信息不全
+            return new Message().error(4404, "信息不全");
         }
         if(templateService.isTemplateExistByName(name)){
-            return new Message().error(4403, "模板名称不可以重复");
+            return new Message().error(4401, "该名称已被占用");
         }
 
         template.setId(Long.parseLong(id));
@@ -99,10 +91,10 @@ public class TemplateController extends BasicAction{
         //修改
         if (templateService.editTemplate(template)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/edit", "editTemplate", (short) 4404, "编辑成功"));
-            return new Message().ok(4404, "编辑成功");
+            return new Message().ok(4405, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/edit", "editTemplate", (short) 4405, "编辑失败"));
-            return new Message().ok(4405, "编辑失败");
+            return new Message().ok(4406, "编辑失败");
         }
     }
 
@@ -113,16 +105,16 @@ public class TemplateController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         if (StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(4402, "信息缺失");
+            // 必须信息缺一不可,返回信息不全
+            return new Message().error(4407, "信息不全");
         }
 
         if (templateService.delTemplate(Long.parseLong(id))) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/del", "delTemplate", (short) 4406, "删除成功"));
-            return new Message().ok(4406, "删除成功");
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/del", "delTemplate", (short) 4408, "删除成功"));
+            return new Message().ok(4408, "删除成功");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/del", "delTemplate", (short) 4407, "删除失败"));
-            return new Message().ok(4407, "删除失败");
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/del", "delTemplate", (short) 4409, "删除失败"));
+            return new Message().ok(4409, "删除失败");
         }
     }
 
@@ -144,10 +136,10 @@ public class TemplateController extends BasicAction{
         //分页获取模板信息
         if(templateService.findAllTemlate(pageNum,pageSize,appId)!=null){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/templateList/all", "findAllTemplate", (short) 4408, "查询成功"));
-            return new Message().ok(4408, "查询成功").addData("templateList",templateService.findAllTemlate(pageNum,pageSize,appId));
+            return new Message().ok(4410, "查询成功").addData("templateList",templateService.findAllTemlate(pageNum,pageSize,appId));
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/templateList/all", "findAllTemplate", (short) 4409, "查询失败"));
-            return new Message().ok(4409, "查询失败");
+            return new Message().ok(4411, "查询失败");
         }
     }
 
@@ -163,16 +155,16 @@ public class TemplateController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         if ( StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(4402, "信息缺失");
+            // 必须信息缺一不可,返回信息不全
+            return new Message().error(4407, "信息不全");
         }
         Template template = templateService.getTemplateById(Long.parseLong(id));
         if (template !=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/select", "selectTemplateById", (short) 4408, "查询成功"));
-            return new Message().ok(4408, "查询成功").addData("template",template);
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/select", "selectTemplateById", (short) 4412, "查询成功"));
+            return new Message().ok(4412, "查询成功").addData("template",template);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/select", "selectTemplateById", (short) 4409, "查询失败"));
-            return new Message().ok(4409, "查询失败");
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/select", "selectTemplateById", (short) 4413, "查询失败"));
+            return new Message().ok(4413, "查询失败");
         }
     }
 

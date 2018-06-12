@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.springframework.util.StringUtils;
 
@@ -33,7 +31,7 @@ public class AppController extends BasicAction{
     @Autowired
     private AppService appService;
 
-    @ApiOperation(value = "新增app", notes = "增加一个新的、name不可重复的app，")
+    @ApiOperation(value = "新增app", notes = "增加一个新的,name不可重复的app")
     @ResponseBody
     @PostMapping("/add")
     public Message appRegister(HttpServletRequest request, HttpServletResponse response){
@@ -43,12 +41,12 @@ public class AppController extends BasicAction{
         String name = params.get("name");
         String description = params.get("description");
         if (StringUtils.isEmpty(name)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(3001, "名称不可以为空");
+            // 必须信息缺一不可,返回请检查用户名
+            return new Message().error(3001, "请检查用户名");
         }
         if (appService.isAppExistByName(name)) {
             // name已存在
-            return new Message().error(3002, "名称已存在");
+            return new Message().error(3002, "名称已被占用");
         }
         app.setKey(RandomUtil.getRandomString(16));
         app.setDescription(description);
@@ -74,12 +72,12 @@ public class AppController extends BasicAction{
         String name =params.get("name");
         String description =params.get("description");
         if (StringUtils.isEmpty(name)|| StringUtils.isEmpty(key)|| StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
+            // 必须信息缺一不可,返回信息缺失
             return new Message().error(3005, "app信息缺失");
         }
         if (appService.isAppExistByName(name)) {
             // name已存在
-            return new Message().error(3002, "名称已存在");
+            return new Message().error(3002, "名称已被占用");
         }
         app.setId(Long.parseLong(id));
         app.setKey(key);
@@ -101,8 +99,8 @@ public class AppController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         if (StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(3005, "app信息缺失");
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(3012, "app信息缺失");
         }
 
         if (appService.delApp(Long.parseLong(id))) {
@@ -151,8 +149,8 @@ public class AppController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         if ( StringUtils.isEmpty(id)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(3005, "app信息缺失");
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(3012, "app信息缺失");
         }
         App app = appService.getAppById(Long.parseLong(id));
         if (app !=null){

@@ -1,6 +1,6 @@
 package com.ai.domain.bo;
 
-public class TaskList {
+public class TaskUser {
     private Long id;
 
     private Long taskId;
