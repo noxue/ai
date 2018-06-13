@@ -18,15 +18,6 @@ public class TaskUserServiceImpl implements TaskUserService {
     @Autowired
     private TaskUserDao taskUserMapper;
 
-    /*@Override
-    public PageInfo<App> findAllApp(int pageNum, int pageSize,String name) {
-        //将参数传给这个方法就可以实现物理分页了，非常简单。
-        PageHelper.startPage(pageNum, pageSize);
-        List<App> appsList = appDao.getAppsList(name);
-        PageInfo result = new PageInfo(appsList);
-        return result;
-    }*/
-
     @Override
     public PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize, String user_id,
                                                  String test, String type, String share) {
@@ -59,5 +50,10 @@ public class TaskUserServiceImpl implements TaskUserService {
     @Override
     public boolean insertTaskUserList(List<TaskUser> list) {
         return taskUserMapper.insertBatch(list) == 1 ? Boolean.TRUE :Boolean.FALSE;
+    }
+
+    @Override
+    public TaskUser[] taskUserList(String user_id) {
+        return taskUserMapper.getAllTaskUsers(user_id);
     }
 }

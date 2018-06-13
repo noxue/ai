@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ai.dao.TaskUserDao">
-  <resultMap id="BaseResultMap" type="com.ai.domain.bo.TaskUser">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="task_id" jdbcType="BIGINT" property="taskId" />
-    <result column="mobile" jdbcType="CHAR" property="mobile" />
-    <result column="voice" jdbcType="VARCHAR" property="voice" />
-    <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="time" jdbcType="INTEGER" property="time" />
-    <result column="type" jdbcType="TINYINT" property="type" />
-    <result column="share" jdbcType="BIT" property="share" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ai.domain.bo.TaskUser">
-    <result column="content" jdbcType="LONGVARCHAR" property="content" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, task_id, mobile, voice, `status`, `time`, `type`, `share`, `name`, remark
+    <resultMap id="BaseResultMap" type="com.ai.domain.bo.TaskUser">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="task_id" jdbcType="BIGINT" property="taskId" />
+        <result column="mobile" jdbcType="CHAR" property="mobile" />
+        <result column="voice" jdbcType="VARCHAR" property="voice" />
+        <result column="status" jdbcType="TINYINT" property="status" />
+        <result column="time" jdbcType="INTEGER" property="time" />
+        <result column="type" jdbcType="TINYINT" property="type" />
+        <result column="share" jdbcType="BIT" property="share" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="called_at" jdbcType="TIMESTAMP" property="calledAt" />
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ai.domain.bo.TaskUser">
+        <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, task_id, mobile, voice, `status`, `time`, `type`, `share`, `name`, remark, called_at
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -39,13 +40,20 @@
     order by u.id desc ;
   </select>
 
+    <select id="getAllTaskUsers" parameterType="java.lang.String" resultMap="BaseResultMap">
+
+        select u.* from task_user u
+        left join task t on u.task_id = t.id
+        where  t.user_id=#{user_id}
+        order by u.id desc ;
+    </select>
 
   <insert id="insertBatch">
     INSERT INTO task_user
-    (task_id, name, mobile,remark)
+    (task_id, name, mobile,remark,called_at)
     VALUES
     <foreach collection ="list" item="TaskUser" separator =",">
-      (#{TaskUser.taskId}, #{TaskUser.name}, #{TaskUser.mobile}, #{TaskUser.remark})
+      (#{TaskUser.taskId}, #{TaskUser.name}, #{TaskUser.mobile}, #{TaskUser.remark}, #{TaskUser.calledAt})
     </foreach >
   </insert>
 </mapper>

@@ -1,5 +1,7 @@
 package com.ai.domain.bo;
 
+import java.util.Date;
+
 public class TaskUser {
     private Long id;
 
@@ -20,6 +22,8 @@ public class TaskUser {
     private String name;
 
     private String remark;
+
+    private Date calledAt;
 
     private String content;
 
@@ -101,6 +105,14 @@ public class TaskUser {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public Date getCalledAt() {
+        return calledAt;
+    }
+
+    public void setCalledAt(Date calledAt) {
+        this.calledAt = calledAt;
     }
 
     public String getContent() {

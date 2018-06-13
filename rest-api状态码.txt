@@ -153,7 +153,9 @@
 5017：taskUserService.editTaskUser(taskUser)执行失败
 
 
-
+//Excel
+6000：导入成功
+6001：taskUserService.insertTaskUserList(list)执行时异常
 
 
 

@@ -98,8 +98,15 @@ public class TaskController extends BasicAction{
     @PostMapping("/add")
     public Message addTask(HttpServletRequest request, HttpServletResponse response){
         //获取参数
+        String user_id =  request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String user_id = params.get("user_id");
+        String sim_id = params.get("sim_id");
+
+
+
+
+
+
         String template_id = params.get("template_id");
         String total = params.get("total");
         // 必须信息缺一不可,返回验证消息
@@ -290,6 +297,13 @@ public class TaskController extends BasicAction{
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/conditions", "selectTaskUserListByConditions", (short) 3011, "查询失败"));
             return new Message().error(5027, "查询失败");
         }
+    }
+
+    boolean isExistInSimUser(String ){
+
+
+
+        return false;
     }
 
 }
