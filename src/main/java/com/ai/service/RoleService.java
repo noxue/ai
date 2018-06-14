@@ -25,4 +25,6 @@ public interface RoleService {
     List<AuthRole> getRoleList();
 
     List<AuthRole> getRolesById(int id);
+    //根据主键查询
+    AuthRole selectByRoleId(String roleId);
 }

@@ -22,6 +22,7 @@
 2002: 注册用户成功----register success
 2003: 用户不存在  
 
+
 // App相关
 3001: App name不可以为空
 3002: App名称已被占用
@@ -52,6 +53,7 @@
 3109: 网关删除失败，gatewayService.delGate(Long.parseLong(id))执行时异常
 3110：网关列表信息查询成功
 3111：网关查询失败，gatewayService.findAllGate(pageNum,pageSize,uid)
+
 
 //网关错误报告
 3112：缺少关键参数 gatewayId，description 为空
@@ -114,8 +116,6 @@
 4413：templateService.getTemplateById(Long.parseLong(id))执行失败
 
 
-
-
 //TaskUserReport相关
 5000：非空参数为空（task_user_id，content）
 5001：必要参数id为空
@@ -124,6 +124,7 @@
 5004：id为空
 5005：TaskUserReport获取TaskUserReport成功
 5006：taskUserReportService.getTaskUserReportById(Long.parseLong(id))执行失败
+
 
 //Task相关
 5007：参数 user_id，template_id，total 为空
@@ -139,7 +140,10 @@
 5025：查询成功
 5026：taskService.findAllTaskByAppId(pageNum,pageSize,appId)执行失败
 5027：taskUserService.findAllTaskUser(pageNum,pageSize,appId,test,type,share)执行失败
-
+5028: 本人操作
+5029：上级操作
+5030：非公司人员无法操作
+5031: 当前任务不存在
 
 
 //TaskUser相关
@@ -151,6 +155,9 @@
 5015：taskUserService.editTaskUser(taskUser)执行失败
 5016：id，mobile 必要参数为空
 5017：taskUserService.editTaskUser(taskUser)执行失败
+5018: 当前用户没有可用的卡
+5019: isExistInSim 验证成功
+5020：isExistInSimUser 验证成功
 
 
 //Excel

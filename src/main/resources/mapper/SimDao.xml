@@ -22,4 +22,13 @@
     left join sim s  ON s.gateway_id = g.id where 1=1 AND g.user_id = #{_parameter}
 
   </select>
+
+  <select id="getSimBySimIdAndUserId" parameterType="java.lang.String"  resultType="com.ai.domain.bo.Sim">
+
+    select <include refid="Base_Column_List" />
+    from sim s
+    where s.id = #{id,jdbcType=BIGINT} AND s.user_id = #{user_id ,jdbcType=VARCHAR}
+
+  </select>
+
 </mapper>
