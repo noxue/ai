@@ -1,5 +1,7 @@
 package com.ai.controller.web.v1;
 
+import com.ai.domain.vo.Account;
+import com.ai.service.AccountService;
 import com.ai.util.JsonWebTokenUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -17,6 +19,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +40,9 @@ public class UserController extends BasicAction{
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private AccountService accountService;
 
 
     @ApiOperation(value = "获取对应用户角色",notes = "GET根据用户的appId获取对应用户的角色")
@@ -98,5 +104,19 @@ public class UserController extends BasicAction{
         return new Message().ok(6666, "用户退出成功");
     }
 
+    @ApiOperation(value = "获取用户信息", notes = "包含用户信息和权限信息")
+    @GetMapping("/info")
+    public Message info(HttpServletRequest request, HttpServletResponse response) {
+        String appId =request.getHeader("appId");
+
+        Account account = accountService.loadAccount(appId);
+        String roles = userService.loadAccountRole(appId);
+        System.out.println("===============================================");
+        System.out.println("||||||||||||||||||||||||||||"+appId);
+        System.out.println(account);
+        System.out.println(roles);
+        System.out.println("=================================================");
+        return new Message().ok(1009, "获取用户信息成功").addData("account",account).addData("roles",roles.split(","));
+    }
 
 }

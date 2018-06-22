@@ -2,10 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ai.dao.VoiceDao">
   <resultMap id="BaseResultMap" type="com.ai.domain.bo.Voice">
-    <id column="id" jdbcType="BIGINT" property="id" />
+    <id column="hash" jdbcType="VARCHAR" property="hash" />
     <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="pcm" jdbcType="VARCHAR" property="pcm" />
-    <result column="pcm_hash" jdbcType="VARCHAR" property="pcmHash" />
   </resultMap>
-
+  <select id="select" resultMap="BaseResultMap">
+    select
+    *
+    from voice
+    where 1=1 order by visited_at asc
+  </select>
 </mapper>

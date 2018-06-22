@@ -422,7 +422,7 @@ CREATE TABLE `task_user` (
   `task_id` bigint(20) NOT NULL COMMENT '任务编号',
   `content` text COMMENT '用于描述任务执行结果的json字符串',
   `mobile` char(15) NOT NULL COMMENT '要拨打的电话号码',
-  `name` varchar(20) DEFAULT NULL COMMENT '客户姓名',
+  `name` varchar(100) DEFAULT NULL COMMENT '客户姓名',
   `remark` varchar(255) DEFAULT NULL COMMENT '客户备注',
   `voice` varchar(100) DEFAULT NULL COMMENT '从头到尾整段录音的存放路径',
   `status` tinyint(4) DEFAULT '1' COMMENT '任务状态  0 通话完毕。 1 任务未执行。 2 任务被客户端获取。',
@@ -590,4 +590,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-06-12 15:11:46
+-- Dump completed on 2018-06-12 15:20:04

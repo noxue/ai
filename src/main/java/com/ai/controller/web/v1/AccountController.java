@@ -2,6 +2,7 @@ package com.ai.controller.web.v1;
 
 import com.ai.domain.bo.AuthRole;
 import com.ai.domain.bo.AuthUserRole;
+import com.ai.domain.vo.Account;
 import com.ai.service.RoleService;
 import com.ai.util.*;
 import com.ai.domain.bo.AuthUser;
@@ -18,10 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
@@ -151,8 +149,8 @@ public class AccountController extends BasicAction {
      * @Param [request, response]
      * @Return com.ai.domain.vo.Message
      */
-    @ApiOperation(value = "用户注册", notes = "POST用户注册")
-    @PostMapping("/register")
+    @ApiOperation(value = "添加用户", notes = "添加用户")
+    @PostMapping("/add")
     public Message accountRegister(HttpServletRequest request, HttpServletResponse response) {
 
         String appId = request.getHeader("appId");
@@ -254,5 +252,7 @@ public class AccountController extends BasicAction {
             return new Message().ok(1009, "注册失败");
         }
     }
+
+
 
 }

@@ -52,7 +52,7 @@ public class VoiceServiceImpl implements VoiceService {
             }
 
             // 根据日期生成年月日目录结构
-            String subDir = new SimpleDateFormat(File.separatorChar + "yyyy" + File.separatorChar + "MM" + File.separatorChar + "dd" + File.separatorChar).format(new Date());
+            String subDir = new SimpleDateFormat( "yyyy" + File.separatorChar + "MM" + File.separatorChar + "dd" + File.separatorChar).format(new Date());
 
             String path = uploadConfig.getPath();
             // wavPath保存相对路径
@@ -77,7 +77,8 @@ public class VoiceServiceImpl implements VoiceService {
             voice1.setPath(wavPath);
             voice1.setPcm(pcmPath);
             voice1.setHash(name);
-
+            voice1.setFilename(voice.getOriginalFilename().substring(0,voice.getOriginalFilename().lastIndexOf(".")));
+            voice1.setVisitedAt(new Date());
             voiceDao.insert(voice1);
 
             return voice1;

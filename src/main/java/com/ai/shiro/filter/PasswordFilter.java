@@ -69,7 +69,7 @@ public class PasswordFilter extends AccessControlFilter {
             return false;
         }
 
-        // 判断是否是登录请求
+        // 判断是否是登录请求,修复，如果是post请求才进入这里，否则get请求也会进入
         if(isPasswordLoginPost(request)){
             AuthenticationToken authenticationToken = createPasswordToken(request);
             Subject subject = getSubject(request,response);
@@ -91,10 +91,10 @@ public class PasswordFilter extends AccessControlFilter {
                 return false;
             }
         }
-        // 判断是否为注册请求,若是通过过滤链进入controller注册
-        if (isAccountRegisterPost(request)) {
-            return true;
-        }
+        // 判断是否为注册请求,若是通过过滤链进入controller注册，【刘荣飞】系统取消注册功能
+//        if (isAccountRegisterPost(request)) {
+//            return true;
+//        }
         // 之后添加对账户的找回等
 
         // response 告知无效请求

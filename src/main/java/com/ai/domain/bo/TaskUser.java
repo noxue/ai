@@ -1,5 +1,7 @@
 package com.ai.domain.bo;
 
+import java.util.Date;
+
 public class TaskUser {
     private Long id;
 
@@ -7,19 +9,21 @@ public class TaskUser {
 
     private String mobile;
 
+    private String name;
+
+    private String remark;
+
     private String voice;
 
     private Byte status;
+
+    private Date calledAt;
 
     private Integer time;
 
     private Byte type;
 
     private Boolean share;
-
-    private String name;
-
-    private String remark;
 
     private String content;
 
@@ -47,6 +51,22 @@ public class TaskUser {
         this.mobile = mobile == null ? null : mobile.trim();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
     public String getVoice() {
         return voice;
     }
@@ -61,6 +81,14 @@ public class TaskUser {
 
     public void setStatus(Byte status) {
         this.status = status;
+    }
+
+    public Date getCalledAt() {
+        return calledAt;
+    }
+
+    public void setCalledAt(Date calledAt) {
+        this.calledAt = calledAt;
     }
 
     public Integer getTime() {
@@ -85,22 +113,6 @@ public class TaskUser {
 
     public void setShare(Boolean share) {
         this.share = share;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
     }
 
     public String getContent() {
