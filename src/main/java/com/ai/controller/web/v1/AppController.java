@@ -57,7 +57,7 @@ public class AppController extends BasicAction{
             return new Message().ok(3003, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/add", "registerApp", (short) 3004, "新增失败"));
-            return new Message().ok(3004, "新增失败");
+            return new Message().error(3004, "新增失败");
         }
     }
 
@@ -88,7 +88,7 @@ public class AppController extends BasicAction{
             return new Message().ok(3006, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/edit", "editApp", (short) 3007, "编辑失败"));
-            return new Message().ok(3007, "编辑失败");
+            return new Message().error(3007, "编辑失败");
         }
     }
 
@@ -108,7 +108,7 @@ public class AppController extends BasicAction{
             return new Message().ok(3008, "删除成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/del", "delApp", (short) 3009, "删除失败"));
-            return new Message().ok(3009, "删除失败");
+            return new Message().error(3009, "删除失败");
         }
     }
 
@@ -133,7 +133,7 @@ public class AppController extends BasicAction{
             return new Message().ok(3003, "查询成功").addData("appList",appService.findAllApp(pageNum,pageSize,name));
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/all", "findAllApp", (short) 3011, "查询失败"));
-            return new Message().ok(3004, "查询失败");
+            return new Message().error(3004, "查询失败");
         }
     }
 
@@ -158,7 +158,7 @@ public class AppController extends BasicAction{
             return new Message().ok(3010, "查询成功").addData("app",app);
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/select", "selectAppById", (short) 3011, "查询失败"));
-            return new Message().ok(3011, "查询失败");
+            return new Message().error(3011, "查询失败");
         }
     }
 

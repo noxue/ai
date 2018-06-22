@@ -72,7 +72,7 @@ public class TaskController extends BasicAction{
             return new Message().ok(5001, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/add", "registerApp", (short) 3004, "新增失败"));
-            return new Message().ok(5002, "新增失败");
+            return new Message().error(5002, "新增失败");
         }
     }
 
@@ -117,7 +117,7 @@ public class TaskController extends BasicAction{
             if(simService.isExistInSimUser(user_id,sim_id)){
                 LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "", "isExistInSimUser", (short) 5020, "验证成功"));
             }else{
-                return new Message().ok(5018, "当前用户没有可用的卡");
+                return new Message().error(5018, "当前用户没有可用的卡");
             }
         }
         String template_id = params.get("template_id");
@@ -143,7 +143,7 @@ public class TaskController extends BasicAction{
             return new Message().ok(5008, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/add", "addTask", (short) 3004, "新增失败"));
-            return new Message().ok(5009, "新增失败");
+            return new Message().error(5009, "新增失败");
         }
     }
 
@@ -168,7 +168,7 @@ public class TaskController extends BasicAction{
             return new Message().ok(5011, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/add", "addTaskUser", (short) 5012, "新增失败"));
-            return new Message().ok(5012, "新增失败");
+            return new Message().error(5012, "新增失败");
         }
     }
 
@@ -190,7 +190,7 @@ public class TaskController extends BasicAction{
             return new Message().ok(5014, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/share", "shareTaskUser", (short) 3007, "编辑失败"));
-            return new Message().ok(5015, "编辑失败");
+            return new Message().error(5015, "编辑失败");
         }
     }
 
@@ -220,7 +220,7 @@ public class TaskController extends BasicAction{
             return new Message().ok(5014, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/edit", "editTaskUser", (short) 5018, "编辑失败"));
-            return new Message().ok(5017, "编辑失败");
+            return new Message().error(5017, "编辑失败");
         }
     }
 
@@ -239,7 +239,7 @@ public class TaskController extends BasicAction{
         Task oldTask = new Task();
         oldTask = taskService.getTaskById(Long.parseLong(id));
         if(oldTask == null){
-            return new Message().ok(5031, "编辑失败");
+            return new Message().error(5031, "编辑失败");
         }
         //判断当前登陆用户是否有权限操作任务
         if(oldTask.getUserId().equals(appId)){
@@ -257,7 +257,7 @@ public class TaskController extends BasicAction{
                     return new Message().ok(5030, "编辑失败");
                 }
             }else{
-                return new Message().ok(5030, "编辑失败");
+                return new Message().error(5030, "编辑失败");
             }
         }
 
@@ -269,7 +269,7 @@ public class TaskController extends BasicAction{
             return new Message().ok(5019, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/status", "editTaskStatus", (short) 5020, "编辑失败"));
-            return new Message().ok(5020, "编辑失败");
+            return new Message().error(5020, "编辑失败");
         }
     }
 

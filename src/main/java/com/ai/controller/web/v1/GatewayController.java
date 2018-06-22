@@ -71,7 +71,7 @@ public class GatewayController extends BasicAction{
             return new Message().ok(3102, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/add", "addGateway", (short) 3102, "新增失败"));
-            return new Message().ok(3103, "新增失败");
+            return new Message().error(3103, "新增失败");
         }
     }
 
@@ -109,7 +109,7 @@ public class GatewayController extends BasicAction{
             return new Message().ok(3015, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/edit", "editGate", (short) 3107, "编辑失败"));
-            return new Message().ok(3106, "编辑失败");
+            return new Message().error(3106, "编辑失败");
         }
     }
 
@@ -129,7 +129,7 @@ public class GatewayController extends BasicAction{
             return new Message().ok(3108, "删除成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/del", "delGate", (short) 3109, "删除失败"));
-            return new Message().ok(3109, "删除失败");
+            return new Message().error(3109, "删除失败");
         }
     }
 
@@ -155,7 +155,7 @@ public class GatewayController extends BasicAction{
             return new Message().ok(3110, "查询成功").addData("gatewayList",gatewayService.findAllGate(pageNum,pageSize,uid));
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/all", "findAllGate", (short) 3111, "查询失败"));
-            return new Message().ok(3111, "查询失败");
+            return new Message().error(3111, "查询失败");
         }
     }
 
@@ -180,7 +180,7 @@ public class GatewayController extends BasicAction{
             return new Message().ok(3010, "查询成功").addData("gateway",gateway);
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/select", "selectGatewayById", (short) 3011, "查询失败"));
-            return new Message().ok(3011, "查询失败");
+            return new Message().error(3011, "查询失败");
         }
     }
 
@@ -206,7 +206,7 @@ public class GatewayController extends BasicAction{
             return new Message().ok(3103, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/add", "addGatewayReport", (short) 3102, "新增失败"));
-            return new Message().ok(3104, "新增失败");
+            return new Message().error(3104, "新增失败");
         }
     }
 
@@ -226,7 +226,7 @@ public class GatewayController extends BasicAction{
             return new Message().ok(3115, "删除成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/del", "delGatewayReport", (short) 3109, "删除失败"));
-            return new Message().ok(3116, "删除失败");
+            return new Message().error(3116, "删除失败");
         }
     }
 
@@ -251,7 +251,7 @@ public class GatewayController extends BasicAction{
             return new Message().ok(3017, "查询成功").addData("gatewayReport",gatewayReport);
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/select", "selectGatewayReportById", (short) 3018, "查询失败"));
-            return new Message().ok(3018, "查询失败");
+            return new Message().error(3018, "查询失败");
         }
     }
 
@@ -273,7 +273,7 @@ public class GatewayController extends BasicAction{
             return new Message().ok(3103, "查询成功").addData("gatewayReportList",gatewayReportService.findAllGatewayReport(pageNum,pageSize));
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/all", "findAllGatewayReport", (short) 3111, "查询失败"));
-            return new Message().ok(3104, "查询失败");
+            return new Message().error(3104, "查询失败");
         }
     }
 

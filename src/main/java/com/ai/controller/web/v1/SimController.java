@@ -58,7 +58,7 @@ public class SimController extends BasicAction{
             return new Message().ok(4001, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/add", "addSim", (short) 3004, "新增失败"));
-            return new Message().ok(4002, "新增失败");
+            return new Message().error(4002, "新增失败");
         }
     }
 
@@ -88,7 +88,7 @@ public class SimController extends BasicAction{
             return new Message().ok(4004, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/edit", "editSim", (short) 4005, "编辑失败"));
-            return new Message().ok(4005, "编辑失败");
+            return new Message().error(4005, "编辑失败");
         }
     }
 
@@ -108,7 +108,7 @@ public class SimController extends BasicAction{
             return new Message().ok(4007, "删除成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/del", "delSim", (short) 4007, "删除失败"));
-            return new Message().ok(4008, "删除失败");
+            return new Message().error(4008, "删除失败");
         }
     }
 
@@ -133,7 +133,7 @@ public class SimController extends BasicAction{
             return new Message().ok(4009, "查询成功").addData("simList",simService.findAllSim(pageNum,pageSize,uid));
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/all", "simList", (short) 4009, "查询失败"));
-            return new Message().ok(4010, "查询失败");
+            return new Message().error(4010, "查询失败");
         }
     }
 
@@ -158,7 +158,7 @@ public class SimController extends BasicAction{
             return new Message().ok(4011, "查询成功").addData("sim",sim);
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/select", "selectSimById", (short) 4012, "查询失败"));
-            return new Message().ok(4012, "查询失败");
+            return new Message().error(4012, "查询失败");
         }
     }
 
@@ -185,7 +185,7 @@ public class SimController extends BasicAction{
             return new Message().ok(4014, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/add", "addSimUser", (short) 4015, "新增失败"));
-            return new Message().ok(4015, "新增失败");
+            return new Message().error(4015, "新增失败");
         }
     }
 
@@ -210,7 +210,7 @@ public class SimController extends BasicAction{
             return new Message().ok(4017, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/edit", "editSimUser", (short) 4005, "编辑失败"));
-            return new Message().ok(4018, "编辑失败");
+            return new Message().error(4018, "编辑失败");
         }
     }
 
@@ -231,7 +231,7 @@ public class SimController extends BasicAction{
             return new Message().ok(4019, "删除成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/del", "delSimUser", (short) 4007, "删除失败"));
-            return new Message().ok(4020, "删除失败");
+            return new Message().error(4020, "删除失败");
         }
     }
 }

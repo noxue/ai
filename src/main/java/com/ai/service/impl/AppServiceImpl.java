@@ -20,7 +20,6 @@ public class AppServiceImpl implements AppService {
     private AppMapper appMapper;
     @Override
     public PageInfo<App> findAllApp(int pageNum, int pageSize,String name) {
-        //将参数传给这个方法就可以实现物理分页了，非常简单。
         PageHelper.startPage(pageNum, pageSize);
         List<App> appsList = appDao.getAppsList(name);
         PageInfo result = new PageInfo(appsList);

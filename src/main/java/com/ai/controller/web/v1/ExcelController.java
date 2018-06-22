@@ -3,6 +3,7 @@ package com.ai.controller.web.v1;
 import com.ai.domain.bo.TaskUser;
 import com.ai.service.ExcelService;
 import com.ai.service.TaskUserService;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class ExcelController extends BasicAction{
     private ExcelService excelService;
 
 
+    @ApiOperation(value = "导入excel", notes = "根据规定的模板导入客户信息")
     @ResponseBody
     @PostMapping("/imp")
     public void ImportExcel(@RequestParam("file") MultipartFile file) throws Exception {
@@ -42,6 +44,7 @@ public class ExcelController extends BasicAction{
         excelService.importExcel(file);
     }
 
+    @ApiOperation(value = "导出excel", notes = "根据当前的用户信息按照规定的模板导出execl信息")
     @ResponseBody
     @PostMapping("/exp")
     public void ExportExcel(HttpServletRequest request, HttpServletResponse response) throws Exception {
