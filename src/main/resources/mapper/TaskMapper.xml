@@ -8,14 +8,14 @@
     <result column="thread" jdbcType="INTEGER" property="thread" />
     <result column="total" jdbcType="INTEGER" property="total" />
     <result column="called" jdbcType="INTEGER" property="called" />
-    <result column="start_at" jdbcType="TIMESTAMP" property="startAt" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="start_at" jdbcType="TIMESTAMP" property="startAt" />
     <result column="finish_at" jdbcType="TIMESTAMP" property="finishAt" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="test" jdbcType="BIT" property="test" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, template_id, thread, total, `called`, start_at, created_at, finish_at, 
+    id, user_id, template_id, thread, total, `called`, created_at, start_at, finish_at, 
     `status`, test
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -33,12 +33,12 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into task (user_id, template_id, thread, 
-      total, `called`, start_at, 
-      created_at, finish_at, `status`, 
+      total, `called`, created_at, 
+      start_at, finish_at, `status`, 
       test)
     values (#{userId,jdbcType=VARCHAR}, #{templateId,jdbcType=BIGINT}, #{thread,jdbcType=INTEGER}, 
-      #{total,jdbcType=INTEGER}, #{called,jdbcType=INTEGER}, #{startAt,jdbcType=TIMESTAMP}, 
-      #{createdAt,jdbcType=TIMESTAMP}, #{finishAt,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, 
+      #{total,jdbcType=INTEGER}, #{called,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{startAt,jdbcType=TIMESTAMP}, #{finishAt,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, 
       #{test,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.Task">
@@ -62,11 +62,11 @@
       <if test="called != null">
         `called`,
       </if>
-      <if test="startAt != null">
-        start_at,
-      </if>
       <if test="createdAt != null">
         created_at,
+      </if>
+      <if test="startAt != null">
+        start_at,
       </if>
       <if test="finishAt != null">
         finish_at,
@@ -94,11 +94,11 @@
       <if test="called != null">
         #{called,jdbcType=INTEGER},
       </if>
-      <if test="startAt != null">
-        #{startAt,jdbcType=TIMESTAMP},
-      </if>
       <if test="createdAt != null">
         #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startAt != null">
+        #{startAt,jdbcType=TIMESTAMP},
       </if>
       <if test="finishAt != null">
         #{finishAt,jdbcType=TIMESTAMP},
@@ -129,11 +129,11 @@
       <if test="called != null">
         `called` = #{called,jdbcType=INTEGER},
       </if>
-      <if test="startAt != null">
-        start_at = #{startAt,jdbcType=TIMESTAMP},
-      </if>
       <if test="createdAt != null">
         created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startAt != null">
+        start_at = #{startAt,jdbcType=TIMESTAMP},
       </if>
       <if test="finishAt != null">
         finish_at = #{finishAt,jdbcType=TIMESTAMP},
@@ -154,8 +154,8 @@
       thread = #{thread,jdbcType=INTEGER},
       total = #{total,jdbcType=INTEGER},
       `called` = #{called,jdbcType=INTEGER},
-      start_at = #{startAt,jdbcType=TIMESTAMP},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
+      start_at = #{startAt,jdbcType=TIMESTAMP},
       finish_at = #{finishAt,jdbcType=TIMESTAMP},
       `status` = #{status,jdbcType=TINYINT},
       test = #{test,jdbcType=BIT}

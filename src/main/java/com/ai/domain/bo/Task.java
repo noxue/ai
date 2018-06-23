@@ -15,9 +15,9 @@ public class Task {
 
     private Integer called;
 
-    private Date startAt;
-
     private Date createdAt;
+
+    private Date startAt;
 
     private Date finishAt;
 
@@ -73,20 +73,20 @@ public class Task {
         this.called = called;
     }
 
-    public Date getStartAt() {
-        return startAt;
-    }
-
-    public void setStartAt(Date startAt) {
-        this.startAt = startAt;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getStartAt() {
+        return startAt;
+    }
+
+    public void setStartAt(Date startAt) {
+        this.startAt = startAt;
     }
 
     public Date getFinishAt() {
