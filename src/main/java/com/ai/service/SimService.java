@@ -16,12 +16,17 @@ public interface SimService {
 
     Sim getSimById(long id);
 
+    boolean isExistInSim(String user_id , String sim_id);
+
+
     //sim_user
     boolean registerSimUser(SimUser simUser);
 
     boolean editSimUser(SimUser simUser);
 
     boolean delSimUser(long id);
+
+    boolean isExistInSimUser(String user_id , String sim_id);
 
 
 }

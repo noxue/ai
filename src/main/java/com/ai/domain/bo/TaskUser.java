@@ -25,6 +25,15 @@ public class TaskUser {
 
     private Boolean share;
 
+<<<<<<< HEAD
+=======
+    private String name;
+
+    private String remark;
+
+    private Date calledAt;
+
+>>>>>>> bcddcb6a20d7f1c5e7198aa72540c2f168d98fb9
     private String content;
 
     public Long getId() {
@@ -115,6 +124,33 @@ public class TaskUser {
         this.share = share;
     }
 
+<<<<<<< HEAD
+=======
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
+    public Date getCalledAt() {
+        return calledAt;
+    }
+
+    public void setCalledAt(Date calledAt) {
+        this.calledAt = calledAt;
+    }
+
+>>>>>>> bcddcb6a20d7f1c5e7198aa72540c2f168d98fb9
     public String getContent() {
         return content;
     }

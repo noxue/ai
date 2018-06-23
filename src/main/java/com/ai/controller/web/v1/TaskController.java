@@ -1,12 +1,11 @@
 package com.ai.controller.web.v1;
 
+import com.ai.domain.bo.AuthRole;
 import com.ai.domain.bo.Task;
 import com.ai.domain.bo.TaskUser;
 import com.ai.domain.bo.TaskUserReport;
 import com.ai.domain.vo.Message;
-import com.ai.service.TaskService;
-import com.ai.service.TaskUserReportService;
-import com.ai.service.TaskUserService;
+import com.ai.service.*;
 import com.ai.support.factory.LogTaskFactory;
 import com.ai.support.manager.LogExeManager;
 import com.ai.util.RequestResponseUtil;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -42,6 +42,15 @@ public class TaskController extends BasicAction{
     @Autowired
     private TaskUserReportService taskUserReportService;
 
+    @Autowired
+    private SimService simService;
+
+    @Autowired
+    private AccountService accountService;
+
+    @Autowired
+    private RoleService roleService;
+
     @ApiOperation(value = "新增taskUserReport", notes = "添加taskUserReport信息")
     @ResponseBody
     @PostMapping("/user/report/add")
@@ -63,7 +72,7 @@ public class TaskController extends BasicAction{
             return new Message().ok(5001, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/add", "registerApp", (short) 3004, "新增失败"));
-            return new Message().ok(5002, "新增失败");
+            return new Message().error(5002, "新增失败");
         }
     }
 
@@ -98,26 +107,43 @@ public class TaskController extends BasicAction{
     @PostMapping("/add")
     public Message addTask(HttpServletRequest request, HttpServletResponse response){
         //获取参数
+        String user_id =  request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String user_id = params.get("user_id");
+        String sim_id = params.get("sim_id");
+        //验证当前用户是否有可用的卡
+        if(simService.isExistInSim(user_id,sim_id)){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "", "isExistInSim", (short) 5019, "验证成功"));
+        }else {
+            if(simService.isExistInSimUser(user_id,sim_id)){
+                LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "", "isExistInSimUser", (short) 5020, "验证成功"));
+            }else{
+                return new Message().error(5018, "当前用户没有可用的卡");
+            }
+        }
         String template_id = params.get("template_id");
-        String total = params.get("total");
+        String thread = params.get("thread");
+        String test = params.get("test");
         // 必须信息缺一不可,返回验证消息
-        if (StringUtils.isEmpty(user_id) ||StringUtils.isEmpty(template_id)||StringUtils.isEmpty(total)) {
+        if (StringUtils.isEmpty(user_id) ||StringUtils.isEmpty(template_id)) {
             return new Message().error(5007, "信息不全");
         }
+
         Task task = new Task();
         task.setUserId(user_id);
-        task.setTotal(Integer.parseInt(total));
+        if(StringUtils.isEmpty(thread)){
+            task.setThread(Integer.parseInt(thread));
+        }
         task.setTemplateId(Long.parseLong(template_id));
         task.setCreatedAt(new Date());
-
+        if(test.equals("1")){
+            task.setTest(true);
+        }
         if (taskService.registerTask(task)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/add", "addTask", (short) 3003, "新增成功"));
             return new Message().ok(5008, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/add", "addTask", (short) 3004, "新增失败"));
-            return new Message().ok(5009, "新增失败");
+            return new Message().error(5009, "新增失败");
         }
     }
 
@@ -142,7 +168,7 @@ public class TaskController extends BasicAction{
             return new Message().ok(5011, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/add", "addTaskUser", (short) 5012, "新增失败"));
-            return new Message().ok(5012, "新增失败");
+            return new Message().error(5012, "新增失败");
         }
     }
 
@@ -164,7 +190,7 @@ public class TaskController extends BasicAction{
             return new Message().ok(5014, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/share", "shareTaskUser", (short) 3007, "编辑失败"));
-            return new Message().ok(5015, "编辑失败");
+            return new Message().error(5015, "编辑失败");
         }
     }
 
@@ -194,7 +220,7 @@ public class TaskController extends BasicAction{
             return new Message().ok(5014, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/edit", "editTaskUser", (short) 5018, "编辑失败"));
-            return new Message().ok(5017, "编辑失败");
+            return new Message().error(5017, "编辑失败");
         }
     }
 
@@ -202,22 +228,48 @@ public class TaskController extends BasicAction{
     @ResponseBody
     @PostMapping("/status")
     public Message editTaskStatus(HttpServletRequest request, HttpServletResponse response){
+        String appId = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        Task task =  new Task();
         String id =params.get("id");
         String status =params.get("status");
         if ( StringUtils.isEmpty(id) || StringUtils.isEmpty(status) ) {
             // 必须信息缺一不可,返回修改时关键信息缺失
             return new Message().error(5018, "信息缺失");
         }
-        task.setId(Long.parseLong(id));
-        task.setStatus(Byte.valueOf(status));
-        if (taskService.editTask(task)) {
+        Task oldTask = new Task();
+        oldTask = taskService.getTaskById(Long.parseLong(id));
+        if(oldTask == null){
+            return new Message().error(5031, "编辑失败");
+        }
+        //判断当前登陆用户是否有权限操作任务
+        if(oldTask.getUserId().equals(appId)){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/status", "editTaskStatus", (short) 5028, "本人操作"));
+        }else{
+            //根据当前用户的appId查询该用户的最大权限
+            String maxRoleId = accountService.loadAccountRoleId(appId);
+            //根据roleid查询该角色是否为企业员工 code : role_company
+            AuthRole authRole = roleService.selectByRoleId(maxRoleId);
+            String uid = oldTask.getUserId();
+            if(authRole.getCode().equals("role_company")){
+                if(accountService.getUserByUidAndPid(uid,appId)!=null){
+                    LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/status", "editTaskStatus", (short) 5029, "上级操作"));
+                }else{
+                    return new Message().ok(5030, "编辑失败");
+                }
+            }else{
+                return new Message().error(5030, "编辑失败");
+            }
+        }
+
+        Task newTask =  new Task();
+        newTask.setId(Long.parseLong(id));
+        newTask.setStatus(Byte.valueOf(status));
+        if (taskService.editTask(newTask)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/status", "editTaskStatus", (short) 5019, "编辑成功"));
             return new Message().ok(5019, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/status", "editTaskStatus", (short) 5020, "编辑失败"));
-            return new Message().ok(5020, "编辑失败");
+            return new Message().error(5020, "编辑失败");
         }
     }
 
@@ -291,5 +343,4 @@ public class TaskController extends BasicAction{
             return new Message().error(5027, "查询失败");
         }
     }
-
 }

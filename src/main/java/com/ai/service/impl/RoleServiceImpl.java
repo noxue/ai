@@ -71,4 +71,9 @@ public class RoleServiceImpl implements RoleService {
     public List<AuthRole> getRolesById(int id) {
         return authRoleMapper.selectRolesById(id);
     }
+
+    @Override
+    public AuthRole selectByRoleId(String roleId) {
+        return authRoleMapper.selectByPrimaryKey(Integer.parseInt(roleId));
+    }
 }

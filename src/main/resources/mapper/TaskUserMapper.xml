@@ -13,13 +13,23 @@
     <result column="time" jdbcType="INTEGER" property="time" />
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="share" jdbcType="BIT" property="share" />
+<<<<<<< HEAD
+=======
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="called_at" jdbcType="TIMESTAMP" property="calledAt" />
+>>>>>>> bcddcb6a20d7f1c5e7198aa72540c2f168d98fb9
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ai.domain.bo.TaskUser">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Base_Column_List">
+<<<<<<< HEAD
     id, task_id, mobile, `name`, remark, voice, `status`, called_at, `time`, `type`, 
     `share`
+=======
+    id, task_id, mobile, voice, `status`, `time`, `type`, `share`, `name`, remark, called_at
+>>>>>>> bcddcb6a20d7f1c5e7198aa72540c2f168d98fb9
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -40,6 +50,7 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
+<<<<<<< HEAD
     insert into task_user (task_id, mobile, `name`, 
       remark, voice, `status`, 
       called_at, `time`, `type`, 
@@ -48,6 +59,16 @@
       #{remark,jdbcType=VARCHAR}, #{voice,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
       #{calledAt,jdbcType=TIMESTAMP}, #{time,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
       #{share,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR})
+=======
+    insert into task_user (task_id, mobile, voice, 
+      `status`, `time`, `type`, 
+      `share`, `name`, remark, called_at, 
+      content)
+    values (#{taskId,jdbcType=BIGINT}, #{mobile,jdbcType=CHAR}, #{voice,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{time,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
+      #{share,jdbcType=BIT}, #{name,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{calledAt,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=LONGVARCHAR})
+>>>>>>> bcddcb6a20d7f1c5e7198aa72540c2f168d98fb9
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.TaskUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -85,6 +106,18 @@
       <if test="share != null">
         `share`,
       </if>
+<<<<<<< HEAD
+=======
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="calledAt != null">
+        called_at,
+      </if>
+>>>>>>> bcddcb6a20d7f1c5e7198aa72540c2f168d98fb9
       <if test="content != null">
         content,
       </if>
@@ -120,6 +153,18 @@
       <if test="share != null">
         #{share,jdbcType=BIT},
       </if>
+<<<<<<< HEAD
+=======
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="calledAt != null">
+        #{calledAt,jdbcType=TIMESTAMP},
+      </if>
+>>>>>>> bcddcb6a20d7f1c5e7198aa72540c2f168d98fb9
       <if test="content != null">
         #{content,jdbcType=LONGVARCHAR},
       </if>
@@ -158,6 +203,18 @@
       <if test="share != null">
         `share` = #{share,jdbcType=BIT},
       </if>
+<<<<<<< HEAD
+=======
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="calledAt != null">
+        called_at = #{calledAt,jdbcType=TIMESTAMP},
+      </if>
+>>>>>>> bcddcb6a20d7f1c5e7198aa72540c2f168d98fb9
       <if test="content != null">
         content = #{content,jdbcType=LONGVARCHAR},
       </if>
@@ -176,6 +233,12 @@
       `time` = #{time,jdbcType=INTEGER},
       `type` = #{type,jdbcType=TINYINT},
       `share` = #{share,jdbcType=BIT},
+<<<<<<< HEAD
+=======
+      `name` = #{name,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      called_at = #{calledAt,jdbcType=TIMESTAMP},
+>>>>>>> bcddcb6a20d7f1c5e7198aa72540c2f168d98fb9
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -190,7 +253,14 @@
       called_at = #{calledAt,jdbcType=TIMESTAMP},
       `time` = #{time,jdbcType=INTEGER},
       `type` = #{type,jdbcType=TINYINT},
+<<<<<<< HEAD
       `share` = #{share,jdbcType=BIT}
+=======
+      `share` = #{share,jdbcType=BIT},
+      `name` = #{name,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      called_at = #{calledAt,jdbcType=TIMESTAMP}
+>>>>>>> bcddcb6a20d7f1c5e7198aa72540c2f168d98fb9
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

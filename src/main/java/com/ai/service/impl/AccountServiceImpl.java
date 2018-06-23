@@ -1,8 +1,7 @@
 package com.ai.service.impl;
 
-import com.ai.dao.AuthUserDao;
-import com.ai.dao.AuthUserMapper;
-import com.ai.dao.AuthUserRoleDao;
+import com.ai.dao.*;
+import com.ai.domain.bo.AuthRole;
 import com.ai.domain.bo.AuthUser;
 import com.ai.domain.bo.AuthUserRole;
 import com.ai.domain.vo.Account;
@@ -31,6 +30,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AuthUserRoleDao authUserRoleDao;
+
+    @Autowired
+    private AuthRoleMapper authRoleMapper;
 
     @Override
     public Account loadAccount(String appId) throws DataAccessException {
@@ -73,5 +75,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<AuthUserRole> selectAuthUserRoleByUserId(String userId) {
         return authUserRoleDao.selectAuthUserRoleByUserId(userId);
+    }
+
+    @Override
+    public AuthUser getUserByUidAndPid(String uid, String pid) {
+        return userMapper.getUserByUidAndPid(uid,pid);
     }
 }

@@ -15,12 +15,12 @@
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="CREATE_WHERE" jdbcType="TINYINT" property="createWhere" />
+    <result column="pid" jdbcType="VARCHAR" property="pid" />
   </resultMap>
   <sql id="Base_Column_List">
-    uid, username, password, salt, real_name, avatar, phone, email, sex, status, CREATE_TIME, 
-    UPDATE_TIME, CREATE_WHERE
+    `uid`, username, `password`, salt, real_name, avatar, phone, email, sex, `status`,
+    CREATE_TIME, UPDATE_TIME, CREATE_WHERE, pid
   </sql>
-
   <select id="selectUserRoles" parameterType="java.lang.String" resultType="java.lang.String">
     SELECT GROUP_CONCAT(rol.CODE) AS Roles
     FROM auth_user usr
@@ -63,6 +63,14 @@
   	   select 1 from auth_user_role c
   	   where b.uid = c.user_id and c.role_id = #{roleId,jdbcType=INTEGER}
 	)
+  </select>
+
+  <select id="selectUserByTaskUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+
+    select a.*
+    from auth_user a
+    where a.uid=#{uid,jdbcType=VARCHAR} AND a.pid = #{pid,jdbcType=VARCHAR}
+
   </select>
 
 </mapper>

@@ -63,7 +63,7 @@ public class TemplateController extends BasicAction{
             return new Message().ok(4402, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/add", "addTemplate", (short) 4403, "新增失败"));
-            return new Message().ok(4403, "新增失败");
+            return new Message().error(4403, "新增失败");
         }
     }
 
@@ -96,7 +96,7 @@ public class TemplateController extends BasicAction{
             return new Message().ok(4405, "编辑成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/edit", "editTemplate", (short) 4405, "编辑失败"));
-            return new Message().ok(4406, "编辑失败");
+            return new Message().error(4406, "编辑失败");
         }
     }
 
@@ -116,7 +116,7 @@ public class TemplateController extends BasicAction{
             return new Message().ok(4408, "删除成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/del", "delTemplate", (short) 4409, "删除失败"));
-            return new Message().ok(4409, "删除失败");
+            return new Message().error(4409, "删除失败");
         }
     }
 
@@ -141,7 +141,7 @@ public class TemplateController extends BasicAction{
             return new Message().ok(4410, "查询成功").addData("templateList",templateService.findAllTemlate(pageNum,pageSize,appId));
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/templateList/all", "findAllTemplate", (short) 4409, "查询失败"));
-            return new Message().ok(4411, "查询失败");
+            return new Message().error(4411, "查询失败");
         }
     }
 
@@ -166,7 +166,7 @@ public class TemplateController extends BasicAction{
             return new Message().ok(4412, "查询成功").addData("template",template);
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/select", "selectTemplateById", (short) 4413, "查询失败"));
-            return new Message().ok(4413, "查询失败");
+            return new Message().error(4413, "查询失败");
         }
     }
 

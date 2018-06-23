@@ -1,5 +1,6 @@
 package com.ai.service;
 
+import com.ai.domain.bo.AuthRole;
 import com.ai.domain.bo.AuthUser;
 import com.ai.domain.bo.AuthUserRole;
 import com.ai.domain.vo.Account;
@@ -21,4 +22,6 @@ public interface AccountService {
     boolean insertAuthUserRole(AuthUserRole aur);
     //根据userid获取所有的AuthUserRole信息
     List<AuthUserRole> selectAuthUserRoleByUserId(String userId);
+    //根据uid和pid查询authUser信息
+    AuthUser getUserByUidAndPid(String uid , String pid);
 }

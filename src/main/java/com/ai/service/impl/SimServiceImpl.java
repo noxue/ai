@@ -1,6 +1,7 @@
 package com.ai.service.impl;
 
 import com.ai.dao.SimDao;
+import com.ai.dao.SimUserDao;
 import com.ai.dao.SimUserMapper;
 import com.ai.domain.bo.Sim;
 import com.ai.domain.bo.SimUser;
@@ -20,6 +21,9 @@ public class SimServiceImpl implements SimService {
 
     @Autowired
     private SimUserMapper simUserMapper;
+
+    @Autowired
+    private SimUserDao simUserDao;
 
     @Override
     public PageInfo<Sim> findAllSim(int pageNum, int pageSize, String uid) {
@@ -63,5 +67,15 @@ public class SimServiceImpl implements SimService {
     @Override
     public boolean delSimUser(long id) {
         return simUserMapper.deleteByPrimaryKey(id) == 1 ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
+    public boolean isExistInSim(String user_id, String sim_id) {
+        return simDao.getSimBySimIdAndUserId(user_id,Integer.parseInt(sim_id))==null ? Boolean.FALSE: Boolean.TRUE;
+    }
+
+    @Override
+    public boolean isExistInSimUser(String user_id, String sim_id) {
+         return simUserDao.getSimUserBySimIdAndUserId(user_id,Integer.parseInt(sim_id))==null ? Boolean.FALSE: Boolean.TRUE;
     }
 }

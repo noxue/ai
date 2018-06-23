@@ -19,4 +19,6 @@ public interface TaskUserService {
 
     //批量插入
     boolean insertTaskUserList (List<TaskUser> list);
+    //导出
+    TaskUser[] taskUserList(String appId);
 }
