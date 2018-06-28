@@ -25,9 +25,9 @@ public class GatewayServiceImpl implements GatewayService {
     private GatewayMapper gatewayMapper;
 
     @Override
-    public PageInfo<Gateway> findAllGate(int pageNum, int pageSize, String uid) {
+    public PageInfo<Gateway> findAllGate(int pageNum, int pageSize, String name, String user_id ) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Gateway> gatewaysList = gatewayDao.getGatewaysListByUid(uid);
+        List<Gateway> gatewaysList = gatewayDao.getGatewaysListByUid(name,user_id);
         PageInfo result = new PageInfo(gatewaysList);
         return result;
     }
@@ -44,7 +44,7 @@ public class GatewayServiceImpl implements GatewayService {
 
     @Override
     public boolean editGate(Gateway gateway) {
-        return gatewayMapper.updateByPrimaryKey(gateway) ==1 ? Boolean.TRUE : Boolean.FALSE;
+        return gatewayMapper.updateByPrimaryKeySelective(gateway) ==1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override

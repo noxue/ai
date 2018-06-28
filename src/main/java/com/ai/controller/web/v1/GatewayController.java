@@ -1,13 +1,16 @@
 package com.ai.controller.web.v1;
 
+import com.ai.domain.bo.AuthRole;
 import com.ai.domain.bo.Gateway;
 import com.ai.domain.bo.GatewayReport;
 import com.ai.domain.vo.Message;
+import com.ai.service.AccountService;
 import com.ai.service.GatewayReportService;
 import com.ai.service.GatewayService;
 import com.ai.support.factory.LogTaskFactory;
 import com.ai.support.manager.LogExeManager;
 import com.ai.util.RequestResponseUtil;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +39,9 @@ public class GatewayController extends BasicAction{
     @Autowired
     private GatewayReportService gatewayReportService;
 
+    @Autowired
+    private AccountService accountService;
+
     @ApiOperation(value = "新增Gateway", notes = "增加一个新的、新增Gateway")
     @ResponseBody
     @PostMapping("/add")
@@ -47,7 +53,7 @@ public class GatewayController extends BasicAction{
         String description = params.get("description");
         String ip = params.get("ip");
         String port = params.get("port");
-        String user_id = params.get("user_id");
+        String user_id = params.get("userId");
         String app_id = params.get("app_id");
         if (StringUtils.isEmpty(name) ||StringUtils.isEmpty(ip) ||StringUtils.isEmpty(port)
                 ||StringUtils.isEmpty(user_id) ||StringUtils.isEmpty(app_id)) {
@@ -57,6 +63,10 @@ public class GatewayController extends BasicAction{
         if (gatewayService.isGateExistByName(name)) {
             // name已存在
             return new Message().error(3101, "名称已被占用");
+        }
+        if (!accountService.isAccountExistByUid(user_id)) {
+            // name已存在
+            return new Message().error(3101, "用户不存在");
         }
 
         gateway.setName(name);
@@ -86,16 +96,15 @@ public class GatewayController extends BasicAction{
         String description = params.get("description");
         String ip = params.get("ip");
         String port = params.get("port");
-        String user_id = params.get("user_id");
-        String app_id = params.get("app_id");
+        String user_id = params.get("userId");
         if (StringUtils.isEmpty(name) ||StringUtils.isEmpty(ip) ||StringUtils.isEmpty(port)
-                ||StringUtils.isEmpty(user_id) ||StringUtils.isEmpty(app_id) ||StringUtils.isEmpty(id)) {
+                ||StringUtils.isEmpty(user_id)||StringUtils.isEmpty(id)) {
             // 必须信息缺一不可,返回网关信息缺失
             return new Message().error(3104, "网关信息缺失");
         }
-        if (gatewayService.isGateExistByName(name)) {
-            // name已存在
-            return new Message().error(3001, "名称已存在");
+        if (!accountService.isAccountExistByUid(user_id)) {
+            // 判断该用户是否存在
+            return new Message().error(3101, "用户不存在");
         }
         gateway.setId(Long.parseLong(id));
         gateway.setName(name);
@@ -103,7 +112,6 @@ public class GatewayController extends BasicAction{
         gateway.setIp(ip);
         gateway.setPort(Integer.parseInt(port));
         gateway.setUserId(user_id);
-        gateway.setAppId(Long.parseLong(app_id));
         if (gatewayService.editGate(gateway)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/edit", "editGate", (short) 3106, "编辑成功"));
             return new Message().ok(3015, "编辑成功");
@@ -149,16 +157,50 @@ public class GatewayController extends BasicAction{
 
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         //uid非必要参数，未做非空判断
-        String uid =params.get("uid");
-        if(gatewayService.findAllGate(pageNum,pageSize,uid)!=null){
+        String uid =request.getHeader("appId");
+        String name =params.get("name");
+        String username =params.get("username");
+        if (StringUtils.isEmpty(uid) || "null".equals(uid)) {
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3017, "网关信息缺失");
+        }
+        String roleId= accountService.loadAccountRoleId(uid);
+        if(roleId.equals("100")){
+            uid = username;
+        }
+        pageNum = Integer.parseInt(params.get("page"));
+        if(gatewayService.findAllGate(pageNum,pageSize,name,uid)!=null){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/all", "findAllGate", (short) 3110, "查询成功"));
-            return new Message().ok(3110, "查询成功").addData("gatewayList",gatewayService.findAllGate(pageNum,pageSize,uid));
+            return new Message().ok(3110, "查询成功").addData("gatewayList",gatewayService.findAllGate(pageNum,pageSize,name,uid ));
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/all", "findAllGate", (short) 3111, "查询失败"));
             return new Message().error(3111, "查询失败");
         }
     }
 
+    @ApiOperation(value = "分页获取gateway", notes = "模糊查询分页获取gateway信息")
+    @ResponseBody
+    @PostMapping("/listByUid")
+    public Object findAllGatelistByUid(HttpServletRequest request, HttpServletResponse response){
+        //uid非必要参数，未做非空判断
+        String uid =request.getHeader("appId");
+        if (StringUtils.isEmpty(uid) || "null".equals(uid)) {
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3017, "网关信息缺失");
+        }
+        String roleId= accountService.loadAccountRoleId(uid);
+        if(roleId.equals("100")){
+            uid = "";
+        }
+        PageInfo<Gateway> gatewayList = gatewayService.findAllGate(0,100000,"",uid);
+        if(gatewayList!=null){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/all", "findAllGate", (short) 3110, "查询成功"));
+            return new Message().ok(3110, "查询成功").addData("gatewayList",gatewayList);
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/all", "findAllGate", (short) 3111, "查询失败"));
+            return new Message().error(3111, "查询失败");
+        }
+    }
     /* *
      * @Description 根据id获取Gateway信息
      * @Param [] id

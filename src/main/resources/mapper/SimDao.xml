@@ -17,10 +17,16 @@
     s.id AS id,
     s.description AS description,
     s.number AS number,
-    s.user_id AS userId
-     from  gateway g
-    left join sim s  ON s.gateway_id = g.id where 1=1 AND g.user_id = #{_parameter}
-
+    s.user_id AS userId,
+    s.gateway_id as gatewayId
+    from  sim s
+    left join gateway g ON s.gateway_id = g.id where 1=1
+    <if test="uid != null and uid != ''">
+      AND s.user_id = #{uid}
+    </if>
+    <if test="phone != null and phone != ''">
+      AND s.number like  CONCAT('%',#{phone} ,'%')
+    </if>
   </select>
 
   <select id="getSimBySimIdAndUserId" parameterType="java.lang.String"  resultType="com.ai.domain.bo.Sim">

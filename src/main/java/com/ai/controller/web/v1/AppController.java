@@ -75,11 +75,11 @@ public class AppController extends BasicAction{
             // 必须信息缺一不可,返回信息缺失
             return new Message().error(3005, "app信息缺失");
         }
-        if (appService.isAppExistByName(name)) {
+        /*if (appService.isAppExistByName(name)) {
             // name已存在
             return new Message().error(3002, "名称已被占用");
-        }
-        app.setId(Long.parseLong(id));
+        }*/
+        app.setId(Long.parseLong(id.trim()));
         app.setKey(key);
         app.setDescription(description);
         app.setName(name);
@@ -128,11 +128,30 @@ public class AppController extends BasicAction{
 
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String name =params.get("name");
+        pageNum = Integer.parseInt(params.get("page"));
         if(appService.findAllApp(pageNum,pageSize,name)!=null){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/all", "findAllApp", (short) 3010, "查询成功"));
             return new Message().ok(3003, "查询成功").addData("appList",appService.findAllApp(pageNum,pageSize,name));
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/all", "findAllApp", (short) 3011, "查询失败"));
+            return new Message().error(3004, "查询失败");
+        }
+    }
+
+    /* *
+     * @Description 获取所有app
+     * @Param []
+     * @Return com.ai.domain.bo.app.java
+     */
+    @ApiOperation(value = "分页获取app", notes = "模糊查询分页获取app信息")
+    @ResponseBody
+    @PostMapping("/allApp")
+    public Object findAll(HttpServletRequest request, HttpServletResponse response){
+        if(appService.findAllApp(1,111111111,"")!=null){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/allApp", "findAll", (short) 3010, "查询成功"));
+            return new Message().ok(3003, "查询成功").addData("appList",appService.findAllApp(1,111111111,""));
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/allApp", "findAll", (short) 3011, "查询失败"));
             return new Message().error(3004, "查询失败");
         }
     }

@@ -6,7 +6,7 @@ import com.github.pagehelper.PageInfo;
 
 public interface SimService {
     //sim
-    PageInfo<Sim> findAllSim(int pageNum, int pageSize, String uid);
+    PageInfo<Sim> findAllSim(int pageNum, int pageSize, String uid, String phone);
 
     boolean registerSim(Sim sim);
 

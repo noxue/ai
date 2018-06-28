@@ -9,5 +9,7 @@ public interface AuthUserRoleDao  extends AuthUserRoleMapper{
 
     int deleteByUniqueKey(AuthUserRole record) throws DataAccessException;
 
+    int deleteByUserId(String userId)throws DataAccessException;
+
     List<AuthUserRole> selectAuthUserRoleByUserId(String userId);
 }

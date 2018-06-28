@@ -3,10 +3,13 @@ package com.ai.controller.web.v1;
 import com.ai.domain.bo.Sim;
 import com.ai.domain.bo.SimUser;
 import com.ai.domain.vo.Message;
+import com.ai.service.AccountService;
 import com.ai.service.SimService;
 import com.ai.support.factory.LogTaskFactory;
 import com.ai.support.manager.LogExeManager;
 import com.ai.util.RequestResponseUtil;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +35,9 @@ public class SimController extends BasicAction{
     @Autowired
     private SimService simService;
 
+    @Autowired
+    private AccountService accountService;
+
     @ApiOperation(value = "新增sim", notes = "新增sim卡信息")
     @ResponseBody
     @PostMapping("/add")
@@ -41,12 +47,16 @@ public class SimController extends BasicAction{
         Sim sim = new Sim();
         String number = params.get("number");
         String description = params.get("description");
-        String gateway_id = params.get("gateway_id");
-        String user_id = params.get("user_id");
+        String gateway_id = params.get("gatewayId");
+        String user_id = params.get("userId");
         if (StringUtils.isEmpty(number) || StringUtils.isEmpty(gateway_id)
                 || StringUtils.isEmpty(user_id)|| StringUtils.isEmpty(description)) {
             // 必须信息缺一不可,返回信息不足
             return new Message().error(4000, "信息不足");
+        }
+        if (!accountService.isAccountExistByUid(user_id)) {
+            // name已存在
+            return new Message().error(3101, "用户不存在");
         }
         sim.setDescription(description);
         sim.setGatewayId(Long.parseLong(gateway_id));
@@ -70,19 +80,31 @@ public class SimController extends BasicAction{
         Sim sim = new Sim();
         String number = params.get("number");
         String description = params.get("description");
-        String gateway_id = params.get("gateway_id");
-        String user_id = params.get("user_id");
+        String gateway_id = params.get("gatewayId");
+        String user_id = params.get("userId");
         String id = params.get("id");
-        if (StringUtils.isEmpty(number)|| StringUtils.isEmpty(description)|| StringUtils.isEmpty(id)
-                || StringUtils.isEmpty(gateway_id)|| StringUtils.isEmpty(user_id)) {
+        if (StringUtils.isEmpty(id)) {
             // 必须信息缺一不可,返回信息不足
             return new Message().error(4003, "信息不足");
         }
+        if(!StringUtils.isEmpty(user_id)&& user_id!=null){
+            if (!accountService.isAccountExistByUid(user_id)) {
+                // 验证用户是否存在
+                return new Message().error(3101, "用户不存在");
+            }
+            sim.setUserId(user_id);
+        }
         sim.setId(Long.parseLong(id));
-        sim.setNumber(number);
-        sim.setDescription(description);
-        sim.setUserId(user_id);
-        sim.setGatewayId(Long.parseLong(gateway_id));
+        if(!StringUtils.isEmpty(number)){
+            sim.setNumber(number);
+        }
+        if(!StringUtils.isEmpty(description)){
+            sim.setDescription(description);
+        }
+        if(!StringUtils.isEmpty(gateway_id)){
+            sim.setGatewayId(Long.parseLong(gateway_id));
+        }
+
         if (simService.editSim(sim)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/edit", "editSim", (short) 4004, "编辑成功"));
             return new Message().ok(4004, "编辑成功");
@@ -125,12 +147,22 @@ public class SimController extends BasicAction{
                     int pageNum,
             @RequestParam(name = "pageSize", required = false, defaultValue = "15")
                     int pageSize){
-
+        String uid =request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String uid =params.get("uid");
-        if(simService.findAllSim(pageNum,pageSize,uid)!=null){
+        String phone = params.get("number");
+        pageNum = Integer.parseInt(params.get("page"));
+        if (StringUtils.isEmpty(uid)) {
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3017, "信息缺失");
+        }
+        String roleId= accountService.loadAccountRoleId(uid);
+        if(roleId.equals("100")){
+            uid = "";
+        }
+        PageInfo<Sim> simpPage = simService.findAllSim(pageNum,pageSize,uid ,phone);
+        if(simpPage!=null){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/all", "findAllSim", (short) 4008, "查询成功"));
-            return new Message().ok(4009, "查询成功").addData("simList",simService.findAllSim(pageNum,pageSize,uid));
+            return new Message().ok(4009, "查询成功").addData("simList",simpPage);
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/all", "simList", (short) 4009, "查询失败"));
             return new Message().error(4010, "查询失败");

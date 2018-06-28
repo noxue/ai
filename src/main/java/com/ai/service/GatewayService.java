@@ -5,7 +5,7 @@ import com.github.pagehelper.PageInfo;
 
 public interface GatewayService {
 
-    PageInfo<Gateway> findAllGate(int pageNum, int pageSize, String uid);
+    PageInfo<Gateway> findAllGate(int pageNum, int pageSize, String name, String user_id);
 
     boolean registerGate(Gateway gateway);
 

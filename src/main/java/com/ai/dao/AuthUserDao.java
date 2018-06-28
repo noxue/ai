@@ -15,9 +15,13 @@ public interface AuthUserDao extends AuthUserMapper{
 
     List<AuthUser> selectUserList() throws DataAccessException;
 
+    List<AuthUser> selectUserAndRoleList(String uid) throws DataAccessException;
+
     List<AuthUser> selectUserListByRoleId(Integer roleId) throws DataAccessException;
 
     List<AuthUser> selectUserListExtendByRoleId(Integer roleId) throws DataAccessException;
 
     AuthUser getUserByUidAndPid( String uid , String pid);
+
+
 }
