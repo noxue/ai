@@ -26,9 +26,9 @@ public class SimServiceImpl implements SimService {
     private SimUserDao simUserDao;
 
     @Override
-    public PageInfo<Sim> findAllSim(int pageNum, int pageSize, String uid) {
+    public PageInfo<Sim> findAllSim(int pageNum, int pageSize, String uid ,String phone) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Sim> simsList = simDao.getSimsList(uid);
+        List<Sim> simsList = simDao.getSimsList(uid ,phone);
         PageInfo result = new PageInfo(simsList);
         return result;
     }
@@ -40,7 +40,7 @@ public class SimServiceImpl implements SimService {
 
     @Override
     public boolean editSim(Sim sim) {
-        return simDao.updateByPrimaryKey(sim) ==1 ? Boolean.TRUE : Boolean.FALSE;
+        return simDao.updateByPrimaryKeySelective(sim) ==1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override

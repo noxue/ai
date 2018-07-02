@@ -16,6 +16,9 @@
     delete from auth_user_role  where user_id = #{userId} and role_id = #{roleId}
   </delete>
 
+  <delete id="deleteByUserId" parameterType="java.lang.String">
+    delete from auth_user_role  where user_id =  #{_parameter,jdbcType=VARCHAR}
+  </delete>
 
   <select id="selectAuthUserRoleByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select

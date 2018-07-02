@@ -149,8 +149,8 @@ public class AccountController extends BasicAction {
      * @Param [request, response]
      * @Return com.ai.domain.vo.Message
      */
-    @ApiOperation(value = "添加用户", notes = "添加用户")
-    @PostMapping("/add")
+   /* @ApiOperation(value = "添加用户", notes = "添加用户")
+    @PostMapping("/register")
     public Message accountRegister(HttpServletRequest request, HttpServletResponse response) {
 
         String appId = request.getHeader("appId");
@@ -212,7 +212,6 @@ public class AccountController extends BasicAction {
         }
         authUser.setStatus((byte) 1);
 
-
         //获取当前角色的权限信息
         String authRoleId = accountService.loadAccountRoleId(appId);
         List<AuthRole> roleList = roleService.getRolesById(Integer.parseInt(authRoleId));
@@ -251,7 +250,7 @@ public class AccountController extends BasicAction {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "注册失败"));
             return new Message().ok(1009, "注册失败");
         }
-    }
+    }*/
 
 
 

@@ -15,13 +15,19 @@ public interface UserService {
 
     List<AuthUser> getUserList();
 
+    List<AuthUser> getUserList(String name);
+
     List<AuthUser> getUserListByRoleId(Integer roleId);
 
     boolean authorityUserRole(String appId, int roleId);
 
     boolean deleteAuthorityUserRole(String uid,int roleId);
 
+    boolean deleteAuthRoleUserByUserId(String uid);
+
     AuthUser getUserByAppId(String appId);
 
     List<AuthUser> getNotAuthorityUserListByRoleId(Integer roleId);
+
+    boolean delUser(String uid);
 }

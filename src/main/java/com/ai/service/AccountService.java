@@ -24,4 +24,6 @@ public interface AccountService {
     List<AuthUserRole> selectAuthUserRoleByUserId(String userId);
     //根据uid和pid查询authUser信息
     AuthUser getUserByUidAndPid(String uid , String pid);
+
+    boolean editAuthUser(AuthUser auth);
 }

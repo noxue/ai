@@ -40,6 +40,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<AuthUser> getUserList(String uid) throws DataAccessException {
+        return userMapper.selectUserAndRoleList(uid);
+    }
+
+    @Override
     public List<AuthUser> getUserListByRoleId(Integer roleId) throws DataAccessException {
         return userMapper.selectUserListByRoleId(roleId);
     }
@@ -63,6 +68,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean deleteAuthRoleUserByUserId(String uid ) throws DataAccessException {
+        return authUserRoleMapper.deleteByUserId(uid) == 1? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
     public AuthUser getUserByAppId(String appId) throws DataAccessException {
 
         return userMapper.selectByUniqueKey(appId);
@@ -72,5 +82,10 @@ public class UserServiceImpl implements UserService {
     public List<AuthUser> getNotAuthorityUserListByRoleId(Integer roleId) throws DataAccessException {
 
         return userMapper.selectUserListExtendByRoleId(roleId);
+    }
+
+    @Override
+    public boolean delUser(String uid) {
+        return userMapper.deleteByPrimaryKey(uid)== 1? Boolean.TRUE :Boolean.FALSE;
     }
 }

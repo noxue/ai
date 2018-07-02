@@ -50,7 +50,7 @@ public class AccountServiceImpl implements AccountService {
     public boolean registerAccount(AuthUser account) throws DataAccessException {
 
         // 给新用户授权访客角色
-        userService.authorityUserRole(account.getUid(),103);
+        //userService.authorityUserRole(account.getUid(),103);
 
         return userMapper.insertSelective(account) ==1 ? Boolean.TRUE : Boolean.FALSE;
     }
@@ -80,5 +80,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AuthUser getUserByUidAndPid(String uid, String pid) {
         return userMapper.getUserByUidAndPid(uid,pid);
+    }
+
+    @Override
+    public boolean editAuthUser(AuthUser auth) {
+        return userMapper.updateByPrimaryKeySelective(auth)==1? Boolean.TRUE : Boolean.FALSE;
     }
 }
