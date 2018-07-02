@@ -1,6 +1,7 @@
 package com.ai.controller.web.v1;
 
 
+import com.ai.config.UploadConfig;
 import com.ai.dao.VoiceDao;
 import com.ai.domain.bo.Voice;
 import com.ai.domain.vo.Message;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +22,11 @@ import java.util.Map;
 @RequestMapping("/web/api/v1/voice")
 public class VoiceController {
 
-
-    @Autowired
-    private VoiceDao voiceDao;
-
     @Autowired
     VoiceService voiceService;
+
+    @Autowired
+    UploadConfig uploadConfig;
 
     @PostMapping("/upload")
     public Message uploadVoice(@RequestParam("voice") MultipartFile voice) {
@@ -42,40 +42,40 @@ public class VoiceController {
         return new Message().error(3201, "上传失败");
     }
 
-    class V{
-        private String text;
-        private String pcm;
+    @RequestMapping("/file/{type}/{hash}")
+    public void file(@PathVariable  String type, @PathVariable  String hash, HttpServletResponse response){
 
-        public V(String text, String pcm) {
-            this.text = text;
-            this.pcm = pcm;
+        Voice voice = voiceService.findVoice(hash);
+        if (voice== null) return;
+
+        // 下载本地文件
+        String fileName = uploadConfig.getPath()+ voice.getPath();
+
+        if ("pcm".equalsIgnoreCase(type)) {
+            fileName = uploadConfig.getPath()+ voice.getPcm();
         }
 
-        public String getText() {
-            return text;
+        // 读到流中
+        InputStream inStream = null;// 文件的存放路径
+        try {
+            inStream = new FileInputStream(fileName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 设置输出的格式
+        response.reset();
+        response.setContentType("bin");
+        response.addHeader("Content-Disposition", "attachment; filename=\"" + voice.getFilename() + "." + type + "\"");
+        // 循环取出流中的数据
+        byte[] b = new byte[100];
+        int len;
+        try {
+            while ((len = inStream.read(b)) > 0)
+                response.getOutputStream().write(b, 0, len);
+            inStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        public void setText(String text) {
-            this.text = text;
-        }
-
-        public String getPcm() {
-            return pcm;
-        }
-
-        public void setPcm(String pcm) {
-            this.pcm = pcm;
-        }
-    }
-    @GetMapping("/test")
-    public Object test(){
-        List<Voice> voices =  voiceDao.select();
-
-        Map<String,V> res = new HashMap<>();
-
-        for(Voice voice:voices){
-            res.put(voice.getHash(),new V("",voice.getPcm()));
-        }
-       return res;
     }
 }
