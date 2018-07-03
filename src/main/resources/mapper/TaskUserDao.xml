@@ -27,7 +27,8 @@
 
     select u.* from task_user u
     left join task t on u.task_id = t.id
-    where  t.user_id=#{user_id}
+    where 1=1
+      and  u.task_id = #{taskId}
     <if test="test != null and test != ''">
       AND t.`test` = #{test}
     </if>
@@ -37,7 +38,7 @@
     <if test="share != null and share != ''">
       AND u.`share` = #{share}
     </if>
-    order by u.id desc ;
+    order by u.called_at desc
   </select>
 
     <select id="getAllTaskUsers" parameterType="java.lang.String" resultMap="BaseResultMap">

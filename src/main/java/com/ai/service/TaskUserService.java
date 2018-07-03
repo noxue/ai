@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TaskUserService {
 
-    PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize, String user_id, String test, String type, String share);
+    PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize, String taskId, String test, String type, String share);
 
     boolean addTaskUser(TaskUser taskUser);
 

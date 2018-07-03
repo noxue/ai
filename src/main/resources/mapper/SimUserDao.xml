@@ -10,11 +10,12 @@
     id, user_id, sim_id
   </sql>
 
-  <select id="getSimUserBySimIdAndUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="getSimUserBySimIdAndUserId"  resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sim_user s
-    where s.user_id = #{user_id,jdbcType=VARCHAR} AND s.sim_id = #{sim_id,jdbcType=VARCHAR}
+    from sim_user
+    where 1=1 AND `user_id` = #{user_id} AND sim_id = #{sim_id}
   </select>
+
 
 </mapper>

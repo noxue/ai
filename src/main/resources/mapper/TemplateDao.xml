@@ -23,7 +23,13 @@
     t.id,t. `name`, t.user_id AS userId, t.status,  t.content, t.created_at AS createdAt
     from template t
     left join auth_user a on t.user_id = a.uid
-    where t.`user_id` = #{_parameter}
+    where 1=1
+      <if test="userId != null and userId != ''">
+          AND t.user_id = #{userId}
+      </if>
+      <if test="name != null and name != ''">
+          AND t.`name` like  CONCAT('%',#{name} ,'%')
+      </if>
   </select>
 
   <select id="getTemplateListByPid" parameterType="java.lang.String" resultType="com.ai.domain.bo.Template">
@@ -31,7 +37,11 @@
       t.id,t. `name`, t.user_id AS userId, t.status,  t.content, t.created_at AS createdAt
       from template t
       join auth_user a on t.user_id = pid
-   where t.user_id= (select pid from auth_user where uid=#{name,jdbcType=VARCHAR});
+   where 1=1
+       and t.user_id= (select a.pid from auth_user a where a.uid=#{uid}
+      <if test="name != null and name != ''">
+          AND t.`name` like  CONCAT('%',#{name} ,'%')
+      </if>
   </select>
 
   <select id="selectByName" parameterType="java.lang.String" resultType="com.ai.domain.bo.Template">
@@ -39,7 +49,5 @@
         id, `name`, user_id AS userId, status,  content, created_at AS createdAt
         from template t where t.`name` = #{name,jdbcType=VARCHAR}
   </select>
-
-
 
 </mapper>

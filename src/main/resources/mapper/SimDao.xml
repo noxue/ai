@@ -12,7 +12,6 @@
     id, `number`, gateway_id, description, user_id
   </sql>
   <select id="getSimsList" parameterType="java.lang.String"  resultType="com.ai.domain.bo.Sim">
-
     select
     s.id AS id,
     s.description AS description,
@@ -30,11 +29,17 @@
   </select>
 
   <select id="getSimBySimIdAndUserId" parameterType="java.lang.String"  resultType="com.ai.domain.bo.Sim">
-
     select <include refid="Base_Column_List" />
     from sim s
     where s.id = #{id,jdbcType=BIGINT} AND s.user_id = #{user_id ,jdbcType=VARCHAR}
-
   </select>
 
+  <select id="getSimUserList" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select   s2.number, s2.id
+    from sim s2 left join  sim_user s  on s.sim_id = s2.id
+    where 1=1
+    <if test="_parameter != null and _parameter != ''">
+      AND  s.user_id = #{_parameter}
+    </if>
+  </select>
 </mapper>

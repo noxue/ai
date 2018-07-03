@@ -34,6 +34,14 @@ public class SimServiceImpl implements SimService {
     }
 
     @Override
+    public PageInfo<Sim> findSimUserById(int pageNum, int pageSize, String uid) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Sim> simUserList = simDao.getSimUserList(uid );
+        PageInfo result = new PageInfo(simUserList);
+        return result;
+    }
+
+    @Override
     public boolean registerSim(Sim sim) {
         return simDao.insert(sim) ==1 ? Boolean.TRUE : Boolean.FALSE;
     }
@@ -76,6 +84,6 @@ public class SimServiceImpl implements SimService {
 
     @Override
     public boolean isExistInSimUser(String user_id, String sim_id) {
-         return simUserDao.getSimUserBySimIdAndUserId(user_id,Integer.parseInt(sim_id))==null ? Boolean.FALSE: Boolean.TRUE;
+        return simUserDao.getSimUserBySimIdAndUserId(user_id,Long.parseLong(sim_id))==null ? Boolean.FALSE: Boolean.TRUE;
     }
 }

@@ -5,7 +5,7 @@ import com.github.pagehelper.PageInfo;
 
 public interface TemplateService {
 
-    PageInfo<Template> findAllTemlate(int pageNum, int pageSize, String uid);
+    PageInfo<Template> findAllTemlate(int pageNum, int pageSize, String uid ,String name);
 
     boolean registerTemplate(Template template);
 

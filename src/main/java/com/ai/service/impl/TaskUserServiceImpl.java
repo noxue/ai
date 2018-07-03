@@ -19,17 +19,17 @@ public class TaskUserServiceImpl implements TaskUserService {
     private TaskUserDao taskUserMapper;
 
     @Override
-    public PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize, String user_id,
+    public PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize, String taskId,
                                                  String test, String type, String share) {
         PageHelper.startPage(pageNum, pageSize);
-        List<TaskUser> taskUserList = taskUserMapper.getTaskUserListByConditions(user_id,test,type,share);
+        List<TaskUser> taskUserList = taskUserMapper.selectTaskUserListByConditions(taskId,test,type,share);
         PageInfo result = new PageInfo(taskUserList);
         return result;
     }
 
     @Override
     public boolean addTaskUser(TaskUser taskUser) {
-        return taskUserMapper.insert(taskUser) ==1 ? Boolean.TRUE : Boolean.FALSE;
+        return taskUserMapper.insertSelective(taskUser) ==1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override

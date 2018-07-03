@@ -11,6 +11,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -27,17 +28,21 @@ public class TemplateServiceImpl implements TemplateService {
     private AuthRoleMapper authRoleMapper;
 
     @Override
-    public PageInfo<Template> findAllTemlate(int pageNum, int pageSize, String uid) {
+    public PageInfo<Template> findAllTemlate(int pageNum, int pageSize, String uid ,String name) {
         PageHelper.startPage(pageNum, pageSize);
         boolean flag = false;
         List<Template> teplatesList =null;
-        String roleId = accountService.loadAccountRoleId(uid);
-        //根据roleid查询该角色是否为企业员工 code : role_user
-        AuthRole authRole = authRoleMapper.selectByPrimaryKey(Integer.parseInt(roleId));
-        if(authRole.getCode().equals("role_user")){
-            teplatesList = templateDao.getTemplateListByPid(uid);
+        if(StringUtils.isEmpty(uid)){
+            teplatesList = templateDao.getTemplateListByUid(uid , name);
         }else{
-            teplatesList = templateDao.getTemplateListByUid(uid);
+            String roleId = accountService.loadAccountRoleId(uid);
+            //根据roleid查询该角色是否为企业员工 code : role_user
+            AuthRole authRole = authRoleMapper.selectByPrimaryKey(Integer.parseInt(roleId));
+            if(authRole.getCode().equals("role_user")){
+                teplatesList = templateDao.getTemplateListByPid(uid ,name);
+            }else{
+                teplatesList = templateDao.getTemplateListByUid(uid , name);
+            }
         }
         PageInfo result = new PageInfo(teplatesList);
         return result;

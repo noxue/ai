@@ -9,6 +9,7 @@ import com.ai.service.*;
 import com.ai.support.factory.LogTaskFactory;
 import com.ai.support.manager.LogExeManager;
 import com.ai.util.RequestResponseUtil;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -105,41 +107,76 @@ public class TaskController extends BasicAction{
     @ApiOperation(value = "新增task", notes = "添加task信息")
     @ResponseBody
     @PostMapping("/add")
-    public Message addTask(HttpServletRequest request, HttpServletResponse response){
+    public Message addTask(HttpServletRequest request, HttpServletResponse response) throws ParseException {
         //获取参数
         String user_id =  request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String sim_id = params.get("sim_id");
-        //验证当前用户是否有可用的卡
-        if(simService.isExistInSim(user_id,sim_id)){
+        String name = params.get("name");
+        String phone = params.get("phone");
+        String remark = params.get("remark");
+        String sim_id = params.get("sim");
+        // 必须信息缺一不可,返回验证消息
+        if (StringUtils.isEmpty(user_id)) {
+            return new Message().error(5007, "当前用户未登录！");
+        }
+        if (StringUtils.isEmpty(sim_id)) {
+            return new Message().error(5007, "请选择sim卡信息");
+        }
+        //验证当前用户与选中的卡是否匹配
+        if(simService.isExistInSimUser(user_id,sim_id)){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "", "isExistInSim", (short) 5019, "验证成功"));
         }else {
-            if(simService.isExistInSimUser(user_id,sim_id)){
-                LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "", "isExistInSimUser", (short) 5020, "验证成功"));
-            }else{
-                return new Message().error(5018, "当前用户没有可用的卡");
-            }
+            return new Message().error(5018, "该卡当前不可使用");
         }
-        String template_id = params.get("template_id");
-        String thread = params.get("thread");
-        String test = params.get("test");
-        // 必须信息缺一不可,返回验证消息
-        if (StringUtils.isEmpty(user_id) ||StringUtils.isEmpty(template_id)) {
-            return new Message().error(5007, "信息不全");
+        String template_id = params.get("template");
+        if (StringUtils.isEmpty(template_id)) {
+            return new Message().error(5007, "请选择模板信息");
         }
 
+        String test = params.get("test");
+        String date1 = params.get("date1");
+        String date2 = params.get("date2");
         Task task = new Task();
         task.setUserId(user_id);
-        if(StringUtils.isEmpty(thread)){
-            task.setThread(Integer.parseInt(thread));
+        if(!StringUtils.isEmpty(params.get("num"))){
+            task.setThread(Integer.parseInt(params.get("num")));
+        }
+        if(!StringUtils.isEmpty(params.get("total"))){
+            task.setTotal(Integer.parseInt(params.get("total")));
         }
         task.setTemplateId(Long.parseLong(template_id));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+        task.setStartAt(sdf.parse(date1+" "+ date2));
         task.setCreatedAt(new Date());
-        if(test.equals("1")){
+        task.setStatus(new Byte("1"));
+        if (test.equals("1")) {
+            task.setTest(false);
+        } else {
             task.setTest(true);
         }
         if (taskService.registerTask(task)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/add", "addTask", (short) 3003, "新增成功"));
+            if(test.equals("0")){
+                if (StringUtils.isEmpty(phone)) {
+                    return new Message().error(5007, "请填写手机号码");
+                }
+                Long taskid = task.getId();
+                TaskUser taskUser = new TaskUser();
+                taskUser.setTaskId(taskid);
+                taskUser.setName(name);
+                taskUser.setMobile(phone);
+                taskUser.setRemark(remark);
+                taskUser.setCalledAt(new Date());
+                if(taskUserService.addTaskUser(taskUser)){
+                    LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/add", "addTaskUser", (short) 5011, "新增成功"));
+                }else{
+                    LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/add", "addTaskUser", (short) 5012, "新增失败"));
+                    return new Message().error(5012, "新增失败");
+                }
+
+            }else{
+                LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/add", "addTask", (short) 3003, "新增成功"));
+            }
             return new Message().ok(5008, "新增成功");
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/add", "addTask", (short) 3004, "新增失败"));
@@ -304,9 +341,14 @@ public class TaskController extends BasicAction{
              int pageSize){
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String appId =request.getHeader("appId");
+        pageNum = Integer.parseInt(params.get("page"));
         if ( StringUtils.isEmpty(appId)) {
             // 必须信息缺一不可,返回信息缺失
             return new Message().error(5024, "信息缺失");
+        }
+        String roleId= accountService.loadAccountRoleId(appId);
+        if(roleId.equals("100")){
+            appId = "";
         }
         if (taskService.findAllTaskByAppId(pageNum,pageSize,appId)!=null){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/taskList", "selectTaskList", (short) 3010, "查询成功"));
@@ -325,19 +367,22 @@ public class TaskController extends BasicAction{
                                           int pageNum,
                                   @RequestParam(name = "pageSize", required = false, defaultValue = "15")
                                           int pageSize){
+ //       String appId =request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String appId =request.getHeader("appId");
-        String test  =request.getHeader("test");
-        String type  =request.getHeader("type");
-        String share =request.getHeader("share");
+        String test  =params.get("test");
+        String type  =params.get("type");
+        String share =params.get("share");
+        String taskId =params.get("taskId");
+        pageNum = Integer.parseInt(params.get("page"));
 
-        if ( StringUtils.isEmpty(appId)) {
+/*        if ( StringUtils.isEmpty(appId)) {
             // 必须信息缺一不可,返回信息缺失
             return new Message().error(5024, "信息缺失");
-        }
-        if (taskUserService.findAllTaskUser(pageNum,pageSize,appId,test,type,share)!=null){
+        }*/
+        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(pageNum,pageSize,taskId,test,type,share);
+        if (taskUserList != null){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/conditions", "selectTaskUserListByConditions", (short) 3010, "查询成功"));
-            return new Message().ok(5025, "查询成功").addData("taskList",taskUserService.findAllTaskUser(pageNum,pageSize,appId,test,type,share));
+            return new Message().ok(5025, "查询成功").addData("taskUserList",taskUserList);
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/conditions", "selectTaskUserListByConditions", (short) 3011, "查询失败"));
             return new Message().error(5027, "查询失败");

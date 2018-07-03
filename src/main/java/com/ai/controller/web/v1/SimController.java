@@ -164,7 +164,30 @@ public class SimController extends BasicAction{
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/all", "findAllSim", (short) 4008, "查询成功"));
             return new Message().ok(4009, "查询成功").addData("simList",simpPage);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/all", "simList", (short) 4009, "查询失败"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/all", "findAllSim", (short) 4009, "查询失败"));
+            return new Message().error(4010, "查询失败");
+        }
+    }
+
+    @ApiOperation(value = "获取sim卡信息", notes = "根据当前用户查询simUser信息")
+    @ResponseBody
+    @PostMapping("/listById")
+    public Object findAllSimById(HttpServletRequest request, HttpServletResponse response){
+        String uid =request.getHeader("appId");
+        if (StringUtils.isEmpty(uid)) {
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3017, "信息缺失");
+        }
+        String roleId= accountService.loadAccountRoleId(uid);
+        if(roleId.equals("100")){
+            uid = "";
+        }
+        PageInfo<Sim> simpUserPage = simService.findSimUserById(1,500,uid);
+        if(simpUserPage!=null){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/listById", "findAllSimById", (short) 4008, "查询成功"));
+            return new Message().ok(4009, "查询成功").addData("simpUserPage",simpUserPage);
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/listById", "findAllSimById", (short) 4009, "查询失败"));
             return new Message().error(4010, "查询失败");
         }
     }

@@ -1,12 +1,15 @@
 package com.ai.controller.web.v1;
 
 import com.ai.dao.VoiceDao;
+import com.ai.domain.bo.Sim;
 import com.ai.domain.bo.Template;
 import com.ai.domain.vo.Message;
+import com.ai.service.AccountService;
 import com.ai.service.TemplateService;
 import com.ai.support.factory.LogTaskFactory;
 import com.ai.support.manager.LogExeManager;
 import com.ai.util.RequestResponseUtil;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,8 @@ public class TemplateController extends BasicAction{
     @Autowired
     private TemplateService templateService;
 
+    @Autowired
+    private AccountService accountService;
 
     @ApiOperation(value = "新增Template", notes = "增加一个Template模板信息")
     @ResponseBody
@@ -133,18 +138,60 @@ public class TemplateController extends BasicAction{
                     int pageNum,
             @RequestParam(name = "pageSize", required = false, defaultValue = "15")
                     int pageSize){
-        //根据userid获取角色权限列表
+        //根据appId获取角色权限列表
         String appId =request.getHeader("appId");
+
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String name = params.get("name");
+        pageNum = Integer.parseInt(params.get("page"));
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3017, "信息缺失");
+        }
+        String roleId= accountService.loadAccountRoleId(appId);
+        if(roleId.equals("100")){
+            appId = "";
+        }
+        PageInfo<Template> templatePage = templateService.findAllTemlate(pageNum,pageSize,appId ,name);
         //分页获取模板信息
-        if(templateService.findAllTemlate(pageNum,pageSize,appId)!=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/templateList/all", "findAllTemplate", (short) 4408, "查询成功"));
-            return new Message().ok(4410, "查询成功").addData("templateList",templateService.findAllTemlate(pageNum,pageSize,appId));
+        if(templatePage!=null){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/all", "findAllTemplate", (short) 4408, "查询成功"));
+            return new Message().ok(4410, "查询成功").addData("templateList",templatePage);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/templateList/all", "findAllTemplate", (short) 4409, "查询失败"));
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/all", "findAllTemplate", (short) 4409, "查询失败"));
             return new Message().error(4411, "查询失败");
         }
     }
 
+    @ApiOperation(value = "分页获取template", notes = "模糊查询分页获取template信息")
+    @ResponseBody
+    @PostMapping("/listById")
+    public Object findTemplateListlistById(HttpServletRequest request, HttpServletResponse response,
+                                  @RequestParam(name = "pageNum", required = false, defaultValue = "1")
+                                          int pageNum,
+                                  @RequestParam(name = "pageSize", required = false, defaultValue = "1000")
+                                          int pageSize){
+        //根据appId获取角色权限列表
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3017, "信息缺失");
+        }
+        //判断当前操作的用户的权限
+        String roleId= accountService.loadAccountRoleId(appId);
+        if(roleId.equals("100")){
+            appId = "";
+        }
+        PageInfo<Template> templatePage = templateService.findAllTemlate(pageNum,pageSize,appId ,"");
+        //分页获取模板信息
+        if(templatePage!=null){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/templateList/listById", "findTemplateListlistById", (short) 4408, "查询成功"));
+            return new Message().ok(4410, "查询成功").addData("templateList",templatePage);
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/templateList/listById", "findTemplateListlistById", (short) 4409, "查询失败"));
+            return new Message().error(4411, "查询失败");
+        }
+    }
      /*
      * @Description 根据id获取template信息
      * @Param [] id
@@ -169,6 +216,5 @@ public class TemplateController extends BasicAction{
             return new Message().error(4413, "查询失败");
         }
     }
-
 
 }

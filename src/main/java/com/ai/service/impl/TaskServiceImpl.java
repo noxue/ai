@@ -19,7 +19,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public PageInfo<Task> findAllTaskByAppId(int pageNum, int pageSize, String appId) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Task> tasksList = taskMapper.getTasksList(appId);
+        List<Task> tasksList = taskMapper.selectTaskList(appId);
         PageInfo result = new PageInfo(tasksList);
         return result;
     }
