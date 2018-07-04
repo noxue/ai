@@ -1,5 +1,6 @@
 package com.ai.service.impl;
 
+import com.ai.config.UploadConfig;
 import com.ai.domain.bo.TaskUser;
 import com.ai.service.ExcelService;
 import com.ai.service.TaskUserService;
@@ -9,10 +10,10 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Encoder;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +27,9 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Autowired
     private TaskUserService taskUserService;
+
+    @Autowired
+    UploadConfig uploadConfig;
 
     public static String outputFile = "c:\\营销结果.xls";
 
@@ -91,19 +95,26 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Override
     public void downloadExcel(List<String[]> rowList, HttpServletResponse response) throws IOException {
+        // 指定允许其他域名访问    // 响应类型
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","GET");
+        // 响应头设置
+        response.setHeader("Access-Control-Allow-Headers","x-requested-with,content-type");
         // 创建新的Excel 工作簿
         HSSFWorkbook workbook = new HSSFWorkbook();
         // 设置字体
         HSSFFont font = workbook.createFont();
         font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
         font.setFontHeightInPoints((short) 14);
+        font.setFontName("宋体");
         // 设置样式
         HSSFCellStyle cellStyle = workbook.createCellStyle();
         cellStyle.setFont(font);
         cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 
         // 在Excel工作簿中建一工作表，其名为缺省值
-        HSSFSheet sheet = workbook.createSheet("营销统计");
+        HSSFSheet sheet = workbook.createSheet();
+        workbook.setSheetName(0, "营销统计");
         /*CellRangeAddress cellRangeAddress = new CellRangeAddress(0, 0, 0,
                 11);
         sheet.addMergedRegion(cellRangeAddress);*/
@@ -116,37 +127,55 @@ public class ExcelServiceImpl implements ExcelService {
         // 定义单元格为字符串类型
         cell.setCellType(HSSFCell.CELL_TYPE_STRING);
         cell.setCellStyle(cellStyle);
-        row=sheet.createRow(0);
-        row.createCell(0).setCellValue("客户姓名");
-        row.createCell(1).setCellValue("客户电话");
-        row.createCell(2).setCellValue("呼叫状态");
-        row.createCell(3).setCellValue("客户分类");
-        row.createCell(4).setCellValue("分类原因");
-        row.createCell(5).setCellValue("呼叫时间");
-        row.createCell(6).setCellValue("通话时间");
-        row.createCell(7).setCellValue("跟进状态");
+        row=sheet.createRow((short)0);
+        row.createCell((short) 0).setCellValue("客户姓名");
+        row.createCell((short) 1).setCellValue("客户电话");
+        row.createCell((short) 2).setCellValue("呼叫状态");
+        row.createCell((short) 3).setCellValue("客户分类");
+        row.createCell((short) 4).setCellValue("分类原因");
+        row.createCell((short) 5).setCellValue("呼叫时间");
+        row.createCell((short) 6).setCellValue("通话时间");
+        row.createCell((short) 7).setCellValue("跟进状态");
 
         //填充数据
         for (int i = 0; i < rowList.size(); i++) {
             row=sheet.createRow(i+1);
             for (int j = 0; j < rowList.get(i).length; j++){
-                row.createCell(j).setCellValue(rowList.get(i)[j]);
+                row.createCell((short)j).setCellValue(rowList.get(i)[j]);
             }
         }
+        String fileName = "asda";
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-        // 新建一输出文件流
-        FileOutputStream fOut = new FileOutputStream(outputFile);
-        // 把相应的Excel 工作簿存盘
-        workbook.write(fOut);
-
-
-
-
-
-        fOut.flush();
-        // 操作结束，关闭文件
-        fOut.close();
-        System.out.println("文件生成...");
-
+        workbook.write(os);
+        byte[] content = os.toByteArray();
+       // byte[] content = os.toByteArray();
+        InputStream is = new ByteArrayInputStream(content);
+        // 设置response参数，可以打开下载页面
+      /*  response.setContentType("application/vnd.ms-excel;charset=GBK");
+        response.addHeader("Content-Disposition", "attachment;filename="
+                + new String((fileName + ".xls").getBytes(), "GBK"));*/
+        ServletOutputStream out = response.getOutputStream();
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try {
+            bis = new BufferedInputStream(is);
+            bos = new BufferedOutputStream(out);
+            byte[] buff = new byte[2048];
+            int bytesRead;
+            // Simple read/write loop.
+            while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+                bos.write(buff, 0, bytesRead);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (bis != null)
+                bis.close();
+            if (bos != null)
+                bos.close();
+        }
+        out.flush();
     }
+
 }

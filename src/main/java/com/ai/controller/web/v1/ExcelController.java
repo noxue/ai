@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +48,11 @@ public class ExcelController extends BasicAction{
 
     @ApiOperation(value = "导出excel", notes = "根据当前的用户信息按照规定的模板导出execl信息")
     @ResponseBody
-    @PostMapping("/exp")
+    @RequestMapping("/exp")
     public void ExportExcel(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String appId =  request.getHeader("appId");
         if(appId ==null || appId.equals("")){
-            return;
+            return ;
         }
         TaskUser[] result = taskUserService.taskUserList(appId);
         List<String[]> listArray = new ArrayList<String[]>();
@@ -59,7 +60,7 @@ public class ExcelController extends BasicAction{
         if( result != null ) {
             for (int i = 0; i < result.length; i++) {
                 String[] arrays = new String[8];
-                arrays[0] = result[i].getName().toString();
+                arrays[0] = result[i].getName();
                 arrays[1] = result[i].getMobile().toString();
                 if(result[i].getStatus().toString().equals("0")){
                     arrays[2] = "通话完毕";
