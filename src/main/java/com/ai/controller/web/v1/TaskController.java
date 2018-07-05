@@ -11,17 +11,20 @@ import com.ai.support.manager.LogExeManager;
 import com.ai.util.RequestResponseUtil;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /* *
@@ -52,6 +55,9 @@ public class TaskController extends BasicAction{
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private ExcelService excelService;
 
     @ApiOperation(value = "新增taskUserReport", notes = "添加taskUserReport信息")
     @ResponseBody
@@ -367,9 +373,11 @@ public class TaskController extends BasicAction{
                                           int pageNum,
                                   @RequestParam(name = "pageSize", required = false, defaultValue = "15")
                                           int pageSize){
- //       String appId =request.getHeader("appId");
+        String appId =request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String test  =params.get("test");
+        String status  =params.get("status");
+        String name  =params.get("name");
         String type  =params.get("type");
         String share =params.get("share");
         String taskId =params.get("taskId");
@@ -388,4 +396,42 @@ public class TaskController extends BasicAction{
             return new Message().error(5027, "查询失败");
         }
     }
+
+    @ApiOperation(value = "导入excel", notes = "根据规定的模板导入客户信息")
+    @ResponseBody
+    @PostMapping("/imp")
+    public Message ImportExcel(@RequestParam("file") MultipartFile file) throws Exception {
+        if (file == null) {
+            return new Message().error(-1,"导入失败");
+        }
+        return excelService.importExcel(file);
+    }
+
+    @ApiOperation(value = "导出excel", notes = "根据当前的用户信息按照规定的模板导出execl信息")
+    @ResponseBody
+    @RequestMapping("/exp")
+    public Message ExportExcel(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String appId = request.getHeader("appId");
+        if (appId == null || appId.equals("")) {
+            return new Message().error(-1, "缺少授权信息");
+        }
+        TaskUser[] result = taskUserService.taskUserList(appId);
+        List<String[]> listArray = excelService.downloadExcel(result);
+        // 指定允许其他域名访问    // 响应类型
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET");
+        // 响应头设置
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+        String data = "";
+        data += "客户姓名\t客户电话\t呼叫状态\t客户分类\t分类原因\t呼叫时间\t通话时间\t跟进状态\r\n";
+        //填充数据
+        for (int i = 0; i < listArray.size(); i++) {
+            for (int j = 0; j < listArray.get(i).length; j++) {
+                data += listArray.get(i)[j] + "\t";
+            }
+            data += "\r\n";
+        }
+        return new Message().ok(0,"success").addData("task",new String(Base64.encodeBase64(data.getBytes("gbk"))));
+    }
+
 }

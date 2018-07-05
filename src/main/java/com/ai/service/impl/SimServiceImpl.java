@@ -69,7 +69,8 @@ public class SimServiceImpl implements SimService {
 
     @Override
     public boolean editSimUser(SimUser simUser) {
-        return simUserMapper.updateByPrimaryKey(simUser) == 1 ? Boolean.TRUE : Boolean.FALSE;
+
+        return simUserMapper.updateByPrimaryKeySelective(simUser) == 1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override

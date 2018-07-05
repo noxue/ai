@@ -8,15 +8,16 @@
     <result column="thread" jdbcType="INTEGER" property="thread" />
     <result column="total" jdbcType="INTEGER" property="total" />
     <result column="called" jdbcType="INTEGER" property="called" />
-    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="start_at" jdbcType="TIMESTAMP" property="startAt" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="finish_at" jdbcType="TIMESTAMP" property="finishAt" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="test" jdbcType="BIT" property="test" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, template_id, thread, total, `called`, created_at, start_at, finish_at, 
-    `status`, test
+    id, user_id, template_id, thread, total, `called`, start_at, created_at, finish_at, 
+    `status`, test, `name`
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -33,13 +34,13 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into task (user_id, template_id, thread, 
-      total, `called`, created_at, 
-      start_at, finish_at, `status`, 
-      test)
+      total, `called`, start_at, 
+      created_at, finish_at, `status`, 
+      test, `name`)
     values (#{userId,jdbcType=VARCHAR}, #{templateId,jdbcType=BIGINT}, #{thread,jdbcType=INTEGER}, 
-      #{total,jdbcType=INTEGER}, #{called,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
-      #{startAt,jdbcType=TIMESTAMP}, #{finishAt,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, 
-      #{test,jdbcType=BIT})
+      #{total,jdbcType=INTEGER}, #{called,jdbcType=INTEGER}, #{startAt,jdbcType=TIMESTAMP}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{finishAt,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, 
+      #{test,jdbcType=BIT}, #{name,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.Task">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -62,11 +63,11 @@
       <if test="called != null">
         `called`,
       </if>
-      <if test="createdAt != null">
-        created_at,
-      </if>
       <if test="startAt != null">
         start_at,
+      </if>
+      <if test="createdAt != null">
+        created_at,
       </if>
       <if test="finishAt != null">
         finish_at,
@@ -76,6 +77,9 @@
       </if>
       <if test="test != null">
         test,
+      </if>
+      <if test="name != null">
+        `name`,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -94,11 +98,11 @@
       <if test="called != null">
         #{called,jdbcType=INTEGER},
       </if>
-      <if test="createdAt != null">
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
       <if test="startAt != null">
         #{startAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
       </if>
       <if test="finishAt != null">
         #{finishAt,jdbcType=TIMESTAMP},
@@ -108,6 +112,9 @@
       </if>
       <if test="test != null">
         #{test,jdbcType=BIT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -129,11 +136,11 @@
       <if test="called != null">
         `called` = #{called,jdbcType=INTEGER},
       </if>
-      <if test="createdAt != null">
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
       <if test="startAt != null">
         start_at = #{startAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
       </if>
       <if test="finishAt != null">
         finish_at = #{finishAt,jdbcType=TIMESTAMP},
@@ -143,6 +150,9 @@
       </if>
       <if test="test != null">
         test = #{test,jdbcType=BIT},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -154,11 +164,12 @@
       thread = #{thread,jdbcType=INTEGER},
       total = #{total,jdbcType=INTEGER},
       `called` = #{called,jdbcType=INTEGER},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
       start_at = #{startAt,jdbcType=TIMESTAMP},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
       finish_at = #{finishAt,jdbcType=TIMESTAMP},
       `status` = #{status,jdbcType=TINYINT},
-      test = #{test,jdbcType=BIT}
+      test = #{test,jdbcType=BIT},
+      `name` = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -32,7 +32,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public boolean editTask(Task task) {
-        return taskMapper.updateByPrimaryKey(task) ==1 ? Boolean.TRUE : Boolean.FALSE;
+        return taskMapper.updateByPrimaryKeySelective(task) ==1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override

@@ -5,21 +5,20 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="task_id" jdbcType="BIGINT" property="taskId" />
     <result column="mobile" jdbcType="CHAR" property="mobile" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="voice" jdbcType="VARCHAR" property="voice" />
     <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="called_at" jdbcType="TIMESTAMP" property="calledAt" />
     <result column="time" jdbcType="INTEGER" property="time" />
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="share" jdbcType="BIT" property="share" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="called_at" jdbcType="TIMESTAMP" property="calledAt" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ai.domain.bo.TaskUser">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, task_id, mobile, `name`, remark, voice, `status`, called_at, `time`, `type`, 
-    `share`
+    id, task_id, mobile, voice, `status`, `time`, `type`, `share`, `name`, remark, called_at
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -40,14 +39,14 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into task_user (task_id, mobile, `name`, 
-      remark, voice, `status`, 
-      called_at, `time`, `type`, 
-      `share`, content)
-    values (#{taskId,jdbcType=BIGINT}, #{mobile,jdbcType=CHAR}, #{name,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{voice,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
-      #{calledAt,jdbcType=TIMESTAMP}, #{time,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
-      #{share,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR})
+    insert into task_user (task_id, mobile, voice, 
+      `status`, `time`, `type`, 
+      `share`, `name`, remark, called_at, 
+      content)
+    values (#{taskId,jdbcType=BIGINT}, #{mobile,jdbcType=CHAR}, #{voice,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{time,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
+      #{share,jdbcType=BIT}, #{name,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{calledAt,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.TaskUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -61,20 +60,11 @@
       <if test="mobile != null">
         mobile,
       </if>
-      <if test="name != null">
-        `name`,
-      </if>
-      <if test="remark != null">
-        remark,
-      </if>
       <if test="voice != null">
         voice,
       </if>
       <if test="status != null">
         `status`,
-      </if>
-      <if test="calledAt != null">
-        called_at,
       </if>
       <if test="time != null">
         `time`,
@@ -84,6 +74,15 @@
       </if>
       <if test="share != null">
         `share`,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="calledAt != null">
+        called_at,
       </if>
       <if test="content != null">
         content,
@@ -96,20 +95,11 @@
       <if test="mobile != null">
         #{mobile,jdbcType=CHAR},
       </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="remark != null">
-        #{remark,jdbcType=VARCHAR},
-      </if>
       <if test="voice != null">
         #{voice,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
-      </if>
-      <if test="calledAt != null">
-        #{calledAt,jdbcType=TIMESTAMP},
       </if>
       <if test="time != null">
         #{time,jdbcType=INTEGER},
@@ -119,6 +109,15 @@
       </if>
       <if test="share != null">
         #{share,jdbcType=BIT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="calledAt != null">
+        #{calledAt,jdbcType=TIMESTAMP},
       </if>
       <if test="content != null">
         #{content,jdbcType=LONGVARCHAR},
@@ -134,20 +133,11 @@
       <if test="mobile != null">
         mobile = #{mobile,jdbcType=CHAR},
       </if>
-      <if test="name != null">
-        `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="remark != null">
-        remark = #{remark,jdbcType=VARCHAR},
-      </if>
       <if test="voice != null">
         voice = #{voice,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         `status` = #{status,jdbcType=TINYINT},
-      </if>
-      <if test="calledAt != null">
-        called_at = #{calledAt,jdbcType=TIMESTAMP},
       </if>
       <if test="time != null">
         `time` = #{time,jdbcType=INTEGER},
@@ -157,6 +147,15 @@
       </if>
       <if test="share != null">
         `share` = #{share,jdbcType=BIT},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="calledAt != null">
+        called_at = #{calledAt,jdbcType=TIMESTAMP},
       </if>
       <if test="content != null">
         content = #{content,jdbcType=LONGVARCHAR},
@@ -168,14 +167,14 @@
     update task_user
     set task_id = #{taskId,jdbcType=BIGINT},
       mobile = #{mobile,jdbcType=CHAR},
-      `name` = #{name,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR},
       voice = #{voice,jdbcType=VARCHAR},
       `status` = #{status,jdbcType=TINYINT},
-      called_at = #{calledAt,jdbcType=TIMESTAMP},
       `time` = #{time,jdbcType=INTEGER},
       `type` = #{type,jdbcType=TINYINT},
       `share` = #{share,jdbcType=BIT},
+      `name` = #{name,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      called_at = #{calledAt,jdbcType=TIMESTAMP},
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -183,14 +182,14 @@
     update task_user
     set task_id = #{taskId,jdbcType=BIGINT},
       mobile = #{mobile,jdbcType=CHAR},
-      `name` = #{name,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR},
       voice = #{voice,jdbcType=VARCHAR},
       `status` = #{status,jdbcType=TINYINT},
-      called_at = #{calledAt,jdbcType=TIMESTAMP},
       `time` = #{time,jdbcType=INTEGER},
       `type` = #{type,jdbcType=TINYINT},
-      `share` = #{share,jdbcType=BIT}
+      `share` = #{share,jdbcType=BIT},
+      `name` = #{name,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      called_at = #{calledAt,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

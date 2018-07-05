@@ -1,8 +1,6 @@
 package com.ai.service.impl;
 
 import com.ai.dao.TaskUserDao;
-import com.ai.dao.TaskUserMapper;
-import com.ai.domain.bo.App;
 import com.ai.domain.bo.TaskUser;
 import com.ai.service.TaskUserService;
 import com.github.pagehelper.PageHelper;
@@ -49,7 +47,7 @@ public class TaskUserServiceImpl implements TaskUserService {
 
     @Override
     public boolean insertTaskUserList(List<TaskUser> list) {
-        return taskUserMapper.insertBatch(list) == 1 ? Boolean.TRUE :Boolean.FALSE;
+        return taskUserMapper.insertBatch(list) == list.size() ? Boolean.TRUE :Boolean.FALSE;
     }
 
     @Override

@@ -5,11 +5,9 @@
     <id column="hash" jdbcType="VARCHAR" property="hash" />
     <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="pcm" jdbcType="VARCHAR" property="pcm" />
-    <result column="filename" jdbcType="VARCHAR" property="filename" />
-    <result column="visited_at" jdbcType="TIMESTAMP" property="visitedAt" />
   </resultMap>
   <sql id="Base_Column_List">
-    hash, `path`, pcm, filename, visited_at
+    hash, `path`, pcm
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -22,10 +20,10 @@
     where hash = #{hash,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.ai.domain.bo.Voice">
-    insert into voice (hash, `path`, pcm, 
-      filename, visited_at)
-    values (#{hash,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, #{pcm,jdbcType=VARCHAR}, 
-      #{filename,jdbcType=VARCHAR}, #{visitedAt,jdbcType=TIMESTAMP})
+    insert into voice (hash, `path`, pcm
+      )
+    values (#{hash,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, #{pcm,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.Voice">
     insert into voice
@@ -39,12 +37,6 @@
       <if test="pcm != null">
         pcm,
       </if>
-      <if test="filename != null">
-        filename,
-      </if>
-      <if test="visitedAt != null">
-        visited_at,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="hash != null">
@@ -55,12 +47,6 @@
       </if>
       <if test="pcm != null">
         #{pcm,jdbcType=VARCHAR},
-      </if>
-      <if test="filename != null">
-        #{filename,jdbcType=VARCHAR},
-      </if>
-      <if test="visitedAt != null">
-        #{visitedAt,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -73,21 +59,13 @@
       <if test="pcm != null">
         pcm = #{pcm,jdbcType=VARCHAR},
       </if>
-      <if test="filename != null">
-        filename = #{filename,jdbcType=VARCHAR},
-      </if>
-      <if test="visitedAt != null">
-        visited_at = #{visitedAt,jdbcType=TIMESTAMP},
-      </if>
     </set>
     where hash = #{hash,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.Voice">
     update voice
     set `path` = #{path,jdbcType=VARCHAR},
-      pcm = #{pcm,jdbcType=VARCHAR},
-      filename = #{filename,jdbcType=VARCHAR},
-      visited_at = #{visitedAt,jdbcType=TIMESTAMP}
+      pcm = #{pcm,jdbcType=VARCHAR}
     where hash = #{hash,jdbcType=VARCHAR}
   </update>
 </mapper>

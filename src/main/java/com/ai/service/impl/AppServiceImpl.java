@@ -40,7 +40,7 @@ public class AppServiceImpl implements AppService {
 
     @Override
     public boolean editApp(App app) {
-        return appMapper.updateByPrimaryKey(app) ==1 ? Boolean.TRUE : Boolean.FALSE;
+        return appMapper.updateByPrimaryKeySelective(app) ==1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override
