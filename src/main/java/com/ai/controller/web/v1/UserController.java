@@ -164,7 +164,7 @@ public class UserController extends BasicAction{
         String authRoleId = accountService.loadAccountRoleId(appId);
         List<AuthRole> roleList = roleService.getRolesById(Integer.parseInt(authRoleId));
         if(roleList ==null){
-            return new Message().ok(1009, "注册失败");
+            return new Message().ok(1009, "当前角色无法创建用户");
         }
         //判断是否能创建这类角色的用户
         for (int i = 0; i < roleList.size(); i++){
@@ -185,6 +185,9 @@ public class UserController extends BasicAction{
         boolean b= matcher.matches();
         if(!b){
             return new Message().error(1011, "用户名只允许字母和数字，长度在4到30之间");
+        }
+        if(password.length()<5||password.length()>30){
+            return new Message().error(1011, "请控制密码长度在5到30之间");
         }
         if (accountService.isAccountExistByUid(uid)) {
             // 账户已存在

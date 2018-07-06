@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /* *
  * @Author ws
@@ -58,6 +59,10 @@ public class SimController extends BasicAction{
             // name已存在
             return new Message().error(3101, "用户不存在");
         }
+        String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+        if(!Pattern.matches(regex, number)){
+            return new Message().error(3101, "请输入正确的手机号码");
+        }
         sim.setDescription(description);
         sim.setGatewayId(Long.parseLong(gateway_id));
         sim.setNumber(number);
@@ -95,9 +100,11 @@ public class SimController extends BasicAction{
             sim.setUserId(user_id);
         }
         sim.setId(Long.parseLong(id));
-        if(!StringUtils.isEmpty(number)){
-            sim.setNumber(number);
+        String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+        if(!Pattern.matches(regex, number)){
+            return new Message().error(3101, "请输入正确的手机号码");
         }
+        sim.setNumber(number);
         if(!StringUtils.isEmpty(description)){
             sim.setDescription(description);
         }
@@ -192,6 +199,26 @@ public class SimController extends BasicAction{
         }
     }
 
+    @ApiOperation(value = "获取simUser信息", notes = "根据当前simId查询simUser信息")
+    @ResponseBody
+    @PostMapping("/listBySimId")
+    public Object findSimUserBySimId(HttpServletRequest request, HttpServletResponse response){
+        String uid =request.getHeader("appId");
+        if (StringUtils.isEmpty(uid)) {
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(3017, "信息缺失");
+        }
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String id  =  params.get("simId");
+        PageInfo<SimUser> simpUserList = simService.findSimUserBySimId(1,500,id);
+        if(simpUserList!=null){
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/listBySimId", "findSimUserBySimId", (short) 4008, "查询成功"));
+            return new Message().ok(4009, "查询成功").addData("simpUserList",simpUserList);
+        } else {
+            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/listBySimId", "findSimUserBySimId", (short) 4009, "查询失败"));
+            return new Message().error(4010, "查询失败");
+        }
+    }
     /* *
      * @Description 根据id获取sim信息
      * @Param [] id

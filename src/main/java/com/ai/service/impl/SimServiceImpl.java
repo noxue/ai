@@ -20,7 +20,7 @@ public class SimServiceImpl implements SimService {
     private SimDao simDao;
 
     @Autowired
-    private SimUserMapper simUserMapper;
+    private SimUserDao simUserMapper;
 
     @Autowired
     private SimUserDao simUserDao;
@@ -37,6 +37,14 @@ public class SimServiceImpl implements SimService {
     public PageInfo<Sim> findSimUserById(int pageNum, int pageSize, String uid) {
         PageHelper.startPage(pageNum, pageSize);
         List<Sim> simUserList = simDao.getSimUserList(uid );
+        PageInfo result = new PageInfo(simUserList);
+        return result;
+    }
+
+    @Override
+    public PageInfo<SimUser> findSimUserBySimId(int pageNum, int pageSize, String simId) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<SimUser> simUserList = simUserMapper.getSimUserListBySimId(Long.parseLong(simId) );
         PageInfo result = new PageInfo(simUserList);
         return result;
     }

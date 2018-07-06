@@ -37,7 +37,15 @@ public class AppServiceImpl implements AppService {
         App app = appDao.selectByName(name);
         return app != null ? Boolean.TRUE : Boolean.FALSE;
     }
-
+    @Override
+    public boolean isAppExistByName(String name,String id) {
+        App app = appDao.selectByName(name);
+        if(app.getId().toString().equals(id)){
+            return false;
+        }else{
+            return true;
+        }
+    }
     @Override
     public boolean editApp(App app) {
         return appMapper.updateByPrimaryKeySelective(app) ==1 ? Boolean.TRUE : Boolean.FALSE;

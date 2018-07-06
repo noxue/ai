@@ -75,10 +75,10 @@ public class AppController extends BasicAction{
             // 必须信息缺一不可,返回信息缺失
             return new Message().error(3005, "app信息缺失");
         }
-        /*if (appService.isAppExistByName(name)) {
+        if (appService.isAppExistByName(name,id)) {
             // name已存在
             return new Message().error(3002, "名称已被占用");
-        }*/
+        }
         app.setId(Long.parseLong(id.trim()));
         app.setKey(key);
         app.setDescription(description);

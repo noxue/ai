@@ -9,23 +9,23 @@ public class Task {
 
     private Long templateId;
 
+    private String name;
+
     private Integer thread;
 
     private Integer total;
 
     private Integer called;
 
-    private Date startAt;
-
     private Date createdAt;
+
+    private Date startAt;
 
     private Date finishAt;
 
     private Byte status;
 
     private Boolean test;
-
-    private String name;
 
     public Long getId() {
         return id;
@@ -49,6 +49,14 @@ public class Task {
 
     public void setTemplateId(Long templateId) {
         this.templateId = templateId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
     public Integer getThread() {
@@ -75,20 +83,20 @@ public class Task {
         this.called = called;
     }
 
-    public Date getStartAt() {
-        return startAt;
-    }
-
-    public void setStartAt(Date startAt) {
-        this.startAt = startAt;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getStartAt() {
+        return startAt;
+    }
+
+    public void setStartAt(Date startAt) {
+        this.startAt = startAt;
     }
 
     public Date getFinishAt() {
@@ -113,13 +121,5 @@ public class Task {
 
     public void setTest(Boolean test) {
         this.test = test;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
     }
 }

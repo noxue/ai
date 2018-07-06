@@ -10,6 +10,9 @@ public interface SimService {
     //条件查询sinuser列表
     PageInfo<Sim> findSimUserById(int pageNum, int pageSize, String uid);
 
+    //条件查询sinuser列表
+    PageInfo<SimUser> findSimUserBySimId(int pageNum, int pageSize, String simId);
+
     boolean registerSim(Sim sim);
 
     boolean editSim(Sim sim);

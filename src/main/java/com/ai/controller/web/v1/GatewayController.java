@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /* *
  * @Author ws
@@ -69,13 +70,23 @@ public class GatewayController extends BasicAction{
             return new Message().error(3101, "用户不存在");
         }
 
+       String regex =  "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
+                        +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+                        +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+                        +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
+        if(!Pattern.matches(regex, ip)){
+            return new Message().error(3101, "请输入正确的ip");
+        }
+        try{
+            gateway.setPort(Integer.parseInt(port));
+        }catch (NumberFormatException e){
+            return new Message().error(3101, "请输入正确的端口号");
+        }
         gateway.setName(name);
         gateway.setDescription(description);
         gateway.setIp(ip);
-        gateway.setPort(Integer.parseInt(port));
         gateway.setUserId(user_id);
         gateway.setAppId(Long.parseLong(app_id));
-
         if (gatewayService.registerGate(gateway)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/add", "addGateway", (short) 3101, "新增成功"));
             return new Message().ok(3102, "新增成功");
@@ -106,11 +117,22 @@ public class GatewayController extends BasicAction{
             // 判断该用户是否存在
             return new Message().error(3101, "用户不存在");
         }
+        String regex =  "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
+                +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+                +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+                +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
+        if(!Pattern.matches(regex, ip)){
+            return new Message().error(3101, "请输入正确的ip");
+        }
+        try{
+            gateway.setPort(Integer.parseInt(port));
+        }catch (NumberFormatException e){
+            return new Message().error(3101, "请输入正确的端口号");
+        }
         gateway.setId(Long.parseLong(id));
         gateway.setName(name);
         gateway.setDescription(description);
         gateway.setIp(ip);
-        gateway.setPort(Integer.parseInt(port));
         gateway.setUserId(user_id);
         if (gatewayService.editGate(gateway)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/edit", "editGate", (short) 3106, "编辑成功"));
@@ -318,5 +340,24 @@ public class GatewayController extends BasicAction{
             return new Message().error(3104, "查询失败");
         }
     }
-
+    public boolean Isipv4(String ipv4){
+        if(ipv4==null || ipv4.length()==0){
+            return false;//字符串为空或者空串
+        }
+        String[] parts=ipv4.split("\\.");//因为java doc里已经说明, split的参数是reg, 即正则表达式, 如果用"|"分割, 则需使用"\\|"
+        if(parts.length!=4){
+            return false;//分割开的数组根本就不是4个数字
+        }
+        for(int i=0;i<parts.length;i++){
+            try{
+                int n=Integer.parseInt(parts[i]);
+                if(n<0 || n>255){
+                    return false;//数字不在正确范围内
+                }
+            }catch (NumberFormatException e) {
+                return false;//转换数字不正确
+            }
+        }
+        return true;
+    }
 }

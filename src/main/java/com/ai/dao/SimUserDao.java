@@ -9,4 +9,6 @@ public interface SimUserDao extends SimUserMapper{
 
    SimUser getSimUserBySimIdAndUserId(@Param("user_id") String user_id ,@Param("sim_id") long sim_id);
 
+   List<SimUser> getSimUserListBySimId(@Param("sim_id") long sim_id);
+
 }
