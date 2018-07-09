@@ -57,7 +57,7 @@
 
     <select id="getTaskUserByTaskId" resultMap="BaseResultMap">
         select u.* from task_user u
-        where  u.task_id=#{taskId}
+        where  u.task_id=#{task_id}
          and u.status=1
          limit 5
         order by  u.id ;

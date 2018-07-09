@@ -14,7 +14,7 @@ public interface TaskUserDao extends TaskUserMapper{
     //批量插入
     int insertBatch (List<TaskUser> list);
 
-    TaskUser[] getAllTaskUsers(String user_id);
+    TaskUser[] getAllTaskUsers(@Param("user_id")String user_id,@Param("task_id") int taskId);
 
-    List<TaskUser> getTaskUserByTaskId(@Param("taskId") int taskId);
+    List<TaskUser> getTaskUserByTaskId(@Param("task_id") int task_id);
 }

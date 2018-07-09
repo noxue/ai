@@ -34,7 +34,7 @@ public class ExcelServiceImpl implements ExcelService {
     UploadConfig uploadConfig;
 
     @Override
-    public Message importExcel(MultipartFile file) throws IOException {
+    public Message importExcel(int id,MultipartFile file) throws IOException {
         FileInputStream fis = (FileInputStream)file.getInputStream();
         //用流的方式先读取到你想要的excel的文件
         //FileInputStream fis=new FileInputStream(new File("D://phoneTaskUser.xls"));
@@ -86,6 +86,7 @@ public class ExcelServiceImpl implements ExcelService {
             user.setName(name.get(j));
             user.setRemark(remark.get(j));
             user.setCalledAt(new Date());
+            user.setTaskId((long) id);
             list.add(user);
         }
         fis.close();

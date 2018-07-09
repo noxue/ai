@@ -58,7 +58,7 @@ public class TaskUserServiceImpl implements TaskUserService {
     }
 
     @Override
-    public TaskUser[] taskUserList(String user_id ) {
-        return taskUserMapper.getAllTaskUsers(user_id);
+    public TaskUser[] taskUserList(String user_id ,String task_id) {
+        return taskUserMapper.getAllTaskUsers(user_id ,Integer.parseInt(task_id));
     }
 }
