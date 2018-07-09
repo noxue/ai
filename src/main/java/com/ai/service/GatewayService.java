@@ -7,6 +7,8 @@ public interface GatewayService {
 
     PageInfo<Gateway> findAllGate(int pageNum, int pageSize, String name, String user_id);
 
+    PageInfo<Gateway> findGatewaysByAppId(int pageNum, int pageSize, String appId);
+
     boolean registerGate(Gateway gateway);
 
     boolean isGateExistByName(String name);

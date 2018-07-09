@@ -7,11 +7,15 @@ import com.github.pagehelper.PageInfo;
 public interface SimService {
     //sim
     PageInfo<Sim> findAllSim(int pageNum, int pageSize, String uid, String phone);
-    //条件查询sinuser列表
+    //条件查询simuser列表
     PageInfo<Sim> findSimUserById(int pageNum, int pageSize, String uid);
 
-    //条件查询sinuser列表
+    //根据SimId查询simuser列表
     PageInfo<SimUser> findSimUserBySimId(int pageNum, int pageSize, String simId);
+
+    //根据gatewayId查询sim列表
+    PageInfo<Sim> findSimByGatewayId(int pageNum, int pageSize, int gatewayId);
+
 
     boolean registerSim(Sim sim);
 

@@ -332,9 +332,12 @@ public class GatewayController extends BasicAction{
                                       int pageNum,
                               @RequestParam(name = "pageSize", required = false, defaultValue = "15")
                                       int pageSize){
-        if(gatewayReportService.findAllGatewayReport(pageNum,pageSize)!=null){
+
+        PageInfo<GatewayReport> gatewayReportList = gatewayReportService.findAllGatewayReport(pageNum,pageSize);
+
+        if(gatewayReportList!=null){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/all", "findAllGatewayReport", (short) 3110, "查询成功"));
-            return new Message().ok(3103, "查询成功").addData("gatewayReportList",gatewayReportService.findAllGatewayReport(pageNum,pageSize));
+            return new Message().ok(3103, "查询成功").addData("gatewayReportList",gatewayReportList);
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/all", "findAllGatewayReport", (short) 3111, "查询失败"));
             return new Message().error(3104, "查询失败");
@@ -360,4 +363,5 @@ public class GatewayController extends BasicAction{
         }
         return true;
     }
+
 }

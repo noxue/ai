@@ -117,15 +117,12 @@ public class TaskController extends BasicAction{
         //获取参数
         String user_id =  request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String name = params.get("name");
-        String phone = params.get("phone");
-        String remark = params.get("remark");
-        String sim_id = params.get("sim");
+        //String sim_id = params.get("sim");
         // 必须信息缺一不可,返回验证消息
         if (StringUtils.isEmpty(user_id)) {
             return new Message().error(5007, "当前用户未登录！");
         }
-        if (StringUtils.isEmpty(sim_id)) {
+        /*if (StringUtils.isEmpty(sim_id)) {
             return new Message().error(5007, "请选择sim卡信息");
         }
         //验证当前用户与选中的卡是否匹配
@@ -133,6 +130,10 @@ public class TaskController extends BasicAction{
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "", "isExistInSim", (short) 5019, "验证成功"));
         }else {
             return new Message().error(5018, "该卡当前不可使用");
+        }*/
+        String taskName = params.get("taskName");
+        if (StringUtils.isEmpty(taskName)) {
+            return new Message().error(5007, "请填写任务名称");
         }
         String template_id = params.get("template");
         if (StringUtils.isEmpty(template_id)) {
@@ -140,20 +141,22 @@ public class TaskController extends BasicAction{
         }
 
         String test = params.get("test");
-        String date1 = params.get("date1");
-        String date2 = params.get("date2");
+        //String date1 = params.get("date1");
+        //String date2 = params.get("date2");
         Task task = new Task();
+        task.setName(taskName);
         task.setUserId(user_id);
         if(!StringUtils.isEmpty(params.get("num"))){
             task.setThread(Integer.parseInt(params.get("num")));
         }
-        if(!StringUtils.isEmpty(params.get("total"))){
-            task.setTotal(Integer.parseInt(params.get("total")));
-        }
+//        if(!StringUtils.isEmpty(params.get("total"))){
+//            task.setTotal(Integer.parseInt(params.get("total")));
+//        }
+        task.setTotal(0);
         task.setTemplateId(Long.parseLong(template_id));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-        task.setStartAt(sdf.parse(date1+" "+ date2));
+        //task.setStartAt(sdf.parse(date1+" "+ date2));
         task.setCreatedAt(new Date());
         task.setStatus(new Byte("1"));
         if (test.equals("1")) {
@@ -163,14 +166,17 @@ public class TaskController extends BasicAction{
         }
         if (taskService.registerTask(task)) {
             if(test.equals("0")){
-                if (StringUtils.isEmpty(phone)) {
+                String testName = params.get("testName");
+                String testPhone = params.get("testPhone");
+                String remark = params.get("remark");
+                if (StringUtils.isEmpty(testPhone)) {
                     return new Message().error(5007, "请填写手机号码");
                 }
                 Long taskid = task.getId();
                 TaskUser taskUser = new TaskUser();
                 taskUser.setTaskId(taskid);
-                taskUser.setName(name);
-                taskUser.setMobile(phone);
+                taskUser.setName(testName);
+                taskUser.setMobile(testPhone);
                 taskUser.setRemark(remark);
                 taskUser.setCalledAt(new Date());
                 if(taskUserService.addTaskUser(taskUser)){
@@ -245,18 +251,19 @@ public class TaskController extends BasicAction{
         TaskUser taskUser =  new TaskUser();
         String id =params.get("id");
         String mobile = params.get("mobile");
-        String isShare = params.get("isShare");
+        String type = params.get("type");
+        String remark = params.get("remark");
+        //String isShare = params.get("share");
+
         // 必须信息缺一不可,返回验证消息
         if (StringUtils.isEmpty(mobile) ||StringUtils.isEmpty(id)) {
             return new Message().error(5016, "信息不全");
         }
         taskUser.setId(Long.parseLong(id));
         taskUser.setMobile(mobile);
-
-        if("true".equals(isShare)){
-            taskUser.setShare(true);
-        }else{
-            taskUser.setShare(true);
+        taskUser.setRemark(remark);
+        if(!StringUtils.isEmpty(type)){
+            taskUser.setType(Byte.valueOf(type));
         }
         if (taskUserService.editTaskUser(taskUser)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/edit", "editTaskUser", (short) 5014, "编辑成功"));
@@ -284,6 +291,14 @@ public class TaskController extends BasicAction{
         if(oldTask == null){
             return new Message().error(5031, "编辑失败");
         }
+        if((oldTask.getStatus().toString()).equals("2")){
+            return new Message().error(5031, "当前任务正在执行中");
+        }
+        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(1,500,appId,id,"","","","");
+        if(taskUserList.getSize()==0){
+            return new Message().error(5031, "当前任务没有客户信息，请在导入后继续操作");
+        }
+
         //判断当前登陆用户是否有权限操作任务
         if(oldTask.getUserId().equals(appId)){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/status", "editTaskStatus", (short) 5028, "本人操作"));
@@ -306,6 +321,7 @@ public class TaskController extends BasicAction{
 
         Task newTask =  new Task();
         newTask.setId(Long.parseLong(id));
+        newTask.setStartAt(new Date());
         newTask.setStatus(Byte.valueOf(status));
         if (taskService.editTask(newTask)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/status", "editTaskStatus", (short) 5019, "编辑成功"));
@@ -348,6 +364,7 @@ public class TaskController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String appId =request.getHeader("appId");
         pageNum = Integer.parseInt(params.get("page"));
+        String name = params.get("name");
         if ( StringUtils.isEmpty(appId)) {
             // 必须信息缺一不可,返回信息缺失
             return new Message().error(5024, "信息缺失");
@@ -356,9 +373,10 @@ public class TaskController extends BasicAction{
         if(roleId.equals("100")){
             appId = "";
         }
-        if (taskService.findAllTaskByAppId(pageNum,pageSize,appId)!=null){
+        PageInfo<Task> taskList = taskService.findAllTaskByAppId(pageNum,pageSize,appId,name);
+        if (taskList!=null){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/taskList", "selectTaskList", (short) 3010, "查询成功"));
-            return new Message().ok(5025, "查询成功").addData("taskList",taskService.findAllTaskByAppId(pageNum,pageSize,appId));
+            return new Message().ok(5025, "查询成功").addData("taskList",taskList);
         } else {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/taskList", "selectTaskList", (short) 3011, "查询失败"));
             return new Message().error(5026, "查询失败");
@@ -374,20 +392,24 @@ public class TaskController extends BasicAction{
                                   @RequestParam(name = "pageSize", required = false, defaultValue = "15")
                                           int pageSize){
         String appId =request.getHeader("appId");
-        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String test  =params.get("test");
-        String status  =params.get("status");
-        String name  =params.get("name");
-        String type  =params.get("type");
-        String share =params.get("share");
-        String taskId =params.get("taskId");
-        pageNum = Integer.parseInt(params.get("page"));
-
-/*        if ( StringUtils.isEmpty(appId)) {
+        if (StringUtils.isEmpty(appId)) {
             // 必须信息缺一不可,返回信息缺失
             return new Message().error(5024, "信息缺失");
-        }*/
-        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(pageNum,pageSize,taskId,test,type,share);
+        }
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        //String test  =params.get("test");
+        String status  =params.get("status");
+        String share =params.get("share");
+        String type  =params.get("type");
+        String name  =params.get("name");
+        String taskId =params.get("taskId");
+        pageNum = Integer.parseInt(params.get("page"));
+        String roleId= accountService.loadAccountRoleId(appId);
+            if(roleId.equals("100")){
+            appId = "";
+        }
+
+        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(pageNum,pageSize,appId,taskId,name,type,share,status);
         if (taskUserList != null){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/conditions", "selectTaskUserListByConditions", (short) 3010, "查询成功"));
             return new Message().ok(5025, "查询成功").addData("taskUserList",taskUserList);
@@ -412,6 +434,8 @@ public class TaskController extends BasicAction{
     @RequestMapping("/exp")
     public Message ExportExcel(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String appId = request.getHeader("appId");
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String taskId = params.get("taskId");
         if (appId == null || appId.equals("")) {
             return new Message().error(-1, "缺少授权信息");
         }

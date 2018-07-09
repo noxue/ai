@@ -26,4 +26,11 @@
     </if>
   </select>
 
+
+  <select id="getGatewaysByAppId" resultMap="BaseResultMap">
+    select
+    id, `name`, ip, port, app_id , description, user_id
+    from gateway
+    where 1=1 and  app_id= #{appId}
+  </select>
 </mapper>

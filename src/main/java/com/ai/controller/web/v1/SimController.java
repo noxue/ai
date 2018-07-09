@@ -244,24 +244,28 @@ public class SimController extends BasicAction{
         }
     }
 
-
-
     @ApiOperation(value = "新增simUser", notes = "新增simUser信息")
     @ResponseBody
     @PostMapping("user/add")
     public Message addSimUser(HttpServletRequest request, HttpServletResponse response){
-
+        String appId = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         SimUser simUser = new SimUser();
-        String user_id = params.get("user_id");
-        String sim_id = params.get("sim_id");
+        String user_id = params.get("userId");
+        String sim_id = params.get("simId");
         if (StringUtils.isEmpty(user_id) || StringUtils.isEmpty(sim_id)) {
             // 必须信息缺一不可,返回信息不足
             return new Message().error(4013, "信息不足");
         }
         simUser.setSimId(Long.parseLong(sim_id));
+        if(accountService.getUserByUidAndPid(user_id,appId )== null){
+            // 验证用户是否存在
+            return new Message().error(3101, "分配失败,请检查用户名");
+        }
+        if(simService.isExistInSimUser(user_id,sim_id)){
+            return new Message().error(3101, "分配失败,该号码已分配给此用户");
+        }
         simUser.setUserId(user_id);
-
         if (simService.registerSimUser(simUser)) {
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/user/add", "addSimUser", (short) 4014, "新增成功"));
             return new Message().ok(4014, "新增成功");

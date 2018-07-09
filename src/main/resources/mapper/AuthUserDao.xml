@@ -75,6 +75,14 @@
 	)
   </select>
 
+  <select id="getUserByUidAndPid"  resultMap="BaseResultMap">
+
+    select a.*
+    from auth_user a
+    where a.uid=#{uid} AND a.pid = #{pid}
+
+  </select>
+
   <select id="selectUserByTaskUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
 
     select a.*

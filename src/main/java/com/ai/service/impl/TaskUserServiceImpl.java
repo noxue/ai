@@ -17,12 +17,19 @@ public class TaskUserServiceImpl implements TaskUserService {
     private TaskUserDao taskUserMapper;
 
     @Override
-    public PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize, String taskId,
-                                                 String test, String type, String share) {
+    public PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize,String userId, String taskId, String name,
+                                              String type, String share, String status) {
         PageHelper.startPage(pageNum, pageSize);
-        List<TaskUser> taskUserList = taskUserMapper.selectTaskUserListByConditions(taskId,test,type,share);
+        List<TaskUser> taskUserList = taskUserMapper.selectTaskUserListByConditions(userId,taskId,name,type,share,status);
         PageInfo result = new PageInfo(taskUserList);
         return result;
+    }
+
+    @Override
+    public List<TaskUser> selectTaskUserByTaskId(int id) {
+        List<TaskUser> taskUserList = taskUserMapper.getTaskUserByTaskId(id);
+        return taskUserList;
+
     }
 
     @Override
@@ -32,7 +39,7 @@ public class TaskUserServiceImpl implements TaskUserService {
 
     @Override
     public boolean editTaskUser(TaskUser taskUser) {
-        return taskUserMapper.updateByPrimaryKeyWithBLOBs(taskUser)==1 ? Boolean.TRUE : Boolean.FALSE;
+        return taskUserMapper.updateByPrimaryKeySelective(taskUser)==1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override
@@ -51,7 +58,7 @@ public class TaskUserServiceImpl implements TaskUserService {
     }
 
     @Override
-    public TaskUser[] taskUserList(String user_id) {
+    public TaskUser[] taskUserList(String user_id ) {
         return taskUserMapper.getAllTaskUsers(user_id);
     }
 }

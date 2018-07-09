@@ -33,6 +33,14 @@ public class GatewayServiceImpl implements GatewayService {
     }
 
     @Override
+    public PageInfo<Gateway> findGatewaysByAppId(int pageNum, int pageSize, String appId ) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Gateway> gatewaysList = gatewayDao.getGatewaysByAppId(Integer.parseInt(appId));
+        PageInfo result = new PageInfo(gatewaysList);
+        return result;
+    }
+
+    @Override
     public boolean isGateExistByName(String name) {
         return false;
     }

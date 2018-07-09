@@ -5,6 +5,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="thread" jdbcType="INTEGER" property="thread" />
     <result column="total" jdbcType="INTEGER" property="total" />
     <result column="called" jdbcType="INTEGER" property="called" />
@@ -15,18 +16,29 @@
     <result column="test" jdbcType="BIT" property="test" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, template_id, thread, total, `called`, created_at, start_at, finish_at, 
-    `status`, test
+    id, user_id, template_id, `name`, thread, total, `called`, created_at, start_at,
+    finish_at, `status`, test
   </sql>
   <select id="selectTaskList" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from task
     where 1=1
-    <if test="_parameter != null and _parameter != ''">
-      AND  user_id = #{_parameter}
+    <if test="userId != null and userId != ''">
+      AND  user_id = #{userId}
     </if>
-
+    <if test="name != null and name != ''">
+      AND  `name` LIKE  CONCAT('%',#{name},'%')
+    </if>
   </select>
 
+  <select id="selectBatch"  resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+      from task t
+      where 1 = 1 and t.user_id in
+      <foreach collection ="list" item="item" open="(" close=")" separator =",">
+        #{item.userId}
+      </foreach >
+      order by t.test desc
+  </select>
 </mapper>

@@ -36,10 +36,16 @@
 
   <select id="getSimUserList" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select   s2.number, s2.id
-    from sim s2 left join  sim_user s  on s.sim_id = s2.id
+    from  sim_user s left join sim s2    on s.sim_id = s2.id
     where 1=1
     <if test="_parameter != null and _parameter != ''">
       AND  s.user_id = #{_parameter}
     </if>
+  </select>
+
+  <select id="getSimByGatewayId" resultMap="BaseResultMap">
+    select * from sim s
+    where 1=1
+    AND  s.gateway_id = #{_parameter}
   </select>
 </mapper>

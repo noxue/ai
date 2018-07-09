@@ -1,5 +1,6 @@
 package com.ai;
 
+import com.ai.shiro.filter.AppFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.ai.support.XssSqlStringJsonSerializer;
@@ -8,6 +9,7 @@ import org.mybatis.spring.annotation.MapperScan;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
@@ -15,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import javax.servlet.Filter;
 import javax.servlet.MultipartConfigElement;
 
 
@@ -41,6 +44,28 @@ public class AiApplication {
 	}
 
 
+	/**
+	 * 配置过滤器
+	 * @return
+	 */
+	@Bean
+	public FilterRegistrationBean someFilterRegistration() {
+		FilterRegistrationBean registration = new FilterRegistrationBean();
+		registration.setFilter(appFilter());
+		registration.addUrlPatterns("/robot/api/*");
+//		registration.addInitParameter("paramName", "paramValue");
+//		registration.setName("appFilter");
+		return registration;
+	}
+
+	/**
+	 * 创建一个bean
+	 * @return
+	 */
+	@Bean(name = "appFilter")
+	public Filter appFilter() {
+		return new AppFilter();
+	}
 
 
 }

@@ -2,7 +2,6 @@ package com.ai.service.impl;
 
 import com.ai.dao.SimDao;
 import com.ai.dao.SimUserDao;
-import com.ai.dao.SimUserMapper;
 import com.ai.domain.bo.Sim;
 import com.ai.domain.bo.SimUser;
 import com.ai.service.SimService;
@@ -46,6 +45,14 @@ public class SimServiceImpl implements SimService {
         PageHelper.startPage(pageNum, pageSize);
         List<SimUser> simUserList = simUserMapper.getSimUserListBySimId(Long.parseLong(simId) );
         PageInfo result = new PageInfo(simUserList);
+        return result;
+    }
+
+    @Override
+    public PageInfo<Sim> findSimByGatewayId(int pageNum, int pageSize, int gatewayId) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Sim> simList = simDao.getSimByGatewayId(gatewayId );
+        PageInfo result = new PageInfo(simList);
         return result;
     }
 

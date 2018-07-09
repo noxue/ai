@@ -1,6 +1,7 @@
 package com.ai.dao;
 
 import com.ai.domain.bo.AuthUser;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataAccessException;
 
 import java.util.List;
@@ -21,7 +22,6 @@ public interface AuthUserDao extends AuthUserMapper{
 
     List<AuthUser> selectUserListExtendByRoleId(Integer roleId) throws DataAccessException;
 
-    AuthUser getUserByUidAndPid( String uid , String pid);
-
+    AuthUser getUserByUidAndPid(@Param("uid") String uid , @Param("pid") String pid);
 
 }

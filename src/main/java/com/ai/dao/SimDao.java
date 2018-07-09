@@ -7,8 +7,10 @@ import java.util.List;
 
 public interface SimDao extends SimMapper{
 
-    //根据uid查找网关信息
+    //根据uid查找sim卡信息
     List<Sim> getSimsList(@Param("uid") String uid,@Param("phone")  String phone);
+    //根据gatewayId查找sim卡信息
+    List<Sim> getSimByGatewayId(long gatewayId);
 
     Sim getSimBySimIdAndUserId(String user_id , int sim_id);
 
