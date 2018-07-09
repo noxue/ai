@@ -449,7 +449,7 @@ public class TaskController extends BasicAction{
         List<String[]> listArray = excelService.downloadExcel(result);
         // 指定允许其他域名访问    // 响应类型
         response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET");
+        response.setHeader("Access-Control-Allow-Methods", "POST");
         // 响应头设置
         response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
         String data = "";
