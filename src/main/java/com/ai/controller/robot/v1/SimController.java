@@ -1,27 +1,17 @@
 package com.ai.controller.robot.v1;
 
-import com.ai.domain.bo.Gateway;
-import com.ai.domain.bo.Sim;
-import com.ai.domain.bo.SimUser;
-import com.ai.domain.bo.Task;
+import com.ai.domain.bo.*;
 import com.ai.domain.vo.Message;
-import com.ai.service.GatewayService;
 import com.ai.service.SimService;
 import com.ai.service.TaskService;
 import com.ai.support.factory.LogTaskFactory;
 import com.ai.support.manager.LogExeManager;
-import com.ai.util.RequestResponseUtil;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController("RobotSimController")
 @RequestMapping("/robot/api/v1/sim")
