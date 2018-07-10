@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.dao.UserConfigDao">
+  <resultMap id="BaseResultMap" type="com.ai.domain.bo.UserConfig">
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="key" jdbcType="VARCHAR" property="key" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ai.domain.bo.UserConfig">
+    <result column="value" jdbcType="LONGVARCHAR" property="value" />
+  </resultMap>
+  <sql id="Blob_Column_List">
+    user_id,`key`,`value`
+  </sql>
+
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    select * from user_config
+    where user_id = #{userId}  and  `key` = #{key}
+  </select>
+
+  <update id="updateConfig" parameterType="com.ai.domain.bo.UserConfig">
+    update user_config
+    <set>
+        `value` = #{value},
+    </set>
+    where user_id = #{userId}  AND  `key` = #{key}
+  </update>
+</mapper>

@@ -26,10 +26,10 @@ public class TaskController {
     private TaskUserService taskUserService;
 
 
-    @ApiOperation(value = "分页获取gateway", notes = "根据appId查询gateway信息")
+    @ApiOperation(value = "分页获取taskUser", notes = "根据id查询taskUser信息")
     @ResponseBody
     @GetMapping("/all")
-    public Message findGatewaysByAppId( int id){
+    public Message findTaskUserById( int id){
         if(id<0){
             return new Message().error(3107, "缺少参数 id");
         }
