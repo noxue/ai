@@ -54,7 +54,6 @@ public class TemplateController extends BasicAction{
         }
 
         template.setUserId(appId);
-        template.setStatus((byte) 3);
         template.setName(name);
         template.setContent(content);
         template.setCreatedAt(new Date());
@@ -84,7 +83,6 @@ public class TemplateController extends BasicAction{
 
         template.setId(id);
         template.setUserId(appId);
-        template.setStatus((byte) 3);
         template.setName(name);
         template.setContent(content);
         //修改
