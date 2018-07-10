@@ -422,11 +422,14 @@ public class TaskController extends BasicAction{
     @ApiOperation(value = "导入excel", notes = "根据规定的模板导入客户信息")
     @ResponseBody
     @PostMapping("/imp")
-    public Message ImportExcel(@RequestParam("file") MultipartFile file) throws Exception {
+    public Message ImportExcel(@RequestParam("file") MultipartFile file ,@RequestParam("id") String id) throws Exception {
+        if(StringUtils.isEmpty(id)){
+            return new Message().error(-1,"信息缺失");
+        }
         if (file == null) {
             return new Message().error(-1,"导入失败");
         }
-        return excelService.importExcel(file);
+        return excelService.importExcel(Integer.parseInt(id),file);
     }
 
     @ApiOperation(value = "导出excel", notes = "根据当前的用户信息按照规定的模板导出execl信息")
@@ -436,14 +439,17 @@ public class TaskController extends BasicAction{
         String appId = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String taskId = params.get("taskId");
-        if (appId == null || appId.equals("")) {
+        if (StringUtils.isEmpty(appId)) {
             return new Message().error(-1, "缺少授权信息");
         }
-        TaskUser[] result = taskUserService.taskUserList(appId);
+        if (StringUtils.isEmpty(taskId)) {
+            return new Message().error(-1, "缺少信息");
+        }
+        TaskUser[] result = taskUserService.taskUserList(appId,taskId);
         List<String[]> listArray = excelService.downloadExcel(result);
         // 指定允许其他域名访问    // 响应类型
         response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET");
+        response.setHeader("Access-Control-Allow-Methods", "POST");
         // 响应头设置
         response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
         String data = "";

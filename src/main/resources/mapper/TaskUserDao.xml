@@ -47,17 +47,17 @@
     order by u.called_at desc
   </select>
 
-    <select id="getAllTaskUsers" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="getAllTaskUsers" resultMap="BaseResultMap">
         select u.* from task_user u
           left join task t on u.task_id = t.id
         where  t.user_id=#{user_id}
-        and u.task_id=#{task_id}
+          and u.task_id=#{task_id}
           order by u.id desc ;
     </select>
 
     <select id="getTaskUserByTaskId" resultMap="BaseResultMap">
         select u.* from task_user u
-        where  u.task_id=#{taskId}
+        where  u.task_id=#{task_id}
          and u.status=1
          limit 5
         order by  u.id ;

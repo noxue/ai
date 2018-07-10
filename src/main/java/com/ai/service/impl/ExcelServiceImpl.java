@@ -1,9 +1,11 @@
 package com.ai.service.impl;
 
 import com.ai.config.UploadConfig;
+import com.ai.domain.bo.Task;
 import com.ai.domain.bo.TaskUser;
 import com.ai.domain.vo.Message;
 import com.ai.service.ExcelService;
+import com.ai.service.TaskService;
 import com.ai.service.TaskUserService;
 import com.ai.support.factory.LogTaskFactory;
 import com.ai.support.manager.LogExeManager;
@@ -31,10 +33,13 @@ public class ExcelServiceImpl implements ExcelService {
     private TaskUserService taskUserService;
 
     @Autowired
+    private TaskService taskService;
+
+    @Autowired
     UploadConfig uploadConfig;
 
     @Override
-    public Message importExcel(MultipartFile file) throws IOException {
+    public Message importExcel(int id,MultipartFile file) throws IOException {
         FileInputStream fis = (FileInputStream)file.getInputStream();
         //用流的方式先读取到你想要的excel的文件
         //FileInputStream fis=new FileInputStream(new File("D://phoneTaskUser.xls"));
@@ -86,12 +91,21 @@ public class ExcelServiceImpl implements ExcelService {
             user.setName(name.get(j));
             user.setRemark(remark.get(j));
             user.setCalledAt(new Date());
+            user.setTaskId((long) id);
             list.add(user);
         }
         fis.close();
         if(taskUserService.insertTaskUserList(list)){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/excel/imp", "ImportExcel", (short) 6000, "导入成功"));
-            return new Message().ok(1,"操作成功");
+            Task task = taskService.getTaskById(id);
+            int total =task.getTotal()+list.size();
+            task.setTotal(total);
+            if( taskService.editTask(task)){
+                LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/excel/editTask", "ImportExcel", (short) 6000, "导入成功"));
+                return new Message().ok(1,"操作成功");
+            }else{
+                LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/excel/editTask", "ImportExcel", (short) 6001, "导入失败,更新task错误"));
+                return new Message().error(1,"操作失败");
+            }
         }else{
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/excel/imp", "ImportExcel", (short) 6001, "导入失败"));
             return new Message().error(1,"操作失败");

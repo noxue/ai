@@ -58,7 +58,7 @@ public class SimController {
     @ApiOperation(value = "simUser信息", notes = "根据simid信息查询simUser信息")
     @ResponseBody
     @GetMapping("/tasks")
-    public Message findSimUserBySimId(int id,
+    public Message findTaskBySimId(int id,
                                       @RequestParam(name = "pageNum", required = false, defaultValue = "1")
                                               int pageNum,
                                       @RequestParam(name = "pageSize", required = false, defaultValue = "1500")

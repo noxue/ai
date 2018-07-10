@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface ExcelService {
 
-    Message importExcel(MultipartFile file) throws IOException;
+    Message importExcel(int id,MultipartFile file) throws IOException;
 
     List<String[]> downloadExcel(TaskUser[] rowList) throws IOException;
 
