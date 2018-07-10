@@ -61,7 +61,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public boolean editTemplate(Template template) {
-        return templateDao.updateByPrimaryKeyWithBLOBs(template)  ==1 ? Boolean.TRUE : Boolean.FALSE;
+        return templateDao.updateByPrimaryKeySelective(template)  ==1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override

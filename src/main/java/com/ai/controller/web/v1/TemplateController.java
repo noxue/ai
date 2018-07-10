@@ -41,9 +41,8 @@ public class TemplateController extends BasicAction{
 
     @ApiOperation(value = "新增Template", notes = "增加一个Template模板信息")
     @ResponseBody
-    @PostMapping("/add")
+    @PostMapping("")
     public Message addTemplate(HttpServletRequest request, HttpServletResponse response){
-
         String appId = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         Template template = new Template();
@@ -52,9 +51,6 @@ public class TemplateController extends BasicAction{
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(appId) || StringUtils.isEmpty(content)) {
             // 必须信息缺一不可,返回信息不全
             return new Message().error(4400, "信息不全");
-        }
-        if(templateService.isTemplateExistByName(name)){
-            return new Message().error(4401, "该名称已被占用");
         }
 
         template.setUserId(appId);
@@ -74,33 +70,27 @@ public class TemplateController extends BasicAction{
 
     @ApiOperation(value = "编辑Template", notes = "Template")
     @ResponseBody
-    @PostMapping("/edit")
-    public Message editTemplate(HttpServletRequest request, HttpServletResponse response){
+    @PutMapping("/{id}")
+    public Message editTemplate(HttpServletRequest request, @PathVariable long id){
         String appId = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         Template template = new Template();
-        String id = params.get("id");
         String content = params.get("content");
         String name = params.get("name");
-        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(appId) || StringUtils.isEmpty(content)|| StringUtils.isEmpty(id)) {
+        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(appId) || StringUtils.isEmpty(content)|| !(id>0)) {
             // 必须信息缺一不可,返回信息不全
             return new Message().error(4404, "信息不全");
         }
-        if(templateService.isTemplateExistByName(name)){
-            return new Message().error(4401, "该名称已被占用");
-        }
 
-        template.setId(Long.parseLong(id));
+        template.setId(id);
         template.setUserId(appId);
         template.setStatus((byte) 3);
         template.setName(name);
         template.setContent(content);
         //修改
         if (templateService.editTemplate(template)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/edit", "editTemplate", (short) 4404, "编辑成功"));
             return new Message().ok(4405, "编辑成功");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/edit", "editTemplate", (short) 4405, "编辑失败"));
             return new Message().error(4406, "编辑失败");
         }
     }
@@ -199,20 +189,16 @@ public class TemplateController extends BasicAction{
      */
     @ApiOperation(value = "获取template", notes = "根据id获取template信息")
     @ResponseBody
-    @PostMapping("/select")
-    public Object selectTemplateById(HttpServletRequest request, HttpServletResponse response){
-        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String id =params.get("id");
-        if ( StringUtils.isEmpty(id)) {
+    @GetMapping("/{id}")
+    public Message getTplById(@PathVariable int id){
+        if (!(id>0)) {
             // 必须信息缺一不可,返回信息不全
-            return new Message().error(4407, "信息不全");
+            return new Message().error(4407, "id值不合法");
         }
-        Template template = templateService.getTemplateById(Long.parseLong(id));
+        Template template = templateService.getTemplateById(id);
         if (template !=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/select", "selectTemplateById", (short) 4412, "查询成功"));
             return new Message().ok(4412, "查询成功").addData("template",template);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/select", "selectTemplateById", (short) 4413, "查询失败"));
             return new Message().error(4413, "查询失败");
         }
     }
