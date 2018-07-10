@@ -75,6 +75,9 @@ public class AppController extends BasicAction{
             // 必须信息缺一不可,返回信息缺失
             return new Message().error(3005, "app信息缺失");
         }
+        if(key.length()!=16){
+            return new Message().error(3005, "请确保key的长度为16");
+        }
         if (appService.isAppExistByName(name,id)) {
             // name已存在
             return new Message().error(3002, "名称已被占用");
