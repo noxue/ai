@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,9 @@ public class SimController extends BasicAction{
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @ApiOperation(value = "新增sim", notes = "新增sim卡信息")
     @ResponseBody
@@ -113,6 +117,7 @@ public class SimController extends BasicAction{
         }
 
         if (simService.editSim(sim)) {
+            redisTemplate.opsForValue().set("sim_"+ id, "edit");
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/edit", "editSim", (short) 4004, "编辑成功"));
             return new Message().ok(4004, "编辑成功");
         } else {
@@ -133,6 +138,7 @@ public class SimController extends BasicAction{
         }
 
         if (simService.delSim(Long.parseLong(id))) {
+            redisTemplate.opsForValue().set("sim_"+ id, "del");
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/del", "delSim", (short) 4006, "删除成功"));
             return new Message().ok(4007, "删除成功");
         } else {

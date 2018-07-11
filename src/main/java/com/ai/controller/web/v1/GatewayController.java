@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +43,9 @@ public class GatewayController extends BasicAction{
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @ApiOperation(value = "新增Gateway", notes = "增加一个新的、新增Gateway")
     @ResponseBody
@@ -135,6 +139,7 @@ public class GatewayController extends BasicAction{
         gateway.setIp(ip);
         gateway.setUserId(user_id);
         if (gatewayService.editGate(gateway)) {
+            redisTemplate.opsForValue().set("gateway_"+ gateway.getId(), "edit");
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/edit", "editGate", (short) 3106, "编辑成功"));
             return new Message().ok(3015, "编辑成功");
         } else {
@@ -155,6 +160,7 @@ public class GatewayController extends BasicAction{
         }
 
         if (gatewayService.delGate(Long.parseLong(id))) {
+            redisTemplate.opsForValue().set("gateway_"+ id, "del");
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/del", "delGate", (short) 3108, "删除成功"));
             return new Message().ok(3108, "删除成功");
         } else {

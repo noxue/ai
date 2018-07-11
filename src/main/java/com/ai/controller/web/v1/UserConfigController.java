@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,9 @@ public class UserConfigController extends BasicAction {
 
     @Autowired
     private UserConfigService userConfigService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @ApiOperation(value = "添加用户配置", notes = "添加用户配置信息")
     @ResponseBody
@@ -62,6 +66,7 @@ public class UserConfigController extends BasicAction {
             //执行更新操作
             oldConfig.setValue(repeat + schedule);
             if (userConfigService.editConfig(oldConfig)) {
+                redisTemplate.opsForValue().set("config_"+ oldConfig.getUserId(), "edit");
                 LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog("admin", "/config/edit", "registerApp", (short) 3003, "新增成功"));
                 return new Message().ok(3003, "修改成功");
             } else {

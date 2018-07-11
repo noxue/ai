@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,9 @@ public class TemplateController extends BasicAction{
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
 
     @ApiOperation(value = "新增Template", notes = "增加一个Template模板信息")
@@ -88,6 +92,7 @@ public class TemplateController extends BasicAction{
         template.setContent(content);
         //修改
         if (templateService.editTemplate(template)) {
+            redisTemplate.opsForValue().set("template_"+ id, "edit");
             return new Message().ok(4405, "编辑成功");
         } else {
             return new Message().error(4406, "编辑失败");
@@ -106,6 +111,7 @@ public class TemplateController extends BasicAction{
         }
 
         if (templateService.delTemplate(Long.parseLong(id))) {
+            redisTemplate.opsForValue().set("template_"+ id, "del");
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/template/del", "delTemplate", (short) 4408, "删除成功"));
             return new Message().ok(4408, "删除成功");
         } else {
