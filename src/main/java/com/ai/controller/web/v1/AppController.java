@@ -3,9 +3,8 @@ package com.ai.controller.web.v1;
 import com.ai.domain.bo.App;
 import com.ai.domain.vo.Message;
 import com.ai.service.AppService;
-import com.ai.support.factory.LogTaskFactory;
-import com.ai.support.manager.LogExeManager;
 import com.ai.util.*;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +53,7 @@ public class AppController extends BasicAction {
         app.setName(name);
 
         if (appService.registerApp(app)) {
-            return new Message().ok(3003, "新增成功");
+            return new Message().ok(0, "success");
         } else {
             return new Message().error(3004, "新增失败");
         }
@@ -88,7 +87,7 @@ public class AppController extends BasicAction {
         app.setKey(key);
         app.setDescription(description);
         if (appService.editApp(app)) {
-            return new Message().ok(3006, "编辑成功");
+            return new Message().ok(0, "success");
         } else {
             return new Message().error(3007, "编辑失败");
         }
@@ -106,10 +105,8 @@ public class AppController extends BasicAction {
         }
 
         if (appService.delApp(Long.parseLong(id))) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog("admin", "/app/del", "delApp", (short) 3008, "删除成功"));
-            return new Message().ok(3008, "删除成功");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog("admin", "/app/del", "delApp", (short) 3009, "删除失败"));
             return new Message().error(3009, "删除失败");
         }
     }
@@ -127,16 +124,14 @@ public class AppController extends BasicAction {
                                      int pageNum,
                              @RequestParam(name = "pageSize", required = false, defaultValue = "15")
                                      int pageSize) {
-
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String name = params.get("name");
         pageNum = Integer.parseInt(params.get("page"));
-        if (appService.findAllApp(pageNum, pageSize, name) != null) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog("admin", "/app/all", "findAllApp", (short) 3010, "查询成功"));
-            return new Message().ok(3003, "查询成功").addData("appList", appService.findAllApp(pageNum, pageSize, name));
+        PageInfo<App> appList = appService.findAllApp(pageNum, pageSize, name);
+        if ( appList!= null) {
+            return new Message().ok(0, "success").addData("appList", appList);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog("admin", "/app/all", "findAllApp", (short) 3011, "查询失败"));
-            return new Message().error(3004, "查询失败");
+            return new Message().error(3014, "查询失败");
         }
     }
 
@@ -150,11 +145,9 @@ public class AppController extends BasicAction {
     @PostMapping("/allApp")
     public Object findAll(HttpServletRequest request, HttpServletResponse response) {
         if (appService.findAllApp(1, 111111111, "") != null) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog("admin", "/app/allApp", "findAll", (short) 3010, "查询成功"));
-            return new Message().ok(3003, "查询成功").addData("appList", appService.findAllApp(1, 111111111, ""));
+            return new Message().ok(0, "success").addData("appList", appService.findAllApp(1, 111111111, ""));
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog("admin", "/app/allApp", "findAll", (short) 3011, "查询失败"));
-            return new Message().error(3004, "查询失败");
+            return new Message().error(3014, "查询失败");
         }
     }
 
@@ -175,10 +168,8 @@ public class AppController extends BasicAction {
         }
         App app = appService.getAppById(Long.parseLong(id));
         if (app != null) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog("admin", "/app/select", "selectAppById", (short) 3010, "查询成功"));
-            return new Message().ok(3010, "查询成功").addData("app", app);
+            return new Message().ok(0, "success").addData("app", app);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog("admin", "/app/select", "selectAppById", (short) 3011, "查询失败"));
             return new Message().error(3011, "查询失败");
         }
     }

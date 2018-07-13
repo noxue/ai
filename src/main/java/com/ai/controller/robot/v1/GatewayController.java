@@ -27,22 +27,20 @@ public class GatewayController {
     @ResponseBody
     @GetMapping("/all")
     public Message findGatewaysByAppId(HttpServletRequest request, HttpServletResponse response,
-                                      @RequestParam(name = "pageNum", required = false, defaultValue = "1")
-                                              int pageNum,
-                                      @RequestParam(name = "pageSize", required = false, defaultValue = "1500")
-                                              int pageSize){
+                                       @RequestParam(name = "pageNum", required = false, defaultValue = "1")
+                                               int pageNum,
+                                       @RequestParam(name = "pageSize", required = false, defaultValue = "1500")
+                                               int pageSize) {
 
         String appId = request.getHeader("appid");
-        if(StringUtils.isEmpty(appId)){
+        if (StringUtils.isEmpty(appId)) {
             return new Message().error(3107, "缺少参数 id");
         }
-        PageInfo<Gateway> gatewayList = gatewayService.findGatewaysByAppId(pageNum,pageSize,appId);
-        if(gatewayList!=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/ByAppId", "findGatewaysByAppId", (short) 3110, "查询成功"));
-            return new Message().ok(3103, "查询成功").addData("gatewayList",gatewayList.getList());
+        PageInfo<Gateway> gatewayList = gatewayService.findGatewaysByAppId(pageNum, pageSize, appId);
+        if (gatewayList != null) {
+            return new Message().ok(0, "success").addData("gatewayList", gatewayList.getList());
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/ByAppId", "findGatewaysByAppId", (short) 3111, "查询失败"));
-            return new Message().error(3104, "查询失败");
+            return new Message().error(8007, "查询失败");
         }
     }
 

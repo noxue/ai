@@ -4,8 +4,6 @@ import com.ai.domain.bo.*;
 import com.ai.domain.vo.Message;
 import com.ai.service.SimService;
 import com.ai.service.TaskService;
-import com.ai.support.factory.LogTaskFactory;
-import com.ai.support.manager.LogExeManager;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +35,9 @@ public class SimController {
         }
         PageInfo<Sim> SimList = simService.findSimByGatewayId(pageNum,pageSize,id);
         if(SimList!=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/ByGatewayId", "findGatewaysByAppId", (short) 3110, "查询成功"));
-            return new Message().ok(3103, "查询成功").addData("gatewayList",SimList.getList());
+            return new Message().ok(0, "success").addData("gatewayList",SimList.getList());
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/ByGatewayId", "findGatewaysByAppId", (short) 3111, "查询失败"));
-            return new Message().error(3104, "查询失败");
+            return new Message().error(8003, "查询失败");
         }
     }
 
@@ -55,24 +51,21 @@ public class SimController {
                                               int pageSize){
 
         if(id<0){
-            return new Message().error(3107, "缺少参数 id");
+            return new Message().error(4006, "缺少参数 id");
         }
         PageInfo<SimUser> SimUserList = simService.findSimUserBySimId(pageNum,pageSize,id+"");
         if(SimUserList==null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/BySimId", "findSimUserBySimId", (short) 3111, "查询失败"));
-            return new Message().error(3104, "查询失败");
+            return new Message().error(8008, "查询失败");
         }
         if(SimUserList.getList().size()==0){
-            return new Message().error(3104, "该卡当前未绑定用户");
+            return new Message().error(8009, "该卡当前未绑定用户");
         }
         //根据userId获取task集合
         List<Task> taskList =taskService.findTaskByUserId(SimUserList.getList());
         if(taskList.size()>0){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/BySimId", "findSimUserBySimId", (short) 3110, "查询成功"));
-            return new Message().ok(3103, "查询成功").addData("taskList",taskList);
+            return new Message().ok(0, "success").addData("taskList",taskList);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/sim/BySimId", "findSimUserBySimId", (short) 3111, "查询失败"));
-            return new Message().error(3104, "查询失败");
+            return new Message().error(8004, "查询失败");
         }
     }
 }

@@ -1,10 +1,6 @@
 package com.ai.controller.robot.v1;
 
-import com.ai.domain.bo.TaskUser;
 import com.ai.domain.vo.Message;
-import com.ai.service.TaskUserService;
-import com.ai.support.factory.LogTaskFactory;
-import com.ai.support.manager.LogExeManager;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -26,32 +22,32 @@ public class GetUpdateController {
     @ApiOperation(value = "分页获取taskUser", notes = "根据id查询taskUser信息")
     @ResponseBody
     @GetMapping("poll")
-    public Message findTaskUserById( String type, String[] ids){
-        if(StringUtils.isEmpty(type)){
-            return new Message().error(3107, "缺少参数项");
+    public Message findTaskUserById(String type, String[] ids) {
+        if (StringUtils.isEmpty(type)) {
+            return new Message().error(8000, "缺少参数项");
         }
-        if(!type.equals("gateway")||!type.equals("sim")||!type.equals("template")||!type.equals("config")){
-            return new Message().error(3107, "不在服务区");
+        if (!type.equals("gateway") || !type.equals("sim") || !type.equals("template") || !type.equals("config")) {
+            return new Message().error(8001, "不在服务区");
         }
 
-        if(ids.length==0){
-            return new Message().error(3107, "缺少参数 id");
+        if (ids.length == 0) {
+            return new Message().error(8002, "缺少参数 id");
         }
-        String data="";
-        String redis_value =  "";
+        String data = "";
+        String redis_value = "";
         StringBuffer jsonStr = new StringBuffer();
-        for(int i=0; i<ids.length;i++){
-            redis_value = redisTemplate.opsForValue().get( type+"_" + ids[i]);
-            if(redis_value ==null){
-                redis_value ="";
+        for (int i = 0; i < ids.length; i++) {
+            redis_value = redisTemplate.opsForValue().get(type + "_" + ids[i]);
+            if (redis_value == null) {
+                redis_value = "";
             }
-            jsonStr.append("{'"+ids[i]+"':"+"'"+ redis_value+"'")
+            jsonStr.append("{'" + ids[i] + "':" + "'" + redis_value + "'")
                     .append("}")
                     .append(",");
         }
         jsonStr = jsonStr.deleteCharAt(jsonStr.length() - 1);
-        data ="["+jsonStr.toString()+"]" ;
-        return new Message().ok(3104, "查询成功").addData("updateDate",data);
+        data = "[" + jsonStr.toString() + "]";
+        return new Message().ok(0, "success").addData("updateDate", data);
     }
 
 }
