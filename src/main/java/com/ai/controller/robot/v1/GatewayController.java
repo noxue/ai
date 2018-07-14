@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @RestController("RobotGatewayController")
-@RequestMapping("/robot/api/v1/gateway")
+@RequestMapping("/robot/api/v1/")
 public class GatewayController {
 
     @Autowired
@@ -25,22 +25,18 @@ public class GatewayController {
 
     @ApiOperation(value = "分页获取gateway", notes = "根据appId查询gateway信息")
     @ResponseBody
-    @GetMapping("/all")
-    public Message findGatewaysByAppId(HttpServletRequest request, HttpServletResponse response,
-                                       @RequestParam(name = "pageNum", required = false, defaultValue = "1")
-                                               int pageNum,
-                                       @RequestParam(name = "pageSize", required = false, defaultValue = "1500")
-                                               int pageSize) {
+    @GetMapping("gateways")
+    public Message getGatewaysByAppId(HttpServletRequest request){
 
         String appId = request.getHeader("appid");
-        if (StringUtils.isEmpty(appId)) {
-            return new Message().error(3107, "缺少参数 id");
+        if(StringUtils.isEmpty(appId)){
+            return new Message().error(3107, "缺少参数 appid");
         }
-        PageInfo<Gateway> gatewayList = gatewayService.findGatewaysByAppId(pageNum, pageSize, appId);
-        if (gatewayList != null) {
-            return new Message().ok(0, "success").addData("gatewayList", gatewayList.getList());
+        PageInfo<Gateway> gatewayList = gatewayService.findGatewaysByAppId(1,1000,appId);
+        if(gatewayList!=null){
+            return new Message().ok(0, "查询成功").addData("gateways",gatewayList.getList());
         } else {
-            return new Message().error(8007, "查询失败");
+            return new Message().error(3104, "查询失败");
         }
     }
 

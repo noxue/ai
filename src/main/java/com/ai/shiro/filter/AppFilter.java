@@ -35,14 +35,14 @@ public class AppFilter implements Filter {
         String appid = httpRequest.getHeader("appid");
         String key = httpRequest.getHeader("key");
         // String url = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
-        if(appid.equals("")|| key.length()!=16) {
-            Message message = new Message().error(-1,"error request");
+        if("".equals(appid.trim())|| key==null || key.length()!=16) {
+            Message message = new Message().error(-1,"缺少appid或key，或者key长度不正确，必须是16位");
             RequestResponseUtil.responseWrite(JSON.toJSONString(message),servletResponse);
             return;
         }
 
         String robot_key = redisTemplate.opsForValue().get("robot_"+appid);
-        if (robot_key==null) {
+        if ("".equals(robot_key)) {
             App app = appService.getAppById(Long.parseLong(appid));
             if(app != null){
                 robot_key = app.getKey();
@@ -50,10 +50,10 @@ public class AppFilter implements Filter {
             }
         }
 
-        if (robot_key.equals(key)) {
+        if (key.equals(robot_key)) {
             filterChain.doFilter(servletRequest,servletResponse);
         } else {
-            Message message = new Message().error(-1,"error request");
+            Message message = new Message().error(-1,"appid或key不正确");
             RequestResponseUtil.responseWrite(JSON.toJSONString(message),servletResponse);
         }
 

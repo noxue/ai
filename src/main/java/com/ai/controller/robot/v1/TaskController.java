@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController("RobotTaskController")
-@RequestMapping("/robot/api/v1/task")
+@RequestMapping("/robot/api/v1")
 public class TaskController {
 
     @Autowired
@@ -18,7 +18,7 @@ public class TaskController {
 
     @ApiOperation(value = "分页获取taskUser", notes = "根据id查询taskUser信息")
     @ResponseBody
-    @GetMapping("/all")
+    @GetMapping("task/users")
     public Message findTaskUserById( int id){
         if(id<0){
             return new Message().error(5021, "缺少参数 id");

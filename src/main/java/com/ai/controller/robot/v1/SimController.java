@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController("RobotSimController")
-@RequestMapping("/robot/api/v1/sim")
+@RequestMapping("/robot/api/v1")
 public class SimController {
 
     @Autowired
@@ -23,49 +23,41 @@ public class SimController {
 
     @ApiOperation(value = "sim卡信息", notes = "根据网关信息查询sim信息")
     @ResponseBody
-    @GetMapping("/all")
-    public Message findGatewaysByAppId(int id,
-                                      @RequestParam(name = "pageNum", required = false, defaultValue = "1")
-                                              int pageNum,
-                                      @RequestParam(name = "pageSize", required = false, defaultValue = "1500")
-                                              int pageSize){
+    @GetMapping("gateway/{id}/sims")
+    public Message findGatewaysByAppId(@PathVariable int id){
 
-        if(id<0){
-            return new Message().error(3107, "缺少参数 id");
+        if(id<=0){
+            return new Message().error(3107, "参数id不合法");
         }
-        PageInfo<Sim> SimList = simService.findSimByGatewayId(pageNum,pageSize,id);
+        PageInfo<Sim> SimList = simService.findSimByGatewayId(1,1000,id);
         if(SimList!=null){
-            return new Message().ok(0, "success").addData("gatewayList",SimList.getList());
+            return new Message().ok(0, "success").addData("sims",SimList.getList());
         } else {
-            return new Message().error(8003, "查询失败");
+            return new Message().error(3104, "查询失败");
+
         }
     }
 
     @ApiOperation(value = "simUser信息", notes = "根据simid信息查询simUser信息")
     @ResponseBody
-    @GetMapping("/tasks")
-    public Message findTaskBySimId(int id,
-                                      @RequestParam(name = "pageNum", required = false, defaultValue = "1")
-                                              int pageNum,
-                                      @RequestParam(name = "pageSize", required = false, defaultValue = "1500")
-                                              int pageSize){
-
-        if(id<0){
-            return new Message().error(4006, "缺少参数 id");
+    @GetMapping("/sim/{sim_id}/tasks")
+    public Message findTaskBySimId(@PathVariable int sim_id){
+        if(sim_id<=0){
+            return new Message().error(3107, "缺少参数 id");
         }
-        PageInfo<SimUser> SimUserList = simService.findSimUserBySimId(pageNum,pageSize,id+"");
+        PageInfo<SimUser> SimUserList = simService.findSimUserBySimId(1,1000,sim_id+"");
         if(SimUserList==null){
-            return new Message().error(8008, "查询失败");
+            return new Message().error(3104, "查询失败");
         }
         if(SimUserList.getList().size()==0){
-            return new Message().error(8009, "该卡当前未绑定用户");
+            return new Message().error(3105, "该卡当前未绑定用户");
         }
         //根据userId获取task集合
-        List<Task> taskList =taskService.findTaskByUserId(SimUserList.getList());
-        if(taskList.size()>0){
-            return new Message().ok(0, "success").addData("taskList",taskList);
+        List<Task> tasks =taskService.findTaskByUserId(SimUserList.getList());
+        if(tasks.size()>0){
+            return new Message().ok(0, "success").addData("tasks",tasks);
         } else {
-            return new Message().error(8004, "查询失败");
+            return new Message().error(3104, "查询失败");
         }
     }
 }

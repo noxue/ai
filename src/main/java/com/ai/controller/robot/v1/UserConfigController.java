@@ -18,7 +18,7 @@ public class UserConfigController {
     @ApiOperation(value = "获取用户信息", notes = "获取用户信息")
     @ResponseBody
     @GetMapping("/user")
-    public Message GetUserConfig(String id){
+    public Message getUserConfig(String id){
 
         if(StringUtils.isEmpty(id)){
             return new Message().error(8005, "缺少参数 id");
