@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController("RobotTaskController")
-@RequestMapping("/robot/api/v1/task")
+@RequestMapping("/robot/api/v1")
 public class TaskController {
 
     @Autowired
@@ -27,7 +27,7 @@ public class TaskController {
 
     @ApiOperation(value = "分页获取taskUser", notes = "根据id查询taskUser信息")
     @ResponseBody
-    @GetMapping("/all")
+    @GetMapping("task/users")
     public Message findTaskUserById( int id){
         if(id<0){
             return new Message().error(3107, "缺少参数 id");
@@ -35,10 +35,8 @@ public class TaskController {
         List<TaskUser> taskUserList = taskUserService.selectTaskUserByTaskId(id);
 
         if(taskUserList.size()>0){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/task/ByTaskId", "findGatewaysByAppId", (short) 3110, "查询成功"));
             return new Message().ok(3103, "查询成功").addData("taskUserList",taskUserList);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/task/ByTaskId", "findGatewaysByAppId", (short) 3111, "查询失败"));
             return new Message().error(3104, "查询失败");
         }
     }
