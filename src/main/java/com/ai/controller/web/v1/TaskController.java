@@ -1,9 +1,6 @@
 package com.ai.controller.web.v1;
 
-import com.ai.domain.bo.AuthRole;
-import com.ai.domain.bo.Task;
-import com.ai.domain.bo.TaskUser;
-import com.ai.domain.bo.TaskUserReport;
+import com.ai.domain.bo.*;
 import com.ai.domain.vo.Message;
 import com.ai.service.*;
 import com.ai.util.RequestResponseUtil;
@@ -116,6 +113,14 @@ public class TaskController extends BasicAction{
         if (StringUtils.isEmpty(user_id)) {
             return new Message().error(4004, "当前用户未登录！");
         }
+        String taskName = params.get("taskName");
+        if (StringUtils.isEmpty(taskName)) {
+            return new Message().error(5007, "请填写任务名称");
+        }
+        String template_id = params.get("template");
+        if (StringUtils.isEmpty(template_id) || template_id.equals("undefined")) {
+            return new Message().error(5007, "请选择模板信息");
+        }
         /*if (StringUtils.isEmpty(sim_id)) {
             return new Message().error(5007, "请选择sim卡信息");
         }
@@ -125,15 +130,11 @@ public class TaskController extends BasicAction{
         }else {
             return new Message().error(5018, "该卡当前不可使用");
         }*/
-        String taskName = params.get("taskName");
-        if (StringUtils.isEmpty(taskName)) {
-            return new Message().error(5007, "请填写任务名称");
+        PageInfo<Sim> simList= simService.findAllSim(1,10,user_id,"");
+        List<SimUser> simUserList= simService.getListByUserId(user_id);
+        if(simList.getTotal()==0  &&  simUserList.size()==0){
+            return new Message().error(5005, "目前无法创建任务");
         }
-        String template_id = params.get("template");
-        if (StringUtils.isEmpty(template_id)) {
-            return new Message().error(5007, "请选择模板信息");
-        }
-
         String test = params.get("test");
         Task task = new Task();
         task.setName(taskName);
@@ -142,6 +143,7 @@ public class TaskController extends BasicAction{
             task.setThread(Integer.parseInt(params.get("num")));
         }
         task.setTotal(0);
+        task.setThread(0);
         task.setTemplateId(Long.parseLong(template_id));
         task.setCreatedAt(new Date());
         task.setStatus(new Byte("1"));
@@ -336,10 +338,10 @@ public class TaskController extends BasicAction{
             // 必须信息缺一不可,返回信息缺失
             return new Message().error(4004, "当前用户未登录");
         }
-        String roleId= accountService.loadAccountRoleId(appId);
-        if(roleId.equals("100")){
-            appId = "";
-        }
+//        String roleId= accountService.loadAccountRoleId(appId);
+//        if(roleId.equals("100")){
+//            appId = "";
+//        }
         PageInfo<Task> taskList = taskService.findAllTaskByAppId(pageNum,pageSize,appId,name);
         if (taskList!=null){
             return new Message().ok(0, "success").addData("taskList",taskList);
@@ -369,11 +371,10 @@ public class TaskController extends BasicAction{
         String name  =params.get("name");
         String taskId =params.get("taskId");
         pageNum = Integer.parseInt(params.get("page"));
-        String roleId= accountService.loadAccountRoleId(appId);
-            if(roleId.equals("100")){
-            appId = "";
-        }
-
+//        String roleId= accountService.loadAccountRoleId(appId);
+//            if(roleId.equals("100")){
+//            appId = "";
+//        }
         PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(pageNum,pageSize,appId,taskId,name,type,share,status);
         if (taskUserList != null){
             return new Message().ok(0, "success").addData("taskUserList",taskUserList);

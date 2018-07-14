@@ -19,9 +19,6 @@ public class SimServiceImpl implements SimService {
     private SimDao simDao;
 
     @Autowired
-    private SimUserDao simUserMapper;
-
-    @Autowired
     private SimUserDao simUserDao;
 
     @Override
@@ -43,7 +40,7 @@ public class SimServiceImpl implements SimService {
     @Override
     public PageInfo<SimUser> findSimUserBySimId(int pageNum, int pageSize, String simId) {
         PageHelper.startPage(pageNum, pageSize);
-        List<SimUser> simUserList = simUserMapper.getSimUserListBySimId(Long.parseLong(simId) );
+        List<SimUser> simUserList = simUserDao.getSimUserListBySimId(Long.parseLong(simId) );
         PageInfo result = new PageInfo(simUserList);
         return result;
     }
@@ -54,6 +51,11 @@ public class SimServiceImpl implements SimService {
         List<Sim> simList = simDao.getSimByGatewayId(gatewayId );
         PageInfo result = new PageInfo(simList);
         return result;
+    }
+
+    @Override
+    public List<SimUser> getListByUserId(String userId) {
+        return simUserDao.getListByUserId(userId);
     }
 
     @Override
@@ -79,18 +81,18 @@ public class SimServiceImpl implements SimService {
     //SimUser
     @Override
     public boolean registerSimUser(SimUser simUser) {
-        return simUserMapper.insert(simUser) == 1 ? Boolean.TRUE : Boolean.FALSE;
+        return simUserDao.insert(simUser) == 1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override
     public boolean editSimUser(SimUser simUser) {
 
-        return simUserMapper.updateByPrimaryKeySelective(simUser) == 1 ? Boolean.TRUE : Boolean.FALSE;
+        return simUserDao.updateByPrimaryKeySelective(simUser) == 1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override
     public boolean delSimUser(long id) {
-        return simUserMapper.deleteByPrimaryKey(id) == 1 ? Boolean.TRUE : Boolean.FALSE;
+        return simUserDao.deleteByPrimaryKey(id) == 1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override
