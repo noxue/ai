@@ -39,11 +39,16 @@ public class AppServiceImpl implements AppService {
     }
     @Override
     public boolean isAppExistByName(String name,String id) {
+        boolean flag =false;
         App app = appDao.selectByName(name);
-        if(app.getId().toString().equals(id)){
-            return false;
+        if(app!=null){
+            if(app.getId().toString().equals(id)){
+                return flag = true;
+            }else{
+                return flag = false;
+            }
         }else{
-            return true;
+            return flag =false;
         }
     }
     @Override

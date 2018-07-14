@@ -1,20 +1,18 @@
 package com.ai.controller.web.v1;
 
-import com.ai.domain.bo.AuthRole;
 import com.ai.domain.bo.Gateway;
 import com.ai.domain.bo.GatewayReport;
 import com.ai.domain.vo.Message;
 import com.ai.service.AccountService;
 import com.ai.service.GatewayReportService;
 import com.ai.service.GatewayService;
-import com.ai.support.factory.LogTaskFactory;
-import com.ai.support.manager.LogExeManager;
 import com.ai.util.RequestResponseUtil;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +41,9 @@ public class GatewayController extends BasicAction{
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
     @ApiOperation(value = "新增Gateway", notes = "增加一个新的、新增Gateway")
     @ResponseBody
     @PostMapping("/add")
@@ -63,24 +64,23 @@ public class GatewayController extends BasicAction{
         }
         if (gatewayService.isGateExistByName(name)) {
             // name已存在
-            return new Message().error(3101, "名称已被占用");
+            return new Message().error(3150, "名称已被占用");
         }
         if (!accountService.isAccountExistByUid(user_id)) {
-            // name已存在
-            return new Message().error(3101, "用户不存在");
+            // 查找用户信息
+            return new Message().error(3151, "用户不存在");
         }
-
-       String regex =  "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
+       String regex =   "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
                         +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
                         +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
                         +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
         if(!Pattern.matches(regex, ip)){
-            return new Message().error(3101, "请输入正确的ip");
+            return new Message().error(3152, "请输入正确的ip");
         }
         try{
             gateway.setPort(Integer.parseInt(port));
         }catch (NumberFormatException e){
-            return new Message().error(3101, "请输入正确的端口号");
+            return new Message().error(3153, "请输入正确的端口号");
         }
         gateway.setName(name);
         gateway.setDescription(description);
@@ -88,10 +88,8 @@ public class GatewayController extends BasicAction{
         gateway.setUserId(user_id);
         gateway.setAppId(Long.parseLong(app_id));
         if (gatewayService.registerGate(gateway)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/add", "addGateway", (short) 3101, "新增成功"));
-            return new Message().ok(3102, "新增成功");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/add", "addGateway", (short) 3102, "新增失败"));
             return new Message().error(3103, "新增失败");
         }
     }
@@ -118,16 +116,16 @@ public class GatewayController extends BasicAction{
             return new Message().error(3101, "用户不存在");
         }
         String regex =  "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
-                +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
-                +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
-                +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
+                        +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+                        +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+                        +"(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
         if(!Pattern.matches(regex, ip)){
-            return new Message().error(3101, "请输入正确的ip");
+            return new Message().error(3152, "请输入正确的ip");
         }
         try{
             gateway.setPort(Integer.parseInt(port));
         }catch (NumberFormatException e){
-            return new Message().error(3101, "请输入正确的端口号");
+            return new Message().error(3153, "请输入正确的端口号");
         }
         gateway.setId(Long.parseLong(id));
         gateway.setName(name);
@@ -135,10 +133,9 @@ public class GatewayController extends BasicAction{
         gateway.setIp(ip);
         gateway.setUserId(user_id);
         if (gatewayService.editGate(gateway)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/edit", "editGate", (short) 3106, "编辑成功"));
-            return new Message().ok(3015, "编辑成功");
+            redisTemplate.opsForValue().set("gateway_"+ gateway.getId(), "edit");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/edit", "editGate", (short) 3107, "编辑失败"));
             return new Message().error(3106, "编辑失败");
         }
     }
@@ -151,14 +148,12 @@ public class GatewayController extends BasicAction{
         String id =params.get("id");
         if (StringUtils.isEmpty(id)) {
             // 必须信息缺一不可,返回网关信息缺失
-            return new Message().error(3017, "网关信息缺失");
+            return new Message().error(3107, "网关信息缺失");
         }
-
         if (gatewayService.delGate(Long.parseLong(id))) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/del", "delGate", (short) 3108, "删除成功"));
-            return new Message().ok(3108, "删除成功");
+            redisTemplate.opsForValue().set("gateway_"+ id, "del");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/del", "delGate", (short) 3109, "删除失败"));
             return new Message().error(3109, "删除失败");
         }
     }
@@ -191,11 +186,10 @@ public class GatewayController extends BasicAction{
             uid = username;
         }
         pageNum = Integer.parseInt(params.get("page"));
-        if(gatewayService.findAllGate(pageNum,pageSize,name,uid)!=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/all", "findAllGate", (short) 3110, "查询成功"));
-            return new Message().ok(3110, "查询成功").addData("gatewayList",gatewayService.findAllGate(pageNum,pageSize,name,uid ));
+        PageInfo<Gateway> gatewayList= gatewayService.findAllGate(pageNum,pageSize,name,uid);
+        if( gatewayList!=null ){
+            return new Message().ok(0, "success").addData("gatewayList",gatewayList);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/all", "findAllGate", (short) 3111, "查询失败"));
             return new Message().error(3111, "查询失败");
         }
     }
@@ -216,10 +210,8 @@ public class GatewayController extends BasicAction{
         }
         PageInfo<Gateway> gatewayList = gatewayService.findAllGate(0,100000,"",uid);
         if(gatewayList!=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/all", "findAllGate", (short) 3110, "查询成功"));
-            return new Message().ok(3110, "查询成功").addData("gatewayList",gatewayList);
+            return new Message().ok(0, "success").addData("gatewayList",gatewayList);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/all", "findAllGate", (short) 3111, "查询失败"));
             return new Message().error(3111, "查询失败");
         }
     }
@@ -236,15 +228,13 @@ public class GatewayController extends BasicAction{
         String id =params.get("id");
         if ( StringUtils.isEmpty(id)) {
             // 必须信息缺一不可,返回网关信息缺失
-            return new Message().error(3105, "网关信息缺失");
+            return new Message().error(3107, "网关信息缺失");
         }
         Gateway gateway = gatewayService.getGateById(Long.parseLong(id));
         if (gateway !=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/select", "selectGatewayById", (short) 3010, "查询成功"));
-            return new Message().ok(3010, "查询成功").addData("gateway",gateway);
+            return new Message().ok(0, "success").addData("gateway",gateway);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/select", "selectGatewayById", (short) 3011, "查询失败"));
-            return new Message().error(3011, "查询失败");
+            return new Message().error(3111, "查询失败");
         }
     }
 
@@ -266,11 +256,9 @@ public class GatewayController extends BasicAction{
         gatewayReport.setGatewayId(Long.parseLong(gatewayId));
         gatewayReport.setDetail(detail);
         if (gatewayReportService.registerGatewayReport(gatewayReport)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/add", "addGatewayReport", (short) 3101, "新增成功"));
-            return new Message().ok(3103, "新增成功");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/add", "addGatewayReport", (short) 3102, "新增失败"));
-            return new Message().error(3104, "新增失败");
+            return new Message().error(3114, "新增失败");
         }
     }
 
@@ -286,10 +274,8 @@ public class GatewayController extends BasicAction{
         }
         //执行删除操作
         if (gatewayReportService.delReport(Long.parseLong(id))) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/del", "delGatewayReport", (short) 3108, "删除成功"));
-            return new Message().ok(3115, "删除成功");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/del", "delGatewayReport", (short) 3109, "删除失败"));
             return new Message().error(3116, "删除失败");
         }
     }
@@ -311,11 +297,9 @@ public class GatewayController extends BasicAction{
         }
         GatewayReport gatewayReport = gatewayReportService.getGatewayReoprtById(Long.parseLong(id));
         if (gatewayReport !=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/select", "selectGatewayReportById", (short) 3017, "查询成功"));
-            return new Message().ok(3017, "查询成功").addData("gatewayReport",gatewayReport);
+            return new Message().ok(0, "success").addData("gatewayReport",gatewayReport);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/select", "selectGatewayReportById", (short) 3018, "查询失败"));
-            return new Message().error(3018, "查询失败");
+            return new Message().error(3118, "查询失败");
         }
     }
 
@@ -334,34 +318,11 @@ public class GatewayController extends BasicAction{
                                       int pageSize){
 
         PageInfo<GatewayReport> gatewayReportList = gatewayReportService.findAllGatewayReport(pageNum,pageSize);
-
         if(gatewayReportList!=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/all", "findAllGatewayReport", (short) 3110, "查询成功"));
-            return new Message().ok(3103, "查询成功").addData("gatewayReportList",gatewayReportList);
+            return new Message().ok(0, "success").addData("gatewayReportList",gatewayReportList);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/gateway/report/all", "findAllGatewayReport", (short) 3111, "查询失败"));
-            return new Message().error(3104, "查询失败");
+            return new Message().error(3120, "查询失败");
         }
-    }
-    public boolean Isipv4(String ipv4){
-        if(ipv4==null || ipv4.length()==0){
-            return false;//字符串为空或者空串
-        }
-        String[] parts=ipv4.split("\\.");//因为java doc里已经说明, split的参数是reg, 即正则表达式, 如果用"|"分割, 则需使用"\\|"
-        if(parts.length!=4){
-            return false;//分割开的数组根本就不是4个数字
-        }
-        for(int i=0;i<parts.length;i++){
-            try{
-                int n=Integer.parseInt(parts[i]);
-                if(n<0 || n>255){
-                    return false;//数字不在正确范围内
-                }
-            }catch (NumberFormatException e) {
-                return false;//转换数字不正确
-            }
-        }
-        return true;
     }
 
 }

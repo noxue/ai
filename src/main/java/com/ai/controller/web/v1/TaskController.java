@@ -6,8 +6,6 @@ import com.ai.domain.bo.TaskUser;
 import com.ai.domain.bo.TaskUserReport;
 import com.ai.domain.vo.Message;
 import com.ai.service.*;
-import com.ai.support.factory.LogTaskFactory;
-import com.ai.support.manager.LogExeManager;
 import com.ai.util.RequestResponseUtil;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
@@ -76,11 +74,9 @@ public class TaskController extends BasicAction{
         taskUserReport.setContent(content);
 
         if (taskUserReportService.addTaskUserReport(taskUserReport)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/add", "registerApp", (short) 3003, "新增成功"));
-            return new Message().ok(5001, "新增成功");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/app/add", "registerApp", (short) 3004, "新增失败"));
-            return new Message().error(5002, "新增失败");
+            return new Message().error(5003, "新增失败");
         }
     }
 
@@ -97,14 +93,12 @@ public class TaskController extends BasicAction{
         String id =params.get("id");
         if ( StringUtils.isEmpty(id)) {
             // 必须信息缺一不可,返回信息缺失
-            return new Message().error(5004, "信息缺失");
+            return new Message().error(5001, "信息缺失");
         }
         TaskUserReport taskUserReport = taskUserReportService.getTaskUserReportById(Long.parseLong(id));
         if (taskUserReport !=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/report/select", "getTaskUserReportById", (short) 5002, "查询成功"));
-            return new Message().ok(5005, "查询成功").addData("taskUserReport",taskUserReport);
+            return new Message().ok(0, "success").addData("taskUserReport",taskUserReport);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/report/select", "getTaskUserReportById", (short) 5003, "查询失败"));
             return new Message().error(5006, "查询失败");
         }
     }
@@ -120,7 +114,7 @@ public class TaskController extends BasicAction{
         //String sim_id = params.get("sim");
         // 必须信息缺一不可,返回验证消息
         if (StringUtils.isEmpty(user_id)) {
-            return new Message().error(5007, "当前用户未登录！");
+            return new Message().error(4004, "当前用户未登录！");
         }
         /*if (StringUtils.isEmpty(sim_id)) {
             return new Message().error(5007, "请选择sim卡信息");
@@ -141,22 +135,14 @@ public class TaskController extends BasicAction{
         }
 
         String test = params.get("test");
-        //String date1 = params.get("date1");
-        //String date2 = params.get("date2");
         Task task = new Task();
         task.setName(taskName);
         task.setUserId(user_id);
         if(!StringUtils.isEmpty(params.get("num"))){
             task.setThread(Integer.parseInt(params.get("num")));
         }
-//        if(!StringUtils.isEmpty(params.get("total"))){
-//            task.setTotal(Integer.parseInt(params.get("total")));
-//        }
         task.setTotal(0);
         task.setTemplateId(Long.parseLong(template_id));
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
-        //task.setStartAt(sdf.parse(date1+" "+ date2));
         task.setCreatedAt(new Date());
         task.setStatus(new Byte("1"));
         if (test.equals("1")) {
@@ -170,7 +156,7 @@ public class TaskController extends BasicAction{
                 String testPhone = params.get("testPhone");
                 String remark = params.get("remark");
                 if (StringUtils.isEmpty(testPhone)) {
-                    return new Message().error(5007, "请填写手机号码");
+                    return new Message().error(5034, "请填写手机号码");
                 }
                 Long taskid = task.getId();
                 TaskUser taskUser = new TaskUser();
@@ -180,18 +166,12 @@ public class TaskController extends BasicAction{
                 taskUser.setRemark(remark);
                 taskUser.setCalledAt(new Date());
                 if(taskUserService.addTaskUser(taskUser)){
-                    LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/add", "addTaskUser", (short) 5011, "新增成功"));
                 }else{
-                    LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/add", "addTaskUser", (short) 5012, "新增失败"));
                     return new Message().error(5012, "新增失败");
                 }
-
-            }else{
-                LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/add", "addTask", (short) 3003, "新增成功"));
             }
-            return new Message().ok(5008, "新增成功");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/add", "addTask", (short) 3004, "新增失败"));
             return new Message().error(5009, "新增失败");
         }
     }
@@ -213,10 +193,8 @@ public class TaskController extends BasicAction{
         taskUser.setTaskId(Long.parseLong(task_id));
 
         if (taskUserService.addTaskUser(taskUser)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/add", "addTaskUser", (short) 5011, "新增成功"));
-            return new Message().ok(5011, "新增成功");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/add", "addTaskUser", (short) 5012, "新增失败"));
             return new Message().error(5012, "新增失败");
         }
     }
@@ -230,15 +208,13 @@ public class TaskController extends BasicAction{
         String id =params.get("id");
         if ( StringUtils.isEmpty(id) ) {
             // 必须信息缺一不可,返回修改时关键信息缺失
-            return new Message().error(5013, "信息缺失");
+            return new Message().error(5021, "信息缺失");
         }
         taskUser.setId(Long.parseLong(id));
         taskUser.setShare(true);
         if (taskUserService.editTaskUser(taskUser)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/share", "shareTaskUser", (short) 3006, "编辑成功"));
-            return new Message().ok(5014, "编辑成功");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/share", "shareTaskUser", (short) 3007, "编辑失败"));
             return new Message().error(5015, "编辑失败");
         }
     }
@@ -266,10 +242,8 @@ public class TaskController extends BasicAction{
             taskUser.setType(Byte.valueOf(type));
         }
         if (taskUserService.editTaskUser(taskUser)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/edit", "editTaskUser", (short) 5014, "编辑成功"));
-            return new Message().ok(5014, "编辑成功");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/edit", "editTaskUser", (short) 5018, "编辑失败"));
             return new Message().error(5017, "编辑失败");
         }
     }
@@ -284,24 +258,23 @@ public class TaskController extends BasicAction{
         String status =params.get("status");
         if ( StringUtils.isEmpty(id) || StringUtils.isEmpty(status) ) {
             // 必须信息缺一不可,返回修改时关键信息缺失
-            return new Message().error(5018, "信息缺失");
+            return new Message().error(5022, "信息缺失");
         }
         Task oldTask = new Task();
         oldTask = taskService.getTaskById(Long.parseLong(id));
         if(oldTask == null){
-            return new Message().error(5031, "编辑失败");
+            return new Message().error(5031, "当前任务不存在");
         }
         if((oldTask.getStatus().toString()).equals("2")){
-            return new Message().error(5031, "当前任务正在执行中");
+            return new Message().error(5032, "当前任务正在执行中");
         }
         PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(1,500,appId,id,"","","","");
         if(taskUserList.getSize()==0){
-            return new Message().error(5031, "当前任务没有客户信息，请在导入后继续操作");
+            return new Message().error(5035, "当前任务没有客户信息，请在导入后继续操作");
         }
 
         //判断当前登陆用户是否有权限操作任务
         if(oldTask.getUserId().equals(appId)){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/status", "editTaskStatus", (short) 5028, "本人操作"));
         }else{
             //根据当前用户的appId查询该用户的最大权限
             String maxRoleId = accountService.loadAccountRoleId(appId);
@@ -310,24 +283,20 @@ public class TaskController extends BasicAction{
             String uid = oldTask.getUserId();
             if(authRole.getCode().equals("role_company")){
                 if(accountService.getUserByUidAndPid(uid,appId)!=null){
-                    LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/status", "editTaskStatus", (short) 5029, "上级操作"));
                 }else{
-                    return new Message().ok(5030, "编辑失败");
+                    return new Message().error(5030, "编辑失败");
                 }
             }else{
                 return new Message().error(5030, "编辑失败");
             }
         }
-
         Task newTask =  new Task();
         newTask.setId(Long.parseLong(id));
         newTask.setStartAt(new Date());
         newTask.setStatus(Byte.valueOf(status));
         if (taskService.editTask(newTask)) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/status", "editTaskStatus", (short) 5019, "编辑成功"));
-            return new Message().ok(5019, "编辑成功");
+            return new Message().ok(0, "success");
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/status", "editTaskStatus", (short) 5020, "编辑失败"));
             return new Message().error(5020, "编辑失败");
         }
     }
@@ -341,14 +310,12 @@ public class TaskController extends BasicAction{
         String id =params.get("id");
         if ( StringUtils.isEmpty(id)) {
             // 必须信息缺一不可,返回信息缺失
-            return new Message().error(5021, "信息缺失");
+            return new Message().error(5013, "信息缺失");
         }
         Task task = taskService.getTaskById(Long.parseLong(id));
         if (task !=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/select", "selectTaskById", (short) 5022, "查询成功"));
-            return new Message().ok(5022, "查询成功").addData("task",task);
+            return new Message().ok(0, "success").addData("task",task);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/select", "selectTaskById", (short) 5023, "查询失败"));
             return new Message().error(5023, "查询失败");
         }
     }
@@ -367,7 +334,7 @@ public class TaskController extends BasicAction{
         String name = params.get("name");
         if ( StringUtils.isEmpty(appId)) {
             // 必须信息缺一不可,返回信息缺失
-            return new Message().error(5024, "信息缺失");
+            return new Message().error(4004, "当前用户未登录");
         }
         String roleId= accountService.loadAccountRoleId(appId);
         if(roleId.equals("100")){
@@ -375,10 +342,8 @@ public class TaskController extends BasicAction{
         }
         PageInfo<Task> taskList = taskService.findAllTaskByAppId(pageNum,pageSize,appId,name);
         if (taskList!=null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/taskList", "selectTaskList", (short) 3010, "查询成功"));
-            return new Message().ok(5025, "查询成功").addData("taskList",taskList);
+            return new Message().ok(0, "success").addData("taskList",taskList);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/taskList", "selectTaskList", (short) 3011, "查询失败"));
             return new Message().error(5026, "查询失败");
         }
     }
@@ -394,7 +359,7 @@ public class TaskController extends BasicAction{
         String appId =request.getHeader("appId");
         if (StringUtils.isEmpty(appId)) {
             // 必须信息缺一不可,返回信息缺失
-            return new Message().error(5024, "信息缺失");
+            return new Message().error(4004, "当前用户未登录");
         }
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         //String test  =params.get("test");
@@ -411,10 +376,8 @@ public class TaskController extends BasicAction{
 
         PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(pageNum,pageSize,appId,taskId,name,type,share,status);
         if (taskUserList != null){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/conditions", "selectTaskUserListByConditions", (short) 3010, "查询成功"));
-            return new Message().ok(5025, "查询成功").addData("taskUserList",taskUserList);
+            return new Message().ok(0, "success").addData("taskUserList",taskUserList);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/user/conditions", "selectTaskUserListByConditions", (short) 3011, "查询失败"));
             return new Message().error(5027, "查询失败");
         }
     }
@@ -424,10 +387,10 @@ public class TaskController extends BasicAction{
     @PostMapping("/imp")
     public Message ImportExcel(@RequestParam("file") MultipartFile file ,@RequestParam("id") String id) throws Exception {
         if(StringUtils.isEmpty(id)){
-            return new Message().error(-1,"信息缺失");
+            return new Message().error(5021,"信息缺失");
         }
         if (file == null) {
-            return new Message().error(-1,"导入失败");
+            return new Message().error(5025,"导入失败");
         }
         return excelService.importExcel(Integer.parseInt(id),file);
     }
@@ -440,10 +403,10 @@ public class TaskController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String taskId = params.get("taskId");
         if (StringUtils.isEmpty(appId)) {
-            return new Message().error(-1, "缺少授权信息");
+            return new Message().error(4004, "缺少授权信息");
         }
         if (StringUtils.isEmpty(taskId)) {
-            return new Message().error(-1, "缺少信息");
+            return new Message().error(5021, "缺少信息");
         }
         TaskUser[] result = taskUserService.taskUserList(appId,taskId);
         List<String[]> listArray = excelService.downloadExcel(result);

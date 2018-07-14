@@ -4,8 +4,6 @@ import com.ai.domain.bo.*;
 import com.ai.domain.vo.Message;
 import com.ai.service.SimService;
 import com.ai.service.TaskService;
-import com.ai.support.factory.LogTaskFactory;
-import com.ai.support.manager.LogExeManager;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +34,7 @@ public class SimController {
             return new Message().ok(0, "success").addData("sims",SimList.getList());
         } else {
             return new Message().error(3104, "查询失败");
+
         }
     }
 
