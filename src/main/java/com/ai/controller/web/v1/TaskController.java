@@ -144,6 +144,7 @@ public class TaskController extends BasicAction{
         }
         task.setTotal(0);
         task.setThread(0);
+        task.setCalled(0);
         task.setTemplateId(Long.parseLong(template_id));
         task.setCreatedAt(new Date());
         task.setStatus(new Byte("1"));
@@ -328,7 +329,7 @@ public class TaskController extends BasicAction{
     public Message selectTaskList(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(name = "pageNum", required = false, defaultValue = "1")
              int pageNum,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "15")
+            @RequestParam(name = "pageSize", required = false, defaultValue = "20")
              int pageSize){
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String appId =request.getHeader("appId");
@@ -356,7 +357,7 @@ public class TaskController extends BasicAction{
     public Message selectTaskUserListByConditions(HttpServletRequest request, HttpServletResponse response,
                                   @RequestParam(name = "pageNum", required = false, defaultValue = "1")
                                           int pageNum,
-                                  @RequestParam(name = "pageSize", required = false, defaultValue = "15")
+                                  @RequestParam(name = "pageSize", required = false, defaultValue = "16")
                                           int pageSize){
         String appId =request.getHeader("appId");
         if (StringUtils.isEmpty(appId)) {
