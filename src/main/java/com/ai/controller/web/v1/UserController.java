@@ -84,11 +84,19 @@ public class UserController extends BasicAction{
     @ApiOperation(value = "获取用户列表",notes = "POST获取所有注册用户的信息列表")
     @PostMapping("/list")
     public Message getUsersList(HttpServletRequest request, HttpServletResponse response) {
+        String uid = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String st = params.get("start");
-        String uid = params.get("uid");
         int start = Integer.parseInt(st);
         int limit = 15;
+        if (StringUtils.isEmpty(uid)) {
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(4004, "当前用户未登录");
+        }
+        String roleId= accountService.loadAccountRoleId(uid);
+        if(roleId.equals("100")){
+            uid = "";
+        }
         PageHelper.startPage(start,limit);
         List<AuthUser> authUsers = userService.getUserList(uid);
         authUsers.forEach(user->user.setPassword(null));
@@ -180,11 +188,11 @@ public class UserController extends BasicAction{
             // 必须信息缺一不可,返回注册账号信息缺失
             return new Message().error(1111, "账户信息缺失");
         }
-        Pattern pattern = Pattern.compile("[a-zA-Z0-9]{4,30}");
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9]{5,30}");
         Matcher matcher = pattern.matcher(uid);
         boolean b= matcher.matches();
         if(!b){
-            return new Message().error(1011, "用户名只允许字母和数字，长度在4到30之间");
+            return new Message().error(1011, "用户名只允许字母和数字，长度在5到30之间");
         }
         if(password.length()<5||password.length()>30){
             return new Message().error(1011, "请控制密码长度在5到30之间");
@@ -290,6 +298,15 @@ public class UserController extends BasicAction{
             authUser.setUid(uid);
             // 存储到数据库的密码为 MD5(原密码+盐值)
             if(!"".equals(password)){
+                Pattern pattern = Pattern.compile("[a-zA-Z0-9]{5,30}");
+                Matcher matcher = pattern.matcher(uid);
+                boolean b= matcher.matches();
+                if(!b){
+                    return new Message().error(1011, "用户名只允许字母和数字，长度在5到30之间");
+                }
+                if(password.length()<5||password.length()>30){
+                    return new Message().error(1011, "请控制密码长度在5到30之间");
+                }
                 authUser.setPassword(MD5Util.md5(password + salt));
                 authUser.setSalt(salt);
             }
@@ -335,11 +352,20 @@ public class UserController extends BasicAction{
     @ApiOperation(value = "删除用户", notes = "删除用户以及角色信息")
     @PostMapping("/del")
     public Message delUser(HttpServletRequest request, HttpServletResponse response) {
+        String appId = request.getHeader("appId");
+        if(StringUtils.isEmpty(appId)){
+            return new Message().error(4004, "当前用户未登录");
+        }
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String uid = params.get("uid");
         if(StringUtils.isEmpty(uid)){
             return new Message().error(1114, "信息缺失");
         }
+        //判断当前用户是否可以进行删除操作
+        if(accountService.getUserByUidAndPid(uid,appId) == null){
+            return new Message().error(2004, "无法进行删除操作");
+        }
+
         if(userService.delUser(uid)){
             LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 1, "删除成功"));
             if(userService.deleteAuthRoleUserByUserId(uid)){

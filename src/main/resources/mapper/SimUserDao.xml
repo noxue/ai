@@ -24,4 +24,11 @@
     where 1=1 AND sim_id = #{sim_id}
   </select>
 
+  <select id="getListByUserId"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sim_user
+    where 1=1 AND user_id = #{user_id}
+  </select>
+
 </mapper>

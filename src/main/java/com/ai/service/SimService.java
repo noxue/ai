@@ -4,6 +4,8 @@ import com.ai.domain.bo.Sim;
 import com.ai.domain.bo.SimUser;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 public interface SimService {
     //sim
     PageInfo<Sim> findAllSim(int pageNum, int pageSize, String uid, String phone);
@@ -36,6 +38,8 @@ public interface SimService {
     boolean delSimUser(long id);
 
     boolean isExistInSimUser(String user_id , String sim_id);
+
+    List<SimUser> getListByUserId(String userId);
 
 
 }

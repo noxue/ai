@@ -21,8 +21,9 @@
 2001: 注册账户信息不完善----lack account info  
 2002: 注册用户成功----register success
 2003: 用户不存在  
+2004：无法进行删除操作，删除错误
 
-//操作成功的同意状态码
+//操作成功的统一状态码
 1 ：success
 
 // App相关
@@ -115,7 +116,7 @@
 5002：
 5003：TaskUserReport新增失败 执行taskUserReportService.getTaskUserReportById(Long.parseLong(id)) 失败
 5004：id为空
-5005：
+5005：当前用户未拥有卡或没有卡使用权，目前无法创建任务
 5006：taskUserReportService.getTaskUserReportById(Long.parseLong(id))执行失败
 
 

@@ -23,7 +23,7 @@
   <sql id="Blob_Column_List">
     content
   </sql>
-  <select id="selectTaskUserListByConditions" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectTaskUserListByConditions"  resultMap="BaseResultMap">
 
     select u.* from task_user u
     left join task t on u.task_id = t.id

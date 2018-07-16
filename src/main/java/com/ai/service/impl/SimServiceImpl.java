@@ -54,6 +54,11 @@ public class SimServiceImpl implements SimService {
     }
 
     @Override
+    public List<SimUser> getListByUserId(String userId) {
+        return simUserDao.getListByUserId(userId);
+    }
+
+    @Override
     public boolean registerSim(Sim sim) {
         return simDao.insert(sim) ==1 ? Boolean.TRUE : Boolean.FALSE;
     }
