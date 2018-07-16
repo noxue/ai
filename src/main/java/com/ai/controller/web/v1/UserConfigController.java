@@ -60,7 +60,7 @@ public class UserConfigController extends BasicAction {
             //执行更新操作
             oldConfig.setValue(repeat + schedule);
             if (userConfigService.editConfig(oldConfig)) {
-                redisTemplate.opsForValue().set("config_"+ oldConfig.getUserId(), "edit");
+                redisTemplate.opsForValue().set("schedule_"+ oldConfig.getUserId(), "edit");
                 return new Message().ok(0, "success");
             } else {
                 return new Message().error(7001, "修改失败");

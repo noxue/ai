@@ -1,9 +1,6 @@
 package com.ai.controller.web.v1;
 
-import com.ai.domain.bo.AuthRole;
-import com.ai.domain.bo.Task;
-import com.ai.domain.bo.TaskUser;
-import com.ai.domain.bo.TaskUserReport;
+import com.ai.domain.bo.*;
 import com.ai.domain.vo.Message;
 import com.ai.service.*;
 import com.ai.util.RequestResponseUtil;
@@ -13,6 +10,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,9 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /* *
  * @Author ws
@@ -56,6 +52,9 @@ public class TaskController extends BasicAction{
 
     @Autowired
     private ExcelService excelService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @ApiOperation(value = "新增taskUserReport", notes = "添加taskUserReport信息")
     @ResponseBody
@@ -295,6 +294,24 @@ public class TaskController extends BasicAction{
         newTask.setStartAt(new Date());
         newTask.setStatus(Byte.valueOf(status));
         if (taskService.editTask(newTask)) {
+
+            // 如果是开始任务，就通知客户端
+            if ("2".equalsIgnoreCase(status)){
+                // 获取当前任务发送用户能使用的卡
+                PageInfo<Sim> sims = simService.findSimUserById(1,1000,oldTask.getUserId());
+                // 通知每一张卡
+                for (Sim s:sims.getList()) {
+                    String v = redisTemplate.opsForValue().get("task_add_"+s.getId());
+                    List<String> arr = new ArrayList<>();
+                    if (v!=null) {
+                        arr = new ArrayList<String>(Arrays.asList(v.split(",")));
+                    }
+                    arr.add(oldTask.getId()+"");
+                    redisTemplate.opsForValue().set("task_add_"+s.getId(), String.join(",", org.apache.commons.lang.StringUtils.join(arr.toArray(),",")));
+                }
+
+            }
+
             return new Message().ok(0, "success");
         } else {
             return new Message().error(5020, "编辑失败");

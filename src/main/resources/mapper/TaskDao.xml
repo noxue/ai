@@ -36,8 +36,8 @@
     select <include refid="Base_Column_List" />
       from task t
       where 1 = 1 and t.user_id in
-      <foreach collection ="list" item="item" open="(" close=")" separator =",">
-        #{item.userId}
+      <foreach collection ="userIds" item="id" open="(" close=")" separator =",">
+        #{id}
       </foreach >
       order by t.test desc
   </select>

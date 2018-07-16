@@ -23,7 +23,7 @@ public class GatewayController {
     @Autowired
     private GatewayService gatewayService;
 
-    @ApiOperation(value = "分页获取gateway", notes = "根据appId查询gateway信息")
+    @ApiOperation(value = "获取gateway", notes = "根据appId查询gateway信息")
     @ResponseBody
     @GetMapping("gateways")
     public Message getGatewaysByAppId(HttpServletRequest request){
