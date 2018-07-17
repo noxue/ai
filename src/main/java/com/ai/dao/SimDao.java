@@ -15,4 +15,6 @@ public interface SimDao extends SimMapper{
     Sim getSimBySimIdAndUserId(String user_id , int sim_id);
 
     List<Sim> getSimUserList(String user_id);
+
+
 }

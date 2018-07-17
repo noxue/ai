@@ -1,9 +1,11 @@
 package com.ai.controller.web.v1;
 
+import com.ai.domain.bo.Gateway;
 import com.ai.domain.bo.Sim;
 import com.ai.domain.bo.SimUser;
 import com.ai.domain.vo.Message;
 import com.ai.service.AccountService;
+import com.ai.service.GatewayService;
 import com.ai.service.SimService;
 import com.ai.util.RequestResponseUtil;
 import com.github.pagehelper.PageInfo;
@@ -17,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -36,6 +41,9 @@ public class SimController extends BasicAction{
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private GatewayService gatewayService;
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -68,6 +76,17 @@ public class SimController extends BasicAction{
         sim.setNumber(number);
         sim.setUserId(user_id);
         if (simService.registerSim(sim)) {
+            // 通知指定客户端，哪个网关下添加了sim卡
+            Gateway gateway = gatewayService.getGateById(sim.getGatewayId());
+
+            String v = redisTemplate.opsForValue().get("sim_add_"+gateway.getAppId());
+            List<String> arr = new ArrayList<>();
+            if (v!=null) {
+                arr = new ArrayList<String>(Arrays.asList(v.split(",")));
+            }
+            arr.add(gateway.getId()+"");
+            redisTemplate.opsForValue().set("sim_add_"+gateway.getAppId(), String.join(",", org.apache.commons.lang.StringUtils.join(arr.toArray(),",")));
+
             return new Message().ok(0, "success");
         } else {
             return new Message().error(4002, "新增失败");

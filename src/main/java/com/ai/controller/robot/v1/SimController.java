@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController("RobotSimController")
@@ -49,11 +50,17 @@ public class SimController {
         if(SimUserList==null){
             return new Message().error(3104, "查询失败");
         }
-        if(SimUserList.getList().size()==0){
-            return new Message().error(3105, "该卡当前未绑定用户");
+
+        List<String> ids = new ArrayList<>();
+
+        List<SimUser> users = SimUserList.getList();
+        for (SimUser user : users) {
+            ids.add(user.getUserId());
         }
+        ids.add(simService.getSimById(sim_id).getUserId());
+
         //根据userId获取task集合
-        List<Task> tasks =taskService.findTaskByUserId(SimUserList.getList());
+        List<Task> tasks =taskService.findTaskByUserId(ids);
         if(tasks.size()>0){
             return new Message().ok(0, "success").addData("tasks",tasks);
         } else {

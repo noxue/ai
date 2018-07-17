@@ -9,7 +9,7 @@ public interface TaskService {
 
     PageInfo<Task> findAllTaskByAppId(int pageNum, int pageSize, String appId, String name);
 
-    List<Task> findTaskByUserId(List user);
+    List<Task> findTaskByUserId(List<String> userIds);
 
     boolean registerTask(Task task);
 

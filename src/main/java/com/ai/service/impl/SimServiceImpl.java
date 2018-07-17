@@ -104,4 +104,5 @@ public class SimServiceImpl implements SimService {
     public boolean isExistInSimUser(String user_id, String sim_id) {
         return simUserDao.getSimUserBySimIdAndUserId(user_id,Long.parseLong(sim_id))==null ? Boolean.FALSE: Boolean.TRUE;
     }
+
 }

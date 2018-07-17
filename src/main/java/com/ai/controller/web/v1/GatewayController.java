@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -88,6 +91,14 @@ public class GatewayController extends BasicAction{
         gateway.setUserId(user_id);
         gateway.setAppId(Long.parseLong(app_id));
         if (gatewayService.registerGate(gateway)) {
+            // 通知指定客户端，添加了网关
+            String v = redisTemplate.opsForValue().get("gateway_add_"+gateway.getAppId());
+            List<String> arr = new ArrayList<>();
+            if (v!=null) {
+                arr = new ArrayList<String>(Arrays.asList(v.split(",")));
+            }
+            arr.add(gateway.getId()+"");
+            redisTemplate.opsForValue().set("gateway_add_"+gateway.getAppId(), String.join(",", org.apache.commons.lang.StringUtils.join(arr.toArray(),",")));
             return new Message().ok(0, "success");
         } else {
             return new Message().error(3103, "新增失败");

@@ -10,6 +10,6 @@ public interface TaskDao extends TaskMapper{
     //根据appId获取所有Task
     List<Task> selectTaskList(@Param("userId") String appId,@Param("name") String name);
 
-    List<Task> selectBatch(List userid);
+    List<Task> selectBatch(@Param("userIds") List<String> userIds);
 
 }

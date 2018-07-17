@@ -25,8 +25,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> findTaskByUserId(List user) {
-        return taskMapper.selectBatch(user);
+    public List<Task> findTaskByUserId(List<String> userIds) {
+        return taskMapper.selectBatch(userIds);
     }
 
     @Override
