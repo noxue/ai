@@ -59,8 +59,7 @@
         select u.* from task_user u
         where  u.task_id=#{task_id}
          and u.status=1
-         limit 5
-        order by  u.id ;
+        order by  u.id limit 5;
     </select>
 
 

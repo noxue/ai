@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,9 +41,9 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Override
     public Message importExcel(int id,MultipartFile file) throws IOException {
+
         FileInputStream fis = (FileInputStream)file.getInputStream();
         //用流的方式先读取到你想要的excel的文件
-        //FileInputStream fis=new FileInputStream(new File("D://phoneTaskUser.xls"));
         //解析excel
         POIFSFileSystem pSystem=new POIFSFileSystem(fis);
         //获取整个excel

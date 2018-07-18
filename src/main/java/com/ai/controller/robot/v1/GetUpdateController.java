@@ -48,7 +48,7 @@ public class GetUpdateController {
             v = redisTemplate.opsForValue().get("sim_add_"+appid);
             if (v != null && !"".equalsIgnoreCase(v)) {
                 redisTemplate.opsForValue().set("sim_add_"+appid,"",1, TimeUnit.SECONDS);
-                return new Message().ok(0, "success").addData("data", opts).addData("gateway_add",v.split(","));
+                return new Message().ok(0, "success").addData("data", opts).addData("sim_add",v.split(","));
             }
 
 
@@ -68,14 +68,12 @@ public class GetUpdateController {
             if (sims != null) {
                 for (Long id : sims) {
 
-
                     // 检查有没有新开始的任务
                     v = redisTemplate.opsForValue().get("task_start_"+id);
                     if (v != null && !"".equalsIgnoreCase(v)) {
                         redisTemplate.opsForValue().set("sim_start_"+id,"",1, TimeUnit.SECONDS);
                         return new Message().ok(0, "success").addData("data", opts).addData("task_add",v.split(","));
                     }
-
 
                     String redis_value = redisTemplate.opsForValue().get("sim_" + id);
                     if (redis_value != null && !"".equalsIgnoreCase(redis_value)) {
