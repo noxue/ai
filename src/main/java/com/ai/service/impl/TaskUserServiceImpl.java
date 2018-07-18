@@ -2,6 +2,7 @@ package com.ai.service.impl;
 
 import com.ai.dao.TaskUserDao;
 import com.ai.domain.bo.TaskUser;
+import com.ai.domain.bo.TaskUserExample;
 import com.ai.service.TaskUserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -14,51 +15,66 @@ import java.util.List;
 public class TaskUserServiceImpl implements TaskUserService {
 
     @Autowired
-    private TaskUserDao taskUserMapper;
+    private TaskUserDao taskUserDao;
 
     @Override
     public PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize,String userId, String taskId, String name,
                                               String type, String share, String status) {
         PageHelper.startPage(pageNum, pageSize);
-        List<TaskUser> taskUserList = taskUserMapper.selectTaskUserListByConditions(userId,taskId,name,type,share,status);
+        List<TaskUser> taskUserList = taskUserDao.selectTaskUserListByConditions(userId,taskId,name,type,share,status);
         PageInfo result = new PageInfo(taskUserList);
         return result;
     }
 
     @Override
     public List<TaskUser> selectTaskUserByTaskId(int id) {
-        List<TaskUser> taskUserList = taskUserMapper.getTaskUserByTaskId(id);
+        List<TaskUser> taskUserList = taskUserDao.getTaskUserByTaskId(id);
         return taskUserList;
+    }
 
+    @Override
+    public List<TaskUser> getTaskUserAndUpdate(long taskId) {
+        PageHelper.startPage(1, 5);
+        TaskUserExample taskUserExample = new TaskUserExample();
+        taskUserExample.setOrderByClause("id asc");
+        TaskUserExample.Criteria cr = taskUserExample.createCriteria();
+        cr.andStatusEqualTo((byte)1);
+
+        List<TaskUser> users = taskUserDao.selectByExample(taskUserExample);
+        for(TaskUser taskUser : users){
+            taskUser.setStatus((byte)2);
+            taskUserDao.updateByPrimaryKey(taskUser);
+        }
+        return users;
     }
 
     @Override
     public boolean addTaskUser(TaskUser taskUser) {
-        return taskUserMapper.insertSelective(taskUser) ==1 ? Boolean.TRUE : Boolean.FALSE;
+        return taskUserDao.insertSelective(taskUser) ==1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override
     public boolean editTaskUser(TaskUser taskUser) {
-        return taskUserMapper.updateByPrimaryKeySelective(taskUser)==1 ? Boolean.TRUE : Boolean.FALSE;
+        return taskUserDao.updateByPrimaryKeySelective(taskUser)==1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override
     public boolean delTaskUser(long id) {
-        return taskUserMapper.deleteByPrimaryKey(id) ==1 ? Boolean.TRUE : Boolean.FALSE;
+        return taskUserDao.deleteByPrimaryKey(id) ==1 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override
     public TaskUser getTaskUserById(long id) {
-        return taskUserMapper.selectByPrimaryKey(id);
+        return taskUserDao.selectByPrimaryKey(id);
     }
 
     @Override
     public boolean insertTaskUserList(List<TaskUser> list) {
-        return taskUserMapper.insertBatch(list) == list.size() ? Boolean.TRUE :Boolean.FALSE;
+        return taskUserDao.insertBatch(list) == list.size() ? Boolean.TRUE :Boolean.FALSE;
     }
 
     @Override
     public TaskUser[] taskUserList(String user_id ,String task_id) {
-        return taskUserMapper.getAllTaskUsers(user_id ,Integer.parseInt(task_id));
+        return taskUserDao.getAllTaskUsers(user_id ,Integer.parseInt(task_id));
     }
 }

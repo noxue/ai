@@ -1,5 +1,6 @@
 package com.ai.service;
 
+import com.ai.domain.bo.Task;
 import com.ai.domain.bo.TaskUser;
 import com.github.pagehelper.PageInfo;
 
@@ -10,6 +11,8 @@ public interface TaskUserService {
     PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize,String userId, String taskId, String name, String type, String share,String status);
 
     List<TaskUser> selectTaskUserByTaskId(int id);
+
+    List<TaskUser> getTaskUserAndUpdate(long taskId);
 
     boolean addTaskUser(TaskUser taskUser);
 
@@ -23,4 +26,6 @@ public interface TaskUserService {
     boolean insertTaskUserList (List<TaskUser> list);
     //导出
     TaskUser[] taskUserList(String appId,String task_id);
+
+
 }
