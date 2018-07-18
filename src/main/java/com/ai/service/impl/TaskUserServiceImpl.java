@@ -39,6 +39,7 @@ public class TaskUserServiceImpl implements TaskUserService {
         taskUserExample.setOrderByClause("id asc");
         TaskUserExample.Criteria cr = taskUserExample.createCriteria();
         cr.andStatusEqualTo((byte)1);
+        cr.andTaskIdEqualTo(taskId);
 
         List<TaskUser> users = taskUserDao.selectByExample(taskUserExample);
         for(TaskUser taskUser : users){
