@@ -20,16 +20,16 @@ public class TaskController {
     @ApiOperation(value = "分页获取taskUser", notes = "根据id查询taskUser信息")
     @ResponseBody
     @GetMapping("task/{id}/users")
-    public Message findTaskUserById( @PathVariable long id){
-        if(id<0){
-            return new Message().error(5021, "缺少参数 id");
+    public Message findTaskUserById( @PathVariable("id") long taskId){
+        if(taskId<0){
+            return new Message().error(1, "缺少参数 id");
         }
-        List<TaskUser> taskUserList = taskUserService.getTaskUserAndUpdate(id);
+        List<TaskUser> taskUserList = taskUserService.getTaskUserAndUpdate(taskId);
 
         if(taskUserList.size()>0){
             return new Message().ok(0, "success").addData("users",taskUserList);
         } else {
-            return new Message().error(3104, "查询失败");
+            return new Message().error(2, "没有客户信息");
         }
     }
 
