@@ -71,7 +71,7 @@ public class GetUpdateController {
                     // 检查有没有新开始的任务
                     v = redisTemplate.opsForValue().get("task_start_"+id);
                     if (v != null && !"".equalsIgnoreCase(v)) {
-                        redisTemplate.opsForValue().set("sim_start_"+id,"",1, TimeUnit.SECONDS);
+                        redisTemplate.opsForValue().set("task_start_"+id,"",1, TimeUnit.SECONDS);
                         return new Message().ok(0, "success").addData("data", opts).addData("task_add",v.split(","));
                     }
 

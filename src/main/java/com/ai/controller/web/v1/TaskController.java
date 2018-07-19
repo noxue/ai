@@ -151,12 +151,18 @@ public class TaskController extends BasicAction{
         task.setCreatedAt(new Date());
         task.setStatus(new Byte("1"));
         if (test.equals("1")) {
-            task.setTest(false);
-        } else {
             task.setTest(true);
+            task.setStatus((byte)2); // 如果是测试任务，直接设置为开始状态
+            String testPhone = params.get("testPhone");
+            if (StringUtils.isEmpty(testPhone)) {
+                return new Message().error(5034, "请填写手机号码");
+            }
+        } else {
+            task.setTest(false);
         }
+
         if (taskService.registerTask(task)) {
-            if(test.equals("0")){
+            if(task.getTest()){
                 String testName = params.get("testName");
                 String testPhone = params.get("testPhone");
                 String remark = params.get("remark");
@@ -170,9 +176,27 @@ public class TaskController extends BasicAction{
                 taskUser.setMobile(testPhone);
                 taskUser.setRemark(remark);
                 taskUser.setCalledAt(new Date());
-                if(taskUserService.addTaskUser(taskUser)){
-                }else{
+                if(!taskUserService.addTaskUser(taskUser)){
                     return new Message().error(5012, "新增失败");
+                }
+
+                // 获取当前任务发送用户能使用的卡
+                List<Sim> sims = new ArrayList<>();
+                sims.addAll(simList.getList());
+                for (SimUser su: simUserList){
+                    Sim s = new Sim();
+                    s.setId(su.getSimId());
+                    sims.add(s);
+                }
+                // 通知每一张卡
+                for (Sim s:sims) {
+                    String v = redisTemplate.opsForValue().get("task_start_"+s.getId());
+                    List<String> arr = new ArrayList<>();
+                    if (v!=null) {
+                        arr = new ArrayList<String>(Arrays.asList(v.split(",")));
+                    }
+                    arr.add(task.getId()+"");
+                    redisTemplate.opsForValue().set("task_start_"+s.getId(), String.join(",", org.apache.commons.lang.StringUtils.join(arr.toArray(),",")));
                 }
             }
             return new Message().ok(0, "success");
@@ -307,13 +331,13 @@ public class TaskController extends BasicAction{
                 PageInfo<Sim> sims = simService.findSimUserById(1,1000,oldTask.getUserId());
                 // 通知每一张卡
                 for (Sim s:sims.getList()) {
-                    String v = redisTemplate.opsForValue().get("task_add_"+s.getId());
+                    String v = redisTemplate.opsForValue().get("task_start_"+s.getId());
                     List<String> arr = new ArrayList<>();
                     if (v!=null) {
                         arr = new ArrayList<String>(Arrays.asList(v.split(",")));
                     }
                     arr.add(oldTask.getId()+"");
-                    redisTemplate.opsForValue().set("task_add_"+s.getId(), String.join(",", org.apache.commons.lang.StringUtils.join(arr.toArray(),",")));
+                    redisTemplate.opsForValue().set("task_start_"+s.getId(), String.join(",", org.apache.commons.lang.StringUtils.join(arr.toArray(),",")));
                 }
 
             }
