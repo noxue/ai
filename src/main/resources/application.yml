@@ -3,7 +3,7 @@ server:
 
 # 文件上传
 upload:
-    path: e:/upload/
+    path: d:/upload/
     allow: wav|pcm
 
 spring:
