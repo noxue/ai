@@ -297,6 +297,11 @@ public class TaskController extends BasicAction{
         if((oldTask.getStatus().toString()).equals("2")){
             return new Message().error(5032, "当前任务正在执行中");
         }
+        if(status.equals("4")){
+            if(!(oldTask.getStatus().toString()).equals("3")){
+                return new Message().error(5032, "当前任务不在执行中");
+            }
+        }
         PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(1,500,appId,id,"","","","");
         if(taskUserList.getSize()==0){
             return new Message().error(5035, "当前任务没有客户信息，请在导入后继续操作");
@@ -325,22 +330,6 @@ public class TaskController extends BasicAction{
         newTask.setUpdateAt((new Date()));
         newTask.setStatus(Byte.valueOf(status));
         if (taskService.editTask(newTask)) {
-            // 如果是开始任务，就通知客户端
-            if ("2".equalsIgnoreCase(status)){
-                // 获取当前任务发送用户能使用的卡
-                PageInfo<Sim> sims = simService.findSimUserById(1,1000,oldTask.getUserId());
-                // 通知每一张卡
-                for (Sim s:sims.getList()) {
-                    String v = redisTemplate.opsForValue().get("task_start_"+s.getId());
-                    List<String> arr = new ArrayList<>();
-                    if (v!=null) {
-                        arr = new ArrayList<String>(Arrays.asList(v.split(",")));
-                    }
-                    arr.add(oldTask.getId()+"");
-                    redisTemplate.opsForValue().set("task_start_"+s.getId(), String.join(",", org.apache.commons.lang.StringUtils.join(arr.toArray(),",")));
-                }
-
-            }
             return new Message().ok(0, "success");
         } else {
             return new Message().error(5020, "编辑失败");
