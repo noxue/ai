@@ -12,6 +12,7 @@
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="start_at" jdbcType="TIMESTAMP" property="startAt" />
     <result column="finish_at" jdbcType="TIMESTAMP" property="finishAt" />
+    <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="test" jdbcType="BIT" property="test" />
   </resultMap>
@@ -75,7 +76,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, user_id, template_id, `name`, thread, total, `called`, created_at, start_at, 
-    finish_at, `status`, test
+    finish_at, update_at, `status`, test
   </sql>
   <select id="selectByExample" parameterType="com.ai.domain.bo.TaskExample" resultMap="BaseResultMap">
     select
@@ -235,6 +236,9 @@
       <if test="record.finishAt != null">
         finish_at = #{record.finishAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.updateAt != null">
+        update_at = #{record.updateAt,jdbcType=TIMESTAMP},
+      </if>
       <if test="record.status != null">
         `status` = #{record.status,jdbcType=TINYINT},
       </if>
@@ -258,6 +262,7 @@
       created_at = #{record.createdAt,jdbcType=TIMESTAMP},
       start_at = #{record.startAt,jdbcType=TIMESTAMP},
       finish_at = #{record.finishAt,jdbcType=TIMESTAMP},
+      update_at = #{record.updateAt,jdbcType=TIMESTAMP},
       `status` = #{record.status,jdbcType=TINYINT},
       test = #{record.test,jdbcType=BIT}
     <if test="_parameter != null">
@@ -294,6 +299,9 @@
       <if test="finishAt != null">
         finish_at = #{finishAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="updateAt != null">
+          update_at = #{updateAt,jdbcType=TIMESTAMP},
+      </if>
       <if test="status != null">
         `status` = #{status,jdbcType=TINYINT},
       </if>
@@ -314,6 +322,7 @@
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       start_at = #{startAt,jdbcType=TIMESTAMP},
       finish_at = #{finishAt,jdbcType=TIMESTAMP},
+      update_at = #{updateAt,jdbcType=TIMESTAMP},
       `status` = #{status,jdbcType=TINYINT},
       test = #{test,jdbcType=BIT}
     where id = #{id,jdbcType=BIGINT}

@@ -100,6 +100,7 @@ public class ExcelServiceImpl implements ExcelService {
             Task task = taskService.getTaskById(id);
             int total =task.getTotal()+list.size();
             task.setTotal(total);
+            task.setUpdateAt(new Date());
             if( taskService.editTask(task)){
                 LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/excel/editTask", "ImportExcel", (short) 6000, "导入成功"));
                 return new Message().ok(1,"操作成功");

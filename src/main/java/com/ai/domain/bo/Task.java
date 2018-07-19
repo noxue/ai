@@ -23,6 +23,8 @@ public class Task {
 
     private Date finishAt;
 
+    private Date updateAt;
+
     private Byte status;
 
     private Boolean test;
@@ -106,6 +108,10 @@ public class Task {
     public void setFinishAt(Date finishAt) {
         this.finishAt = finishAt;
     }
+
+    public Date getUpdateAt() { return updateAt; }
+
+    public void setUpdateAt(Date updateAt) { this.updateAt = updateAt; }
 
     public Byte getStatus() {
         return status;

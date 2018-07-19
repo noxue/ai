@@ -322,9 +322,9 @@ public class TaskController extends BasicAction{
         Task newTask =  new Task();
         newTask.setId(Long.parseLong(id));
         newTask.setStartAt(new Date());
+        newTask.setUpdateAt((new Date()));
         newTask.setStatus(Byte.valueOf(status));
         if (taskService.editTask(newTask)) {
-
             // 如果是开始任务，就通知客户端
             if ("2".equalsIgnoreCase(status)){
                 // 获取当前任务发送用户能使用的卡
@@ -341,7 +341,6 @@ public class TaskController extends BasicAction{
                 }
 
             }
-
             return new Message().ok(0, "success");
         } else {
             return new Message().error(5020, "编辑失败");
