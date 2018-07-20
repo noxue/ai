@@ -294,12 +294,24 @@ public class TaskController extends BasicAction{
         if(oldTask == null){
             return new Message().error(5031, "当前任务不存在");
         }
-        if((oldTask.getStatus().toString()).equals("2")){
+        if(status.equals("2") && oldTask.getStatus()==2){
             return new Message().error(5032, "当前任务正在执行中");
         }
+        if(status.equals("4") && oldTask.getStatus()==4){
+            return new Message().error(5037, "当前任务已暂停");
+        }
+        if(status.equals("2")){
+            if(oldTask.getStatus()!=1  ){
+                if(oldTask.getStatus()!=4){
+                    return new Message().error(5032, "当前任务不在执行列表中");
+                }
+            }
+        }
         if(status.equals("4")){
-            if(!(oldTask.getStatus().toString()).equals("3")){
-                return new Message().error(5032, "当前任务不在执行中");
+            if(oldTask.getStatus()!=2  ){
+                if(oldTask.getStatus()!=3){
+                    return new Message().error(5032, "当前任务不在执行列表中");
+                }
             }
         }
         PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(1,500,appId,id,"","","","");
