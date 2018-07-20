@@ -10,6 +10,7 @@ import com.ai.service.SimService;
 import com.ai.util.RequestResponseUtil;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
+import lombok.experimental.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,8 +68,10 @@ public class SimController extends BasicAction{
             // name已存在
             return new Message().error(3151, "用户不存在");
         }
-        String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
-        if(!Pattern.matches(regex, number)){
+       // String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+       // String regex = "/^\\d{8,}$/";
+        String regex="^[0-9]{1,7}$";
+        if(Pattern.matches(regex, number)){
             return new Message().error(4001, "请输入正确的手机号码");
         }
         sim.setDescription(description);
@@ -116,8 +119,9 @@ public class SimController extends BasicAction{
             sim.setUserId(user_id);
         }
         sim.setId(Long.parseLong(id));
-        String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
-        if(!Pattern.matches(regex, number)){
+        // String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+        String regex="^[0-9]{1,7}$";
+        if(Pattern.matches(regex, number)){
             return new Message().error(4001, "请输入正确的手机号码");
         }
         sim.setNumber(number);
