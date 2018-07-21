@@ -15,7 +15,7 @@ public interface UserService {
 
     List<AuthUser> getUserList();
 
-    List<AuthUser> getUserList(String name);
+    List<AuthUser> getUserList(String appId,String uid);
 
     List<AuthUser> getUserListByRoleId(Integer roleId);
 

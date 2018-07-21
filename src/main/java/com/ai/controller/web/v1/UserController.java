@@ -84,21 +84,22 @@ public class UserController extends BasicAction{
     @ApiOperation(value = "获取用户列表",notes = "POST获取所有注册用户的信息列表")
     @PostMapping("/list")
     public Message getUsersList(HttpServletRequest request, HttpServletResponse response) {
-        String uid = request.getHeader("appId");
+        String appId = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String uid =  params.get("uid");
         String st = params.get("start");
         int start = Integer.parseInt(st);
         int limit = 15;
-        if (StringUtils.isEmpty(uid)) {
+        if (StringUtils.isEmpty(appId)) {
             // 必须信息缺一不可,返回网关信息缺失
             return new Message().error(4004, "当前用户未登录");
         }
-        String roleId= accountService.loadAccountRoleId(uid);
+        String roleId= accountService.loadAccountRoleId(appId);
         if(roleId.equals("100")){
-            uid = "";
+            appId = "";
         }
         PageHelper.startPage(start,limit);
-        List<AuthUser> authUsers = userService.getUserList(uid);
+        List<AuthUser> authUsers = userService.getUserList(appId,uid);
         authUsers.forEach(user->user.setPassword(null));
         PageInfo pageInfo = new PageInfo(authUsers);
         return new Message().ok(6666,"return user list success").addData("pageInfo",pageInfo);
