@@ -61,20 +61,20 @@ public class AccountController extends BasicAction {
     @PostMapping("/login")
     public Message accountLogin(HttpServletRequest request, HttpServletResponse response) {
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String appId = params.get("appId");
-        // 根据appId获取其对应所拥有的角色(这里设计为角色对应资源，没有权限对应资源)
-        String roles = accountService.loadAccountRole(appId);
+        String appid = params.get("appId");
+        // 根据appid获取其对应所拥有的角色(这里设计为角色对应资源，没有权限对应资源)
+        String roles = accountService.loadAccountRole(appid);
         // 时间以秒计算,token有效刷新时间是token有效过期时间的2倍
         long refreshPeriodTime = 36000L;
-        String jwt = JsonWebTokenUtil.issueJWT(UUID.randomUUID().toString(), appId,
+        String jwt = JsonWebTokenUtil.issueJWT(UUID.randomUUID().toString(), appid,
                 "token-server", refreshPeriodTime >> 2, roles, null, SignatureAlgorithm.HS512);
         // 将签发的JWT存储到Redis： {JWT-SESSION-{appID} , jwt}
-        redisTemplate.opsForValue().set("JWT-SESSION-" + appId, jwt, refreshPeriodTime, TimeUnit.SECONDS);
-        AuthUser authUser = userService.getUserByAppId(appId);
+        redisTemplate.opsForValue().set("JWT-SESSION-" + appid, jwt, refreshPeriodTime, TimeUnit.SECONDS);
+        AuthUser authUser = userService.getUserByAppId(appid);
         authUser.setPassword(null);
         authUser.setSalt(null);
 
-        LogExeManager.getInstance().executeLogTask(LogTaskFactory.loginLog(appId, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 1, "登录成功"));
+        LogExeManager.getInstance().executeLogTask(LogTaskFactory.loginLog(appid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 1, "登录成功"));
 
         return new Message().ok(1003, "issue jwt success").addData("jwt", jwt).addData("user", authUser);
     }

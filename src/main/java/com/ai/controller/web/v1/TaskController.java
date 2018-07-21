@@ -110,11 +110,7 @@ public class TaskController extends BasicAction{
         //获取参数
         String user_id =  request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        //String sim_id = params.get("sim");
-        // 必须信息缺一不可,返回验证消息
-        if (StringUtils.isEmpty(user_id)) {
-            return new Message().error(4004, "当前用户未登录！");
-        }
+
         String taskName = params.get("taskName");
         if (StringUtils.isEmpty(taskName)) {
             return new Message().error(5007, "请填写任务名称");
@@ -123,19 +119,11 @@ public class TaskController extends BasicAction{
         if (StringUtils.isEmpty(template_id) || template_id.equals("undefined")) {
             return new Message().error(5007, "请选择模板信息");
         }
-        /*if (StringUtils.isEmpty(sim_id)) {
-            return new Message().error(5007, "请选择sim卡信息");
-        }
-        //验证当前用户与选中的卡是否匹配
-        if(simService.isExistInSimUser(user_id,sim_id)){
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "", "isExistInSim", (short) 5019, "验证成功"));
-        }else {
-            return new Message().error(5018, "该卡当前不可使用");
-        }*/
-        PageInfo<Sim> simList= simService.findAllSim(1,10,user_id,"");
+
+        PageInfo<Sim> simList= simService.findAllSim(1,1000,user_id,"");
         List<SimUser> simUserList= simService.getListByUserId(user_id);
         if(simList.getTotal()==0  &&  simUserList.size()==0){
-            return new Message().error(5005, "目前无法创建任务");
+            return new Message().error(5005, "请先分配sim卡后再创建任务");
         }
         String test = params.get("test");
         Task task = new Task();
@@ -191,11 +179,11 @@ public class TaskController extends BasicAction{
                 // 通知每一张卡
                 for (Sim s:sims) {
                     String v = redisTemplate.opsForValue().get("task_start_"+s.getId());
-                    List<String> arr = new ArrayList<>();
+                    Set<String> arr = new HashSet<>();
                     if (v!=null) {
-                        arr = new ArrayList<String>(Arrays.asList(v.split(",")));
+                        arr = new HashSet<>(Arrays.asList(v.split(",")));
                     }
-                    arr.add(task.getId()+"");
+                    arr.add(s.getId()+"");
                     redisTemplate.opsForValue().set("task_start_"+s.getId(), String.join(",", org.apache.commons.lang.StringUtils.join(arr.toArray(),",")));
                 }
             }
@@ -332,11 +320,11 @@ public class TaskController extends BasicAction{
                 // 通知每一张卡
                 for (Sim s:sims.getList()) {
                     String v = redisTemplate.opsForValue().get("task_start_"+s.getId());
-                    List<String> arr = new ArrayList<>();
+                    Set<String> arr = new HashSet<>();
                     if (v!=null) {
-                        arr = new ArrayList<String>(Arrays.asList(v.split(",")));
+                        arr = new HashSet<>(Arrays.asList(v.split(",")));
                     }
-                    arr.add(oldTask.getId()+"");
+                    arr.add(s.getId()+"");
                     redisTemplate.opsForValue().set("task_start_"+s.getId(), String.join(",", org.apache.commons.lang.StringUtils.join(arr.toArray(),",")));
                 }
 

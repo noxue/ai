@@ -16,4 +16,5 @@ public interface VoiceService {
      */
     boolean allowUpload(String filename);
     Voice upload(MultipartFile voice);
+    Voice upload(MultipartFile voice,boolean convert);
 }

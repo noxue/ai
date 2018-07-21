@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.MultipartConfigElement;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +17,9 @@ public class UploadConfig {
 
     @Value("${upload.allow}")
     private String allow;
+
+    @Value("${upload.ffmpeg}")
+    private String ffmpeg;
 
     public List<String> getAllowList(){
         return Arrays.asList(allow.split("|"));
@@ -38,6 +42,12 @@ public class UploadConfig {
         /// 设置总上传数据总大小
         factory.setMaxRequestSize("100MB");
         // Sets the directory location where files will be stored.
+        String location = System.getProperty("user.dir") + "/data/tmp";
+        File tmpFile = new File(location);
+        if (!tmpFile.exists()) {
+            tmpFile.mkdirs();
+        }
+        factory.setLocation(location);
         return factory.createMultipartConfig();
     }
 
@@ -47,5 +57,13 @@ public class UploadConfig {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getFfmpeg() {
+        return ffmpeg;
+    }
+
+    public void setFfmpeg(String ffmpeg) {
+        this.ffmpeg = ffmpeg;
     }
 }

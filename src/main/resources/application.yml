@@ -3,8 +3,9 @@ server:
 
 # 文件上传
 upload:
-    path: e:/upload/
+    path: d:/upload/
     allow: wav|pcm
+    ffmpeg: D:\softs\ffmpeg\bin\ffmpeg.exe
 
 spring:
 

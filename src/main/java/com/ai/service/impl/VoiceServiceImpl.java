@@ -37,6 +37,11 @@ public class VoiceServiceImpl implements VoiceService {
 
     @Override
     public Voice upload(MultipartFile voice) {
+        return this.upload(voice, true);
+    }
+
+    @Override
+    public Voice upload(MultipartFile voice, boolean convert) {
 
         String fileName = voice.getOriginalFilename();
         int size = (int) voice.getSize();
@@ -65,11 +70,13 @@ public class VoiceServiceImpl implements VoiceService {
             voice.transferTo(dest); //保存文件
             String pcmPath = subDir + name + ".pcm";
 
-            // 这里需要绝对路径来处理，所以前面加上path
-            boolean ok = new CommandUtil().wavToPcm(path + wavPath, path + pcmPath);
+            if (convert) {
+                // 这里需要绝对路径来处理，所以前面加上path
+                boolean ok = new CommandUtil().wavToPcm(uploadConfig.getFfmpeg(), path + wavPath, path + pcmPath);
 
-            if (!ok) {
-                return null;
+                if (!ok) {
+                    return null;
+                }
             }
 
             Voice voice1 = new Voice();

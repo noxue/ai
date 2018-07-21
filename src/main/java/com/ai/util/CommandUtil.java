@@ -1,8 +1,14 @@
 package com.ai.util;
 
+import com.ai.config.UploadConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class CommandUtil {
     // 保存进程的输入流信息
@@ -11,9 +17,9 @@ public class CommandUtil {
     private List<String> erroroutList = new ArrayList<String>();
 
 
-    public boolean wavToPcm(String wav, String pcm) {
+    public boolean wavToPcm(String ffmpeg, String wav, String pcm) {
 
-        String command = "ffmpeg -i " + wav + "  -f s16be -ar 8000 -ac 1 -acodec pcm_s16be " + pcm;
+        String command = ffmpeg+" -i " + wav + "  -f s16be -ar 8000 -ac 1 -acodec pcm_s16be " + pcm;
 
         File f = new File(pcm);
         if (f.exists()) {

@@ -254,7 +254,7 @@ public class SimController extends BasicAction{
     @ResponseBody
     @PostMapping("user/add")
     public Message addSimUser(HttpServletRequest request, HttpServletResponse response){
-        String appId = request.getHeader("appId");
+        String appid = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         SimUser simUser = new SimUser();
         String user_id = params.get("userId");
@@ -264,7 +264,7 @@ public class SimController extends BasicAction{
             return new Message().error(4013, "信息不足");
         }
         simUser.setSimId(Long.parseLong(sim_id));
-        if(accountService.getUserByUidAndPid(user_id,appId )== null){
+        if(accountService.getUserByUidAndPid(user_id,appid )== null){
             // 验证用户是否存在
             return new Message().error(4114, "分配失败,请检查用户名");
         }
