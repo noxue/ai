@@ -81,13 +81,17 @@ public class ExcelServiceImpl implements ExcelService {
             }
         }
         List<TaskUser> list = new ArrayList<>();
+        String regex="^[0-9]{1,7}$";
         for (int j=1;j<phone.size();j++){
             TaskUser user=new TaskUser();
             user.setTaskId(Long.parseLong("1"));
-            String flag = isPhone(phone.get(j));
-            if(!flag.equals("OK")){
-                return new Message().error(-1,flag);
+            if(Pattern.matches(regex, phone.get(j))){
+                return new Message().error(4001, "请输入正确的手机号码");
             }
+//            String flag = isPhone(phone.get(j));
+//            if(!flag.equals("OK")){
+//                return new Message().error(-1,flag);
+//            }
             user.setMobile(phone.get(j));
             user.setName(name.get(j));
             user.setRemark(remark.get(j));
@@ -100,6 +104,7 @@ public class ExcelServiceImpl implements ExcelService {
             Task task = taskService.getTaskById(id);
             int total =task.getTotal()+list.size();
             task.setTotal(total);
+            task.setUpdateAt(new Date());
             if( taskService.editTask(task)){
                 LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/excel/editTask", "ImportExcel", (short) 6000, "导入成功"));
                 return new Message().ok(1,"操作成功");
@@ -146,20 +151,5 @@ public class ExcelServiceImpl implements ExcelService {
             }
         }
         return listArray;
-    }
-
-    public String isPhone(String phone) {
-        String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
-        if (phone.length() != 11) {
-            return "手机号应为11位数";
-        } else {
-            Pattern p = Pattern.compile(regex);
-            Matcher m = p.matcher(phone);
-            boolean isMatch = m.matches();
-            if (!isMatch) {
-                return "请填入正确的手机号";
-            }
-            return "OK";
-        }
     }
 }

@@ -40,8 +40,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AuthUser> getUserList(String uid) throws DataAccessException {
-        return userMapper.selectUserAndRoleList(uid);
+    public List<AuthUser> getUserList(String appId,String uid) throws DataAccessException {
+        return userMapper.selectUserAndRoleList(appId ,uid);
     }
 
     @Override
