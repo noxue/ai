@@ -23,11 +23,11 @@ public class Task {
 
     private Date finishAt;
 
-    private Date updateAt;
-
     private Byte status;
 
     private Boolean test;
+
+    private Date updateAt;
 
     public Long getId() {
         return id;
@@ -109,10 +109,6 @@ public class Task {
         this.finishAt = finishAt;
     }
 
-    public Date getUpdateAt() { return updateAt; }
-
-    public void setUpdateAt(Date updateAt) { this.updateAt = updateAt; }
-
     public Byte getStatus() {
         return status;
     }
@@ -127,5 +123,13 @@ public class Task {
 
     public void setTest(Boolean test) {
         this.test = test;
+    }
+
+    public Date getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
     }
 }

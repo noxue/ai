@@ -7,7 +7,6 @@
     <result column="mobile" jdbcType="CHAR" property="mobile" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="voice" jdbcType="VARCHAR" property="voice" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="called_at" jdbcType="TIMESTAMP" property="calledAt" />
     <result column="time" jdbcType="INTEGER" property="time" />
@@ -76,8 +75,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, task_id, mobile, `name`, remark, voice, `status`, called_at, `time`, `type`, 
-    `share`
+    id, task_id, mobile, `name`, remark, `status`, called_at, `time`, `type`, `share`
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -135,13 +133,13 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into task_user (task_id, mobile, `name`, 
-      remark, voice, `status`, 
-      called_at, `time`, `type`, 
-      `share`, content)
+      remark, `status`, called_at, 
+      `time`, `type`, `share`, content
+      )
     values (#{taskId,jdbcType=BIGINT}, #{mobile,jdbcType=CHAR}, #{name,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{voice,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
-      #{calledAt,jdbcType=TIMESTAMP}, #{time,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
-      #{share,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR})
+      #{remark,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{calledAt,jdbcType=TIMESTAMP}, 
+      #{time,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, #{share,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.TaskUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -160,9 +158,6 @@
       </if>
       <if test="remark != null">
         remark,
-      </if>
-      <if test="voice != null">
-        voice,
       </if>
       <if test="status != null">
         `status`,
@@ -195,9 +190,6 @@
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="voice != null">
-        #{voice,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
@@ -243,9 +235,6 @@
       <if test="record.remark != null">
         remark = #{record.remark,jdbcType=VARCHAR},
       </if>
-      <if test="record.voice != null">
-        voice = #{record.voice,jdbcType=VARCHAR},
-      </if>
       <if test="record.status != null">
         `status` = #{record.status,jdbcType=TINYINT},
       </if>
@@ -276,7 +265,6 @@
       mobile = #{record.mobile,jdbcType=CHAR},
       `name` = #{record.name,jdbcType=VARCHAR},
       remark = #{record.remark,jdbcType=VARCHAR},
-      voice = #{record.voice,jdbcType=VARCHAR},
       `status` = #{record.status,jdbcType=TINYINT},
       called_at = #{record.calledAt,jdbcType=TIMESTAMP},
       `time` = #{record.time,jdbcType=INTEGER},
@@ -294,7 +282,6 @@
       mobile = #{record.mobile,jdbcType=CHAR},
       `name` = #{record.name,jdbcType=VARCHAR},
       remark = #{record.remark,jdbcType=VARCHAR},
-      voice = #{record.voice,jdbcType=VARCHAR},
       `status` = #{record.status,jdbcType=TINYINT},
       called_at = #{record.calledAt,jdbcType=TIMESTAMP},
       `time` = #{record.time,jdbcType=INTEGER},
@@ -318,9 +305,6 @@
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="voice != null">
-        voice = #{voice,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         `status` = #{status,jdbcType=TINYINT},
@@ -349,7 +333,6 @@
       mobile = #{mobile,jdbcType=CHAR},
       `name` = #{name,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
-      voice = #{voice,jdbcType=VARCHAR},
       `status` = #{status,jdbcType=TINYINT},
       called_at = #{calledAt,jdbcType=TIMESTAMP},
       `time` = #{time,jdbcType=INTEGER},
@@ -364,7 +347,6 @@
       mobile = #{mobile,jdbcType=CHAR},
       `name` = #{name,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
-      voice = #{voice,jdbcType=VARCHAR},
       `status` = #{status,jdbcType=TINYINT},
       called_at = #{calledAt,jdbcType=TIMESTAMP},
       `time` = #{time,jdbcType=INTEGER},

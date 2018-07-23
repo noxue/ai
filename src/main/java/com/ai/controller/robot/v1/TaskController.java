@@ -74,14 +74,11 @@ public class TaskController {
             return new Message().error(1, "缺少参数 id");
         }
 
+        TaskUser taskUser = new TaskUser();
+        taskUser.setId(userId);
+        taskUser.setContent(report);
 
-        TaskUserReport taskUserReport =  new TaskUserReport();
-        taskUserReport.setTaskUserId(userId);
-        taskUserReport.setContent(report);
-
-
-
-        if(taskUserReportService.addTaskUserReport(taskUserReport)){
+        if(taskUserService.editTaskUser(taskUser)){
             return new Message().ok(0, "success");
         } else {
             return new Message().error(2, "添加失败");
