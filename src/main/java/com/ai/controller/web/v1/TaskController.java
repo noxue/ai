@@ -240,18 +240,20 @@ public class TaskController extends BasicAction{
     @ResponseBody
     @PostMapping("/user/edit")
     public Message editTaskUser(HttpServletRequest request, HttpServletResponse response){
+        String appId = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        TaskUser taskUser =  new TaskUser();
         String id =params.get("id");
         String mobile = params.get("mobile");
         String type = params.get("type");
         String remark = params.get("remark");
-        //String isShare = params.get("share");
-
         // 必须信息缺一不可,返回验证消息
+        if (StringUtils.isEmpty(appId)) {
+            return new Message().error(4004, "当前用户未登录");
+        }
         if (StringUtils.isEmpty(mobile) ||StringUtils.isEmpty(id)) {
             return new Message().error(5016, "信息不全");
         }
+        TaskUser taskUser =  new TaskUser();
         taskUser.setId(Long.parseLong(id));
         taskUser.setMobile(mobile);
         taskUser.setRemark(remark);
