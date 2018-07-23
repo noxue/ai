@@ -80,23 +80,22 @@ public class TaskController extends BasicAction{
     }
 
     /* *
-     * @Description 根据id获取TaskUserReport信息
-     * @Param [] id
+     * @Description 根据taskUserId获取TaskUserReport信息
+     * @Param [] taskUserId
      * @Return com.ai.domain.bo.TaskUserReport.java
      */
     @ApiOperation(value = "获取TaskUserReport", notes = "根据id获取TaskUserReport信息")
     @ResponseBody
-    @PostMapping("/user/report/select")
-    public Object selectTaskUserReportById(HttpServletRequest request, HttpServletResponse response){
-        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String id =params.get("id");
-        if ( StringUtils.isEmpty(id)) {
+    @PostMapping("/user/{id}/report")
+    public Message selectTaskUserReportById(HttpServletRequest request,@PathVariable int id){
+
+        if ( id<=0) {
             // 必须信息缺一不可,返回信息缺失
             return new Message().error(5001, "信息缺失");
         }
-        TaskUserReport taskUserReport = taskUserReportService.getTaskUserReportById(Long.parseLong(id));
-        if (taskUserReport !=null){
-            return new Message().ok(0, "success").addData("taskUserReport",taskUserReport);
+        TaskUser taskUser = taskUserService.getTaskUserById(id);
+        if (taskUser !=null){
+            return new Message().ok(0, "success").addData("report",taskUser);
         } else {
             return new Message().error(5006, "查询失败");
         }
