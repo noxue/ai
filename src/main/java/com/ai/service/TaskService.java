@@ -11,6 +11,8 @@ public interface TaskService {
 
     List<Task> findTaskByUserId(List<String> userIds);
 
+    List<Task> getTasksWithStatus(int status);
+
     boolean registerTask(Task task);
 
     boolean editTask(Task task);

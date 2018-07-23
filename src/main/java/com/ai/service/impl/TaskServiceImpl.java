@@ -2,6 +2,7 @@ package com.ai.service.impl;
 
 import com.ai.dao.TaskDao;
 import com.ai.domain.bo.Task;
+import com.ai.domain.bo.TaskExample;
 import com.ai.service.TaskService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -28,6 +29,15 @@ public class TaskServiceImpl implements TaskService {
     public List<Task> findTaskByUserId(List<String> userIds) {
         return taskMapper.selectBatch(userIds);
     }
+
+    @Override
+    public List<Task> getTasksWithStatus(int status) {
+        TaskExample example = new TaskExample();
+        TaskExample.Criteria cr = example.createCriteria();
+        cr.andStatusEqualTo((byte)status);
+        return taskMapper.selectByExample(example);
+    }
+
 
     @Override
     public boolean registerTask(Task task) {
