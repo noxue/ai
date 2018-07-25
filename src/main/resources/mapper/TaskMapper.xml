@@ -12,9 +12,9 @@
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="start_at" jdbcType="TIMESTAMP" property="startAt" />
     <result column="finish_at" jdbcType="TIMESTAMP" property="finishAt" />
-    <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="test" jdbcType="BIT" property="test" />
+    <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -76,7 +76,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, user_id, template_id, `name`, thread, total, `called`, created_at, start_at, 
-    finish_at, update_at, `status`, test
+    finish_at, `status`, test, update_at
   </sql>
   <select id="selectByExample" parameterType="com.ai.domain.bo.TaskExample" resultMap="BaseResultMap">
     select
@@ -115,11 +115,13 @@
     insert into task (user_id, template_id, `name`, 
       thread, total, `called`, 
       created_at, start_at, finish_at, 
-      `status`, test)
+      `status`, test, update_at
+      )
     values (#{userId,jdbcType=VARCHAR}, #{templateId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
       #{thread,jdbcType=INTEGER}, #{total,jdbcType=INTEGER}, #{called,jdbcType=INTEGER}, 
       #{createdAt,jdbcType=TIMESTAMP}, #{startAt,jdbcType=TIMESTAMP}, #{finishAt,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=TINYINT}, #{test,jdbcType=BIT})
+      #{status,jdbcType=TINYINT}, #{test,jdbcType=BIT}, #{updateAt,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.Task">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -160,6 +162,9 @@
       <if test="test != null">
         test,
       </if>
+      <if test="updateAt != null">
+        update_at,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -194,6 +199,9 @@
       </if>
       <if test="test != null">
         #{test,jdbcType=BIT},
+      </if>
+      <if test="updateAt != null">
+        #{updateAt,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -236,14 +244,14 @@
       <if test="record.finishAt != null">
         finish_at = #{record.finishAt,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.updateAt != null">
-        update_at = #{record.updateAt,jdbcType=TIMESTAMP},
-      </if>
       <if test="record.status != null">
         `status` = #{record.status,jdbcType=TINYINT},
       </if>
       <if test="record.test != null">
         test = #{record.test,jdbcType=BIT},
+      </if>
+      <if test="record.updateAt != null">
+        update_at = #{record.updateAt,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -262,9 +270,9 @@
       created_at = #{record.createdAt,jdbcType=TIMESTAMP},
       start_at = #{record.startAt,jdbcType=TIMESTAMP},
       finish_at = #{record.finishAt,jdbcType=TIMESTAMP},
-      update_at = #{record.updateAt,jdbcType=TIMESTAMP},
       `status` = #{record.status,jdbcType=TINYINT},
-      test = #{record.test,jdbcType=BIT}
+      test = #{record.test,jdbcType=BIT},
+      update_at = #{record.updateAt,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -299,14 +307,14 @@
       <if test="finishAt != null">
         finish_at = #{finishAt,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateAt != null">
-          update_at = #{updateAt,jdbcType=TIMESTAMP},
-      </if>
       <if test="status != null">
         `status` = #{status,jdbcType=TINYINT},
       </if>
       <if test="test != null">
         test = #{test,jdbcType=BIT},
+      </if>
+      <if test="updateAt != null">
+        update_at = #{updateAt,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -322,9 +330,9 @@
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       start_at = #{startAt,jdbcType=TIMESTAMP},
       finish_at = #{finishAt,jdbcType=TIMESTAMP},
-      update_at = #{updateAt,jdbcType=TIMESTAMP},
       `status` = #{status,jdbcType=TINYINT},
-      test = #{test,jdbcType=BIT}
+      test = #{test,jdbcType=BIT},
+      update_at = #{updateAt,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
