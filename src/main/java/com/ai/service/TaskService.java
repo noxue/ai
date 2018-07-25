@@ -4,6 +4,7 @@ import com.ai.domain.bo.Task;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TaskService {
 
@@ -20,5 +21,7 @@ public interface TaskService {
     boolean delTask(long id);
 
     Task getTaskById(long id);
+
+    int getTaskCount(String userId);
 
 }

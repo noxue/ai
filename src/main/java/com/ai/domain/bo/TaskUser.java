@@ -13,8 +13,6 @@ public class TaskUser {
 
     private String remark;
 
-    private String voice;
-
     private Byte status;
 
     private Date calledAt;
@@ -65,14 +63,6 @@ public class TaskUser {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
-    }
-
-    public String getVoice() {
-        return voice;
-    }
-
-    public void setVoice(String voice) {
-        this.voice = voice == null ? null : voice.trim();
     }
 
     public Byte getStatus() {

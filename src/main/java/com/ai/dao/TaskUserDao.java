@@ -17,4 +17,9 @@ public interface TaskUserDao extends TaskUserMapper{
     TaskUser[] getAllTaskUsers(@Param("user_id")String user_id,@Param("task_id") int taskId);
 
     List<TaskUser> getTaskUserByTaskId(@Param("task_id") int task_id);
+
+    List<String> getCountTaskUser(@Param("userId")String userId ,
+                            @Param("staTime")String staTime,@Param("endTime")String endTime);
+
+    int getCountTaskUserToDo(@Param("userId")String userId );
 }

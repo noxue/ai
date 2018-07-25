@@ -142,7 +142,9 @@
 5033：当前任务不在执行中
 5036：当前任务不可执行,当前任务状态不为1或4
 5037：当前任务已暂停
-
+5038：当前任务为正式任务
+5039：taskService.editTask(t)执行失败
+5040：taskUserService.editTaskUser(user)执行失败
 
 //TaskUser相关
 5010：mobile，task_id 必要参数为空

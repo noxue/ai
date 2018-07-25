@@ -4,6 +4,7 @@ import com.ai.domain.bo.Task;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TaskDao extends TaskMapper{
 
@@ -12,4 +13,5 @@ public interface TaskDao extends TaskMapper{
 
     List<Task> selectBatch(@Param("userIds") List<String> userIds);
 
+    int getCountTaskToDo(@Param("userId")String userId);
 }

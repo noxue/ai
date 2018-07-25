@@ -5,7 +5,6 @@
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="task_id" jdbcType="BIGINT" property="taskId" />
         <result column="mobile" jdbcType="CHAR" property="mobile" />
-        <result column="voice" jdbcType="VARCHAR" property="voice" />
         <result column="status" jdbcType="TINYINT" property="status" />
         <result column="time" jdbcType="INTEGER" property="time" />
         <result column="type" jdbcType="TINYINT" property="type" />
@@ -18,7 +17,7 @@
         <result column="content" jdbcType="LONGVARCHAR" property="content" />
     </resultMap>
     <sql id="Base_Column_List">
-    id, task_id, mobile, voice, `status`, `time`, `type`, `share`, `name`, remark, called_at
+    id, task_id, mobile, `status`, `time`, `type`, `share`, `name`, remark, called_at
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -71,4 +70,17 @@
       (#{TaskUser.taskId}, #{TaskUser.name}, #{TaskUser.mobile}, #{TaskUser.remark}, #{TaskUser.calledAt})
     </foreach >
   </insert>
+
+    <select id="getCountTaskUser" resultType="Map">
+      select type ,count(type) num ,t2.called_at date from
+        task_user t2   left join  task t  on t.id = t2.task_id
+      where t.user_id=#{userId} and t2.called_at  between  #{staTime} and #{endTime}
+        group by t2.called_at,type  order by t2.called_at;
+    </select>
+
+    <select id="getCountTaskUserToDo" resultType="java.lang.Integer">
+        select count(*) from
+          task_user t2   left join  task t  on t.id = t2.task_id
+        where t.user_id=#{userId}  and t2.status!=0;
+    </select>
 </mapper>

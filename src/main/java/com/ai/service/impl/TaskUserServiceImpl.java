@@ -8,8 +8,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service("TaskUserService")
 public class TaskUserServiceImpl implements TaskUserService {
@@ -77,5 +79,24 @@ public class TaskUserServiceImpl implements TaskUserService {
     @Override
     public TaskUser[] taskUserList(String user_id ,String task_id) {
         return taskUserDao.getAllTaskUsers(user_id ,Integer.parseInt(task_id));
+    }
+
+    @Override
+    public List<String> getTaskUserCount(String userId, String staTime, String endTime) {
+        if(StringUtils.isEmpty(staTime)||StringUtils.isEmpty(endTime)) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar now = new GregorianCalendar();
+            Date d = new Date();
+            endTime= sdf.format(d) +" 00:00:00";
+            now.setTime(d);
+            now.set(Calendar.DATE, now.get(Calendar.DATE) - 7);
+            staTime = sdf.format(now.getTime()) +" 23:59:59";;
+        }
+        return taskUserDao.getCountTaskUser(userId,staTime,endTime);
+    }
+
+    @Override
+    public int getTaskUserCount(String userId) {
+        return taskUserDao.getCountTaskUserToDo(userId);
     }
 }
