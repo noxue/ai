@@ -31,7 +31,11 @@
     <if test="name != null and name != ''">
       AND  `name` LIKE  CONCAT('%',#{name},'%')
     </if>
+<<<<<<< HEAD
     order by id desc
+=======
+    order by id desc,update_at desc
+>>>>>>> f68c1ebc0944e7ad123ef3d9677fa3c01fba1249
   </select>
 
   <select id="selectBatch"  resultMap="BaseResultMap">
@@ -43,4 +47,13 @@
       </foreach >
       order by t.test desc
   </select>
+<<<<<<< HEAD
 </mapper>
+=======
+
+  <select id="getCountTaskToDo" resultType="java.lang.Integer">
+    select count(`status`) from task where user_id=#{userId} and `status`!=0;
+  </select>
+
+</mapper>
+>>>>>>> f68c1ebc0944e7ad123ef3d9677fa3c01fba1249

@@ -75,7 +75,12 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
+<<<<<<< HEAD
+    id, task_id, mobile, `name`, remark, `status`, called_at, `time`, `type`,
+    `share`
+=======
     id, task_id, mobile, `name`, remark, `status`, called_at, `time`, `type`, `share`
+>>>>>>> 5b247fea5c51871736a00f6629d14d80cb7b6cf9
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -133,6 +138,15 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into task_user (task_id, mobile, `name`, 
+<<<<<<< HEAD
+      remark, `status`,
+      called_at, `time`, `type`, 
+      `share`, content)
+    values (#{taskId,jdbcType=BIGINT}, #{mobile,jdbcType=CHAR}, #{name,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+      #{calledAt,jdbcType=TIMESTAMP}, #{time,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
+      #{share,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR})
+=======
       remark, `status`, called_at, 
       `time`, `type`, `share`, content
       )
@@ -140,6 +154,7 @@
       #{remark,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{calledAt,jdbcType=TIMESTAMP}, 
       #{time,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, #{share,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR}
       )
+>>>>>>> 5b247fea5c51871736a00f6629d14d80cb7b6cf9
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.TaskUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">

@@ -27,5 +27,7 @@ public interface TaskUserService {
     //导出
     TaskUser[] taskUserList(String appId,String task_id);
 
+    List<String> getTaskUserCount(String userId ,String staTime,String endTime);
 
+    int getTaskUserCount(String userId);
 }

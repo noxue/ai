@@ -463,4 +463,96 @@ public class TaskController extends BasicAction{
         return new Message().ok(0,"success").addData("task",new String(Base64.encodeBase64(data.getBytes("gbk"))));
     }
 
+    @ApiOperation(value = "统计", notes = "根据时间统计客户类型的数量，默认时间为过去一周")
+    @ResponseBody
+    @PostMapping("/user/count")
+    public Message countTaskUserList(HttpServletRequest request, HttpServletResponse response){
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(4004, "当前用户未登录");
+        }
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String staTime = params.get("staTime");
+        String endTime = params.get("endTime");
+        List<String> num = taskUserService.getTaskUserCount(appId,staTime,endTime);
+        if (num != null){
+            return new Message().ok(0, "success").addData("countType",num);
+        } else {
+            return new Message().error(5027, "查询失败");
+        }
+    }
+
+    @ApiOperation(value = "统计", notes = "待处理信息")
+    @ResponseBody
+    @GetMapping("/todo")
+    public Message countTask(HttpServletRequest request, HttpServletResponse response){
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回信息缺失et
+            return new Message().error(4004, "当前用户未登录");
+        }
+        int num = taskService.getTaskCount(appId);
+        int userNum = taskUserService.getTaskUserCount(appId);
+        int [] count = new int[]{num,userNum};
+        if (num > -1 ){
+            return new Message().ok(0, "success").addData("countTask",count);
+        } else {
+            return new Message().error(5027, "查询失败");
+        }
+    }
+
+    @ApiOperation(value = "统计今日数据", notes = "今日呼叫")
+    @ResponseBody
+    @PostMapping("/toDayTask")
+    public Message toDayTask(HttpServletRequest request, HttpServletResponse response){
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(4004, "当前用户未登录");
+        }
+        int num = taskService.getTaskCount(appId);
+        if (num > 0 ){
+            return new Message().ok(0, "success").addData("countTask",num);
+        } else {
+            return new Message().error(5027, "查询失败");
+        }
+    }
+
+    @ApiOperation(value = "重拨", notes = "只对测试任务生效")
+    @ResponseBody
+    @PostMapping("/toRedial")
+    public Message toRedial(HttpServletRequest request, HttpServletResponse response){
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(4004, "当前用户未登录");
+        }
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String taskId =  params.get("taskId");
+        String taskUserId =  params.get("taskUserId");
+        if(StringUtils.isEmpty(taskId) || StringUtils.isEmpty(taskUserId)){
+            return new Message().error(5021, "信息缺失");
+        }
+        Task t = taskService.getTaskById(Long.parseLong(taskId));
+        if(t ==null){
+            return new Message().error(5031, "当前任务不存在");
+        }
+        if(!t.getTest()){
+            return new Message().error(5038, "当前任务为正式任务");
+        }
+        t.setStatus((byte)2);
+        if(taskService.editTask(t)){
+            TaskUser user = taskUserService.getTaskUserById(Long.parseLong(taskUserId));
+            user.setStatus((byte)1);
+            if(taskUserService.editTaskUser(user)){
+                return new Message().ok(0, "success");
+            }else{
+                return new Message().error(5040, "重拨失败");
+            }
+        }else{
+            return new Message().error(5039, "重拨失败");
+        }
+
+    }
 }
