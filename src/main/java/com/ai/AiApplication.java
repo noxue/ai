@@ -14,6 +14,7 @@ import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
@@ -25,6 +26,7 @@ import javax.servlet.MultipartConfigElement;
 @MapperScan("com.ai.dao")
 @EnableCaching
 @ServletComponentScan
+@ComponentScan
 public class AiApplication {
 
 	public static void main(String[] args) {

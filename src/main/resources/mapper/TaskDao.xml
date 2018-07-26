@@ -31,7 +31,7 @@
     <if test="name != null and name != ''">
       AND  `name` LIKE  CONCAT('%',#{name},'%')
     </if>
-    order by update_at desc,id desc
+    order by id desc
   </select>
 
   <select id="selectBatch"  resultMap="BaseResultMap">

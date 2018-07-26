@@ -27,7 +27,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Service("ExcelService")
+@Service
 public class ExcelServiceImpl implements ExcelService {
 
     @Autowired
