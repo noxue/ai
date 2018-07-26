@@ -41,7 +41,7 @@
 
 
         <!--数据库链接地址账号密码-->
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/ai" userId="root"
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://192.168.1.20:3306/ai" userId="root"
                         password="root">
         </jdbcConnection>
         <!--不知道做什么用的。。。反正贴上来了~-->
