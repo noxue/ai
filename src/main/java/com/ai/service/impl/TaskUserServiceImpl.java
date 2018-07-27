@@ -99,4 +99,9 @@ public class TaskUserServiceImpl implements TaskUserService {
     public int getTaskUserCount(String userId) {
         return taskUserDao.getCountTaskUserToDo(userId);
     }
+
+    @Override
+    public List<String> getUserType( String taskId) {
+        return taskUserDao.countUserTypeByTaskId(taskId );
+    }
 }

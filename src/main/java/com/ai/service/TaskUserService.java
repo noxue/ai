@@ -30,4 +30,7 @@ public interface TaskUserService {
     List<String> getTaskUserCount(String userId ,String staTime,String endTime);
 
     int getTaskUserCount(String userId);
+
+    List<String> getUserType(String taskId);
+
 }
