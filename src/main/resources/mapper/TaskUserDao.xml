@@ -83,4 +83,11 @@
           task_user t2   left join  task t  on t.id = t2.task_id
         where t.user_id=#{userId}  and t2.status!=0;
     </select>
+
+    <select id="countUserTypeByTaskId" resultType="Map">
+        select type ,count(type) num from
+          task_user t
+        where t.task_id = 67
+          group by type  order by type;
+     </select>
 </mapper>
