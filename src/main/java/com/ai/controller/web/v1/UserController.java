@@ -298,7 +298,7 @@ public class UserController extends BasicAction{
             AuthUser authUser = new AuthUser();
             authUser.setUid(uid);
             // 存储到数据库的密码为 MD5(原密码+盐值)
-            if(!"".equals(password)){
+            if(!StringUtils.isEmpty(password)){
                 Pattern pattern = Pattern.compile("[a-zA-Z0-9]{5,30}");
                 Matcher matcher = pattern.matcher(uid);
                 boolean b= matcher.matches();

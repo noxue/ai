@@ -87,7 +87,7 @@
     <select id="countUserTypeByTaskId" resultType="Map">
         select type ,count(type) num from
           task_user t
-        where t.task_id = 67
+        where t.task_id = #{taskId}
           group by type  order by type;
      </select>
 </mapper>

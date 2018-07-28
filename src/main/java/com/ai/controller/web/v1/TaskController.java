@@ -559,11 +559,11 @@ public class TaskController extends BasicAction{
     @ResponseBody
     @PostMapping("/user/type")
     public Message countUserTypeByTaskId(HttpServletRequest request, HttpServletResponse response){
-//        String appId =request.getHeader("appId");
-//        if (StringUtils.isEmpty(appId)) {
-//            // 必须信息缺一不可,返回信息缺失
-//            return new Message().error(4004, "当前用户未登录");
-//        }
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(4004, "当前用户未登录");
+        }
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String taskId = params.get("taskId");
         List<String> num = taskUserService.getUserType(taskId);
