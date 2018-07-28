@@ -138,12 +138,14 @@ public class TaskController extends BasicAction{
         task.setCreatedAt(new Date());
         task.setStatus(new Byte("1"));
         if (test.equals("1")) {
-            task.setTest(true);
-            task.setStatus((byte)2); // 如果是测试任务，直接设置为开始状态
+
             String testPhone = params.get("testPhone");
             if (StringUtils.isEmpty(testPhone)) {
                 return new Message().error(5034, "请填写手机号码");
             }
+            task.setTest(true);
+            task.setStatus((byte)2); // 如果是测试任务，直接设置为开始状态
+            task.setStartAt(new Date());
         } else {
             task.setTest(false);
         }
@@ -295,6 +297,7 @@ public class TaskController extends BasicAction{
                     return new Message().error(5032, "当前任务不在执行列表中");
                 }
             }
+
         }
         if(status.equals("4")){
             if(oldTask.getStatus()!=2  ){
@@ -330,6 +333,11 @@ public class TaskController extends BasicAction{
         newTask.setStartAt(new Date());
         newTask.setUpdateAt((new Date()));
         newTask.setStatus(Byte.valueOf(status));
+
+        if(status.equals("2")){
+            newTask.setStartAt(new Date());
+        }
+
         if (taskService.editTask(newTask)) {
 
             return new Message().ok(0, "success");
