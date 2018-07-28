@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /* *
@@ -582,4 +581,22 @@ public class TaskController extends BasicAction{
         }
     }
 
+    @ApiOperation(value = "统计任务详情", notes = "根据当前用户，taskId查询当前type各类的数量")
+    @ResponseBody
+    @PostMapping("/del")
+    public Message delTask(HttpServletRequest request, HttpServletResponse response){
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(4004, "当前用户未登录");
+        }
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String taskId = params.get("id");
+        boolean flag = taskService.delTask(Long.parseLong(taskId));
+        if (flag){
+            return new Message().ok(0, "success");
+        } else {
+            return new Message().error(5041, "删除失败");
+        }
+    }
 }

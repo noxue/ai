@@ -74,7 +74,9 @@
     <select id="getCountTaskUser" resultType="Map">
       select type ,count(type) num ,t2.called_at date from
         task_user t2   left join  task t  on t.id = t2.task_id
-      where t.user_id=#{userId} and t2.called_at  between  #{staTime} and #{endTime}
+      where t.user_id=#{userId}
+        and t2.`status` = 0
+        and t2.called_at  between  #{staTime} and #{endTime}
         group by t2.called_at,type  order by t2.called_at;
     </select>
 
