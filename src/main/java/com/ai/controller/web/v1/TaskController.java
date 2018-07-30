@@ -581,7 +581,7 @@ public class TaskController extends BasicAction{
         }
     }
 
-    @ApiOperation(value = "统计任务详情", notes = "根据当前用户，taskId查询当前type各类的数量")
+    @ApiOperation(value = "删除任务", notes = "删除当前选中的任务")
     @ResponseBody
     @PostMapping("/del")
     public Message delTask(HttpServletRequest request, HttpServletResponse response){
@@ -592,6 +592,10 @@ public class TaskController extends BasicAction{
         }
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String taskId = params.get("id");
+        if (StringUtils.isEmpty(taskId)) {
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(5042, "当前无法操作");
+        }
         boolean flag = taskService.delTask(Long.parseLong(taskId));
         if (flag){
             return new Message().ok(0, "success");
