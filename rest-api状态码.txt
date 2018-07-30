@@ -147,6 +147,7 @@
 5040：taskUserService.editTaskUser(user)执行失败
 5041：taskService.delTask(Long.parseLong(taskId))执行失败
 5042：当前taskId为空，不可执行
+5043: 当前任务已结束
 
 //TaskUser相关
 5010：mobile，task_id 必要参数为空
