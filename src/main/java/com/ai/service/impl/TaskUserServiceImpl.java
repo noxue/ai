@@ -14,7 +14,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Service("TaskUserService")
+@Service("TaskUserServicgetCountTodaye")
 public class TaskUserServiceImpl implements TaskUserService {
 
     @Autowired
@@ -137,8 +137,14 @@ public class TaskUserServiceImpl implements TaskUserService {
         numberFormat.setMaximumFractionDigits(2);
         String result = numberFormat.format((float) through / (float) list.size() * 100)+"%";
         countData[2] = result;
-        countData[3] = sumTime+" s";
-        countData[4] = sumTime/list.size()+" s";
+        countData[3] = format(sumTime);
+        countData[4] = format((sumTime/list.size()));
         return countData;
+    }
+    public String format(int sumTime){
+        //int h = sumTime/3600;
+        int m = sumTime/60;
+        int s = sumTime-(m*60);
+        return m+"分"+s+"秒";
     }
 }
