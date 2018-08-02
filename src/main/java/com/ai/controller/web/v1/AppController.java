@@ -116,7 +116,7 @@ public class AppController extends BasicAction {
      * @Param [] name
      * @Return com.ai.domain.bo.app.java
      */
-    @ApiOperation(value = "分页获取app", notes = "模糊查询分页获取app信息")
+    @ApiOperation(value = "分页获取app", notes = "模糊查询分页获取app信息，用于页面展示")
     @ResponseBody
     @PostMapping("/all")
     public Object findAllApp(HttpServletRequest request, HttpServletResponse response,
@@ -140,7 +140,7 @@ public class AppController extends BasicAction {
      * @Param []
      * @Return com.ai.domain.bo.app.java
      */
-    @ApiOperation(value = "分页获取app", notes = "模糊查询分页获取app信息")
+    @ApiOperation(value = "获取所有app信息", notes = "用于下拉框选择")
     @ResponseBody
     @PostMapping("/allApp")
     public Object findAll(HttpServletRequest request, HttpServletResponse response) {
