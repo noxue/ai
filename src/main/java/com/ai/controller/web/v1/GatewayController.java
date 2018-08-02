@@ -117,8 +117,9 @@ public class GatewayController extends BasicAction{
         String ip = params.get("ip");
         String port = params.get("port");
         String user_id = params.get("userId");
+        String app_id = params.get("app_id");
         if (StringUtils.isEmpty(name) ||StringUtils.isEmpty(ip) ||StringUtils.isEmpty(port)
-                ||StringUtils.isEmpty(user_id)||StringUtils.isEmpty(id)) {
+                ||StringUtils.isEmpty(user_id)||StringUtils.isEmpty(id)||StringUtils.isEmpty(app_id)) {
             // 必须信息缺一不可,返回网关信息缺失
             return new Message().error(3104, "网关信息缺失");
         }
@@ -143,6 +144,7 @@ public class GatewayController extends BasicAction{
         gateway.setDescription(description);
         gateway.setIp(ip);
         gateway.setUserId(user_id);
+        gateway.setAppId(Long.parseLong(app_id));
         if (gatewayService.editGate(gateway)) {
             redisTemplate.opsForValue().set("gateway_"+ gateway.getId(), "edit");
             return new Message().ok(0, "success");
