@@ -18,11 +18,11 @@ public class TemplateController {
     public Message getTpl(@PathVariable long id){
         Message msg = new Message();
         if (id <= 0 ){
-            return msg.error(4001,"invalid id param");
+            return msg.error(1,"invalid id param");
         }
         Template template = templateService.getTemplateById(id);
         if (template == null) {
-            return msg.error(4002,"template not found");
+            return msg.error(2,"template not found");
         }
         return msg.ok(0,"success").addData("tpl",template);
     }

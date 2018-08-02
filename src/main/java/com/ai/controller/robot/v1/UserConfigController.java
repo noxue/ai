@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("RobotConfigController")
-@RequestMapping("/robot/api/v1/userConfig")
+@RequestMapping("/robot/api/v1")
 public class UserConfigController {
 
     @Autowired
@@ -17,19 +17,13 @@ public class UserConfigController {
 
     @ApiOperation(value = "获取用户信息", notes = "获取用户信息")
     @ResponseBody
-    @GetMapping("/user")
-    public Message getUserConfig(String id){
-
-        if(StringUtils.isEmpty(id)){
-            return new Message().error(8005, "缺少参数 id");
-        }
-        UserConfig userConfig =  userConfigService.getConfigByUserId(id,"schedule");
+    @GetMapping("/user/{userId}/config/{name}")
+    public Message getUserConfig(@PathVariable String userId, @PathVariable String name){
+        UserConfig userConfig =  userConfigService.getConfigByUserId(userId,name);
         if(userConfig!=null){
-            return new Message().ok(0, "success").addData("userConfig",userConfig);
+            return new Message().ok(0, "success").addData("config",userConfig);
         } else {
-            return new Message().error(8006, "查询失败");
+            return new Message().error(1, "查询失败");
         }
     }
-
-
 }
