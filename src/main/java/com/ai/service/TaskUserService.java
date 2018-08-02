@@ -1,6 +1,5 @@
 package com.ai.service;
 
-import com.ai.domain.bo.Task;
 import com.ai.domain.bo.TaskUser;
 import com.github.pagehelper.PageInfo;
 
@@ -32,5 +31,7 @@ public interface TaskUserService {
     int getTaskUserCount(String userId);
 
     List<String> getUserType(String taskId);
+
+    Object [] getCountToday(String userId);
 
 }

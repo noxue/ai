@@ -15,6 +15,7 @@
 1009：当前角色无权操作
 1010: 插入用户角色关联表失败
 1011: 用户名只允许字母和数字，长度在4到30之间
+1115: 用户不可以删除自己
 ...  
 
 // 用户相关  
@@ -147,6 +148,7 @@
 5040：taskUserService.editTaskUser(user)执行失败
 5041：taskService.delTask(Long.parseLong(taskId))执行失败
 5042：当前taskId为空，不可执行
+5043: 当前任务已结束
 
 //TaskUser相关
 5010：mobile，task_id 必要参数为空

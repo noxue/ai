@@ -24,4 +24,7 @@ public interface TaskUserDao extends TaskUserMapper{
     int getCountTaskUserToDo(@Param("userId")String userId );
 
     List<String> countUserTypeByTaskId(@Param("taskId") String taskId);
+
+    List<TaskUser> countToday(@Param("userId")String userId,
+                              @Param("staTime")String staTime,@Param("endTime")String endTime);
 }

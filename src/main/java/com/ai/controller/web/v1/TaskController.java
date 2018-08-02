@@ -284,6 +284,9 @@ public class TaskController extends BasicAction{
         if(oldTask == null){
             return new Message().error(5031, "当前任务不存在");
         }
+        if(oldTask.getStatus() == 0){
+            return new Message().error(5043, "当前任务已结束");
+        }
         if(status.equals("2") && oldTask.getStatus()==2){
             return new Message().error(5032, "当前任务正在执行中");
         }
@@ -296,7 +299,6 @@ public class TaskController extends BasicAction{
                     return new Message().error(5032, "当前任务不在执行列表中");
                 }
             }
-
         }
         if(status.equals("4")){
             if(oldTask.getStatus()!=2  ){
@@ -602,5 +604,18 @@ public class TaskController extends BasicAction{
         } else {
             return new Message().error(5041, "删除失败");
         }
+    }
+
+    @ApiOperation(value = "删除任务", notes = "删除当前选中的任务")
+    @ResponseBody
+    @PostMapping("/todayCount")
+    public Message getTodayCount(HttpServletRequest request, HttpServletResponse response){
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(4004, "当前用户未登录");
+        }
+        Object [] data = taskUserService.getCountToday(appId);
+        return new Message().ok(0, "success").addData("today",data);
     }
 }
