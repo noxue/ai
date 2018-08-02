@@ -37,7 +37,7 @@ public class TaskUserServiceImpl implements TaskUserService {
 
     @Override
     public List<TaskUser> getTaskUserAndUpdate(long taskId) {
-        PageHelper.startPage(1, 5);
+        PageHelper.startPage(1, 1);
         TaskUserExample taskUserExample = new TaskUserExample();
         taskUserExample.setOrderByClause("id asc");
         TaskUserExample.Criteria cr = taskUserExample.createCriteria();
