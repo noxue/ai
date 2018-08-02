@@ -42,7 +42,7 @@ public class VoiceController {
         return new Message().error(3201, "上传失败");
     }
 
-    @RequestMapping("/file/{type}/{hash}")
+    @GetMapping("/file/{type}/{hash}")
     public void file(@PathVariable  String type, @PathVariable  String hash, HttpServletResponse response){
 
         Voice voice = voiceService.findVoice(hash);

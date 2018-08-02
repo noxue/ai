@@ -442,7 +442,7 @@ public class TaskController extends BasicAction{
 
     @ApiOperation(value = "导出excel", notes = "根据当前的用户信息按照规定的模板导出execl信息")
     @ResponseBody
-    @RequestMapping("/exp")
+    @PostMapping("/exp")
     public Message ExportExcel(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String appId = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
