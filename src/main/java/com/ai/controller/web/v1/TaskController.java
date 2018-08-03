@@ -38,9 +38,6 @@ public class TaskController extends BasicAction{
     private TaskUserService taskUserService;
 
     @Autowired
-    private TaskUserReportService taskUserReportService;
-
-    @Autowired
     private SimService simService;
 
     @Autowired
@@ -54,29 +51,6 @@ public class TaskController extends BasicAction{
 
     @Autowired
     private StringRedisTemplate redisTemplate;
-
-    @ApiOperation(value = "新增taskUserReport", notes = "添加taskUserReport信息")
-    @ResponseBody
-    @PostMapping("/user/report/add")
-    public Message addTaskUserReport(HttpServletRequest request, HttpServletResponse response){
-
-        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        TaskUserReport taskUserReport = new TaskUserReport();
-        String task_user_id = params.get("task_user_id");
-        String content = params.get("content");
-        if (StringUtils.isEmpty(task_user_id) ||StringUtils.isEmpty(content)) {
-            // 必须信息缺一不可,返回信息不全
-            return new Message().error(5000, "信息不全");
-        }
-        taskUserReport.setTaskUserId(Long.parseLong(task_user_id));
-        taskUserReport.setContent(content);
-
-        if (taskUserReportService.addTaskUserReport(taskUserReport)) {
-            return new Message().ok(0, "success");
-        } else {
-            return new Message().error(5003, "新增失败");
-        }
-    }
 
     /* *
      * @Description 根据taskUserId获取TaskUserReport信息

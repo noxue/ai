@@ -29,7 +29,7 @@ public class Task {
 
     private Date updateAt;
 
-    private Integer break;
+    private Integer interrupt;
 
     public Long getId() {
         return id;
@@ -135,11 +135,11 @@ public class Task {
         this.updateAt = updateAt;
     }
 
-    public Integer getBreak() {
-        return break;
+    public Integer getInterrupt() {
+        return interrupt;
     }
 
-    public void setBreak(Integer break) {
-        this.break = break;
+    public void setInterrupt(Integer interrupt) {
+        this.interrupt = interrupt;
     }
 }

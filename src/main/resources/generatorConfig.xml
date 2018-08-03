@@ -121,9 +121,6 @@
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
 
-        <table tableName="user_schedule" domainObjectName="UserSchedule" >
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-        </table>
         <table tableName="voice" domainObjectName="Voice" >
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
@@ -131,9 +128,6 @@
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
 
-        <table tableName="task_user_report" domainObjectName="TaskUserReport" >
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-        </table>
 
         <table tableName="user_config" domainObjectName="UserConfig" >
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>

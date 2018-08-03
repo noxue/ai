@@ -905,63 +905,63 @@ public class TaskExample {
             return (Criteria) this;
         }
 
-        public Criteria andBreakIsNull() {
-            addCriterion("`break` is null");
+        public Criteria andInterruptIsNull() {
+            addCriterion("interrupt is null");
             return (Criteria) this;
         }
 
-        public Criteria andBreakIsNotNull() {
-            addCriterion("`break` is not null");
+        public Criteria andInterruptIsNotNull() {
+            addCriterion("interrupt is not null");
             return (Criteria) this;
         }
 
-        public Criteria andBreakEqualTo(Integer value) {
-            addCriterion("`break` =", value, "break");
+        public Criteria andInterruptEqualTo(Integer value) {
+            addCriterion("interrupt =", value, "interrupt");
             return (Criteria) this;
         }
 
-        public Criteria andBreakNotEqualTo(Integer value) {
-            addCriterion("`break` <>", value, "break");
+        public Criteria andInterruptNotEqualTo(Integer value) {
+            addCriterion("interrupt <>", value, "interrupt");
             return (Criteria) this;
         }
 
-        public Criteria andBreakGreaterThan(Integer value) {
-            addCriterion("`break` >", value, "break");
+        public Criteria andInterruptGreaterThan(Integer value) {
+            addCriterion("interrupt >", value, "interrupt");
             return (Criteria) this;
         }
 
-        public Criteria andBreakGreaterThanOrEqualTo(Integer value) {
-            addCriterion("`break` >=", value, "break");
+        public Criteria andInterruptGreaterThanOrEqualTo(Integer value) {
+            addCriterion("interrupt >=", value, "interrupt");
             return (Criteria) this;
         }
 
-        public Criteria andBreakLessThan(Integer value) {
-            addCriterion("`break` <", value, "break");
+        public Criteria andInterruptLessThan(Integer value) {
+            addCriterion("interrupt <", value, "interrupt");
             return (Criteria) this;
         }
 
-        public Criteria andBreakLessThanOrEqualTo(Integer value) {
-            addCriterion("`break` <=", value, "break");
+        public Criteria andInterruptLessThanOrEqualTo(Integer value) {
+            addCriterion("interrupt <=", value, "interrupt");
             return (Criteria) this;
         }
 
-        public Criteria andBreakIn(List<Integer> values) {
-            addCriterion("`break` in", values, "break");
+        public Criteria andInterruptIn(List<Integer> values) {
+            addCriterion("interrupt in", values, "interrupt");
             return (Criteria) this;
         }
 
-        public Criteria andBreakNotIn(List<Integer> values) {
-            addCriterion("`break` not in", values, "break");
+        public Criteria andInterruptNotIn(List<Integer> values) {
+            addCriterion("interrupt not in", values, "interrupt");
             return (Criteria) this;
         }
 
-        public Criteria andBreakBetween(Integer value1, Integer value2) {
-            addCriterion("`break` between", value1, value2, "break");
+        public Criteria andInterruptBetween(Integer value1, Integer value2) {
+            addCriterion("interrupt between", value1, value2, "interrupt");
             return (Criteria) this;
         }
 
-        public Criteria andBreakNotBetween(Integer value1, Integer value2) {
-            addCriterion("`break` not between", value1, value2, "break");
+        public Criteria andInterruptNotBetween(Integer value1, Integer value2) {
+            addCriterion("interrupt not between", value1, value2, "interrupt");
             return (Criteria) this;
         }
     }

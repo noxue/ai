@@ -2,14 +2,10 @@ package com.ai.controller.robot.v1;
 
 import com.ai.domain.bo.Task;
 import com.ai.domain.bo.TaskUser;
-import com.ai.domain.bo.TaskUserReport;
 import com.ai.domain.vo.Message;
 import com.ai.service.TaskService;
-import com.ai.service.TaskUserReportService;
 import com.ai.service.TaskUserService;
-import com.ai.util.RequestResponseUtil;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 @RestController("RobotTaskController")
 @RequestMapping("/robot/api/v1")
@@ -26,8 +21,6 @@ public class TaskController {
     @Autowired
     private TaskUserService taskUserService;
 
-    @Autowired
-    private TaskUserReportService taskUserReportService;
 
     @Autowired
     private TaskService taskService;
