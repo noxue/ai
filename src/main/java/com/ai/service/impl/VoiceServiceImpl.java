@@ -75,6 +75,7 @@ public class VoiceServiceImpl implements VoiceService {
                 boolean ok = new CommandUtil().wavToPcm(uploadConfig.getFfmpeg(), path + wavPath, path + pcmPath);
 
                 if (!ok) {
+                    System.out.println("转文件失败："+uploadConfig.getFfmpeg()+"  "+path+wavPath+"     "+path + pcmPath);
                     return null;
                 }
             }

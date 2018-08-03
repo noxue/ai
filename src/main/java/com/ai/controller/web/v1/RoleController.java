@@ -3,7 +3,6 @@ package com.ai.controller.web.v1;
 import com.ai.service.AccountService;
 import com.ai.shiro.filter.ShiroFilterChainManager;
 import com.ai.support.factory.LogTaskFactory;
-import com.ai.support.manager.LogExeManager;
 import com.ai.util.IpUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -35,7 +34,6 @@ import java.util.Map;
 @RestController
 public class RoleController extends BasicAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RoleController.class);
 
     @Autowired
     private RoleService roleService;
@@ -210,11 +208,9 @@ public class RoleController extends BasicAction {
         }
 
         if (roleList != null) {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(appId, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 1, "获取成功"));
-            return new Message().ok(2002, "获取成功").addData("roleList",rkv);
+                        return new Message().ok(2002, "获取成功").addData("roleList",rkv);
         } else {
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(appId, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "获取失败"));
-            return new Message().ok(1111, "获取失败");
+                        return new Message().ok(1111, "获取失败");
         }
     }
 }

@@ -28,7 +28,6 @@ import java.util.Map;
 @RequestMapping("/web/api/v1/template")
 public class TemplateController extends BasicAction{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TemplateController.class);
 
     @Autowired
     private TemplateService templateService;

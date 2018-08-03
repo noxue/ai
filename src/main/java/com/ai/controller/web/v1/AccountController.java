@@ -10,7 +10,6 @@ import com.ai.domain.vo.Message;
 import com.ai.service.AccountService;
 import com.ai.service.UserService;
 import com.ai.support.factory.LogTaskFactory;
-import com.ai.support.manager.LogExeManager;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.web.util.WebUtils;
@@ -38,7 +37,6 @@ import java.util.regex.Pattern;
 @RequestMapping("/web/api/v1/account")
 public class AccountController extends BasicAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -73,8 +71,6 @@ public class AccountController extends BasicAction {
         AuthUser authUser = userService.getUserByAppId(appid);
         authUser.setPassword(null);
         authUser.setSalt(null);
-
-        LogExeManager.getInstance().executeLogTask(LogTaskFactory.loginLog(appid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 1, "登录成功"));
 
         return new Message().ok(1003, "issue jwt success").addData("jwt", jwt).addData("user", authUser);
     }

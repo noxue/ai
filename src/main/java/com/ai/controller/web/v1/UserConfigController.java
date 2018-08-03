@@ -21,8 +21,6 @@ import java.util.Map;
 @RequestMapping("/web/api/v1/config")
 public class UserConfigController extends BasicAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserConfigController.class);
-
     @Autowired
     private UserConfigService userConfigService;
 

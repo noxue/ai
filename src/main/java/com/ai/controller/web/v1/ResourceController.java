@@ -26,7 +26,6 @@ import java.util.List;
 @RequestMapping("/web/api/v1/resource")
 public class ResourceController extends BasicAction{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceController.class);
 
     @Autowired
     private ResourceService resourceService;

@@ -38,9 +38,9 @@
       from template t
       join auth_user a on t.user_id = pid
    where 1=1
-       and t.user_id= (select a.pid from auth_user a where a.uid=#{uid}
+       and t.user_id= (select a.pid from auth_user a where a.uid=#{uid})
       <if test="name != null and name != ''">
-          AND t.`name` like  CONCAT('%',#{name} ,'%')
+          AND (t.`name` like  CONCAT('%',#{name} ,'%')
       </if>
   </select>
 

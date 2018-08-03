@@ -8,7 +8,6 @@ import com.ai.service.ExcelService;
 import com.ai.service.TaskService;
 import com.ai.service.TaskUserService;
 import com.ai.support.factory.LogTaskFactory;
-import com.ai.support.manager.LogExeManager;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
@@ -106,15 +105,12 @@ public class ExcelServiceImpl implements ExcelService {
             task.setTotal(total);
             task.setUpdateAt(new Date());
             if( taskService.editTask(task)){
-                LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/excel/editTask", "ImportExcel", (short) 6000, "导入成功"));
-                return new Message().ok(1,"操作成功");
+                                return new Message().ok(1,"操作成功");
             }else{
-                LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/excel/editTask", "ImportExcel", (short) 6001, "导入失败,更新task错误"));
-                return new Message().error(1,"操作失败");
+                                return new Message().error(1,"操作失败");
             }
         }else{
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.bussinssLog( "admin", "/excel/imp", "ImportExcel", (short) 6001, "导入失败"));
-            return new Message().error(1,"操作失败");
+                        return new Message().error(1,"操作失败");
         }
     }
 

@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
 @RequestMapping("/web/api/v1/gateway")
 public class GatewayController extends BasicAction{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GatewayController.class);
 
     @Autowired
     private GatewayService gatewayService;

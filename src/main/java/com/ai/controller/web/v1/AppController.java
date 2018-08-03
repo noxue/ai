@@ -26,8 +26,6 @@ import org.springframework.util.StringUtils;
 @RequestMapping("/web/api/v1/app")
 public class AppController extends BasicAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppController.class);
-
     @Autowired
     private AppService appService;
 

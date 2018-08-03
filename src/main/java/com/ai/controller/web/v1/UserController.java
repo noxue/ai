@@ -12,7 +12,6 @@ import com.ai.domain.bo.AuthUser;
 import com.ai.domain.vo.Message;
 import com.ai.service.UserService;
 import com.ai.support.factory.LogTaskFactory;
-import com.ai.support.manager.LogExeManager;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.util.WebUtils;
@@ -136,7 +135,6 @@ public class UserController extends BasicAction{
             return new Message().error(1111, "用户未登录无法登出");
         }
         redisTemplate.opsForValue().getOperations().delete("JWT-SESSION-"+appId);
-        LogExeManager.getInstance().executeLogTask(LogTaskFactory.exitLog(appId,request.getRemoteAddr(),(short)1,""));
 
         return new Message().ok(6666, "用户退出成功");
     }
@@ -239,27 +237,22 @@ public class UserController extends BasicAction{
             authUser.setPid(appId);
             //插入用户表
             if (accountService.registerAccount(authUser)) {
-                LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 1, "注册成功"));
                 //插入表auth_user_role
                 AuthUserRole aur = new AuthUserRole();
                 aur.setRoleId(Integer.parseInt(roleId));
                 aur.setUserId(uid);
                 aur.setCreateTime(new Date());
                 if (accountService.insertAuthUserRole(aur)){
-                    LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "注册失败"));
                     return new Message().ok(2002, "注册成功");
                 }else{
-                    LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "注册失败"));
                     return new Message().ok(1010, "注册失败");
                 }
             } else {
-                LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "注册失败"));
-                return new Message().ok(1111, "注册失败");
+                                return new Message().ok(1111, "注册失败");
             }
         }else{
             //返回错误信息
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "注册失败"));
-            return new Message().ok(1009, "注册失败");
+                        return new Message().ok(1009, "注册失败");
         }
     }
 
@@ -336,17 +329,14 @@ public class UserController extends BasicAction{
             authUser.setStatus((byte) 1);
             //插入用户表
             if (accountService.editAuthUser(authUser)) {
-                LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 1, "编辑成功"));
-                return new Message().ok(1010, "编辑成功");
+                                return new Message().ok(1010, "编辑成功");
             } else {
-                LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "编辑失败"));
-                return new Message().error(1111, "编辑失败");
+                                return new Message().error(1111, "编辑失败");
             }
 
         }else{
             //返回错误信息
-            LogExeManager.getInstance().executeLogTask(LogTaskFactory.registerLog(uid, IpUtil.getIpFromRequest(WebUtils.toHttp(request)), (short) 0, "编辑失败"));
-            return new Message().error(1009, "编辑失败");
+                        return new Message().error(1009, "编辑失败");
         }
     }
 

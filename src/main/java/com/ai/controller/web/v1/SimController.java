@@ -35,7 +35,6 @@ import java.util.regex.Pattern;
 @RequestMapping("/web/api/v1/sim")
 public class SimController extends BasicAction{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimController.class);
 
     @Autowired
     private SimService simService;

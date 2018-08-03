@@ -29,8 +29,6 @@ import java.util.*;
 @RequestMapping("/web/api/v1/task")
 public class TaskController extends BasicAction{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TaskController.class);
-
     @Autowired
     private TaskService taskService;
 
