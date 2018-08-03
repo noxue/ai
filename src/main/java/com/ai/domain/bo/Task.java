@@ -29,6 +29,8 @@ public class Task {
 
     private Date updateAt;
 
+    private Integer break;
+
     public Long getId() {
         return id;
     }
@@ -131,5 +133,13 @@ public class Task {
 
     public void setUpdateAt(Date updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public Integer getBreak() {
+        return break;
+    }
+
+    public void setBreak(Integer break) {
+        this.break = break;
     }
 }
