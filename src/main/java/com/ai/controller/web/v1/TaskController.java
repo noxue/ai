@@ -472,7 +472,62 @@ public class TaskController extends BasicAction{
         return new Message().ok(0,"success").addData("task",new String(Base64.encodeBase64(data.getBytes("gbk"))));
     }
 
-    @ApiOperation(value = "统计", notes = "根据时间统计客户类型的数量，默认时间为过去一周")
+    @ApiOperation(value = "删除任务", notes = "删除当前选中的任务")
+    @ResponseBody
+    @PostMapping("/del")
+    public Message delTask(HttpServletRequest request, HttpServletResponse response){
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(4004, "当前用户未登录");
+        }
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String taskId = params.get("id");
+        if (StringUtils.isEmpty(taskId)) {
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(5042, "当前无法操作");
+        }
+        boolean flag = taskService.delTask(Long.parseLong(taskId));
+        if (flag){
+            return new Message().ok(0, "success");
+        } else {
+            return new Message().error(5041, "删除失败");
+        }
+    }
+
+    @ApiOperation(value = "今日呼叫模块", notes = "获取后台处理完的数据集合")
+    @ResponseBody
+    @PostMapping("/todayCount")
+    public Message getTodayCount(HttpServletRequest request, HttpServletResponse response){
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(4004, "当前用户未登录");
+        }
+        Object [] data = taskUserService.getCountToday(appId);
+        return new Message().ok(0, "success").addData("today",data);
+    }
+
+    @ApiOperation(value = "首页待处理区", notes = "待处理信息")
+    @ResponseBody
+    @GetMapping("/todo")
+    public Message countTask(HttpServletRequest request, HttpServletResponse response){
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回信息缺失et
+            return new Message().error(4004, "当前用户未登录");
+        }
+        int num = taskService.getTaskCount(appId);
+        int userNum = taskUserService.getTaskUserCount(appId);
+        int [] count = new int[]{num,userNum};
+        if (num > -1 ){
+            return new Message().ok(0, "success").addData("countTask",count);
+        } else {
+            return new Message().error(5027, "查询失败");
+        }
+    }
+
+    @ApiOperation(value = "首页统计数据", notes = "根据时间统计客户类型的数量，默认时间为过去一周")
     @ResponseBody
     @PostMapping("/user/count")
     public Message countTaskUserList(HttpServletRequest request, HttpServletResponse response){
@@ -492,26 +547,7 @@ public class TaskController extends BasicAction{
         }
     }
 
-    @ApiOperation(value = "统计", notes = "待处理信息")
-    @ResponseBody
-    @GetMapping("/todo")
-    public Message countTask(HttpServletRequest request, HttpServletResponse response){
-        String appId =request.getHeader("appId");
-        if (StringUtils.isEmpty(appId)) {
-            // 必须信息缺一不可,返回信息缺失et
-            return new Message().error(4004, "当前用户未登录");
-        }
-        int num = taskService.getTaskCount(appId);
-        int userNum = taskUserService.getTaskUserCount(appId);
-        int [] count = new int[]{num,userNum};
-        if (num > -1 ){
-            return new Message().ok(0, "success").addData("countTask",count);
-        } else {
-            return new Message().error(5027, "查询失败");
-        }
-    }
-
-    @ApiOperation(value = "统计今日数据", notes = "今日呼叫")
+    @ApiOperation(value = "统计今日数据", notes = "待处理任务")
     @ResponseBody
     @PostMapping("/toDayTask")
     public Message toDayTask(HttpServletRequest request, HttpServletResponse response){
@@ -564,7 +600,7 @@ public class TaskController extends BasicAction{
         }
     }
 
-    @ApiOperation(value = "统计任务详情", notes = "根据当前用户，taskId查询当前type各类的数量")
+    @ApiOperation(value = "taskUser任务详情,图表数据", notes = "根据当前用户，taskId查询当前type各类的数量")
     @ResponseBody
     @PostMapping("/user/type")
     public Message countUserTypeByTaskId(HttpServletRequest request, HttpServletResponse response){
@@ -583,39 +619,4 @@ public class TaskController extends BasicAction{
         }
     }
 
-    @ApiOperation(value = "删除任务", notes = "删除当前选中的任务")
-    @ResponseBody
-    @PostMapping("/del")
-    public Message delTask(HttpServletRequest request, HttpServletResponse response){
-        String appId =request.getHeader("appId");
-        if (StringUtils.isEmpty(appId)) {
-            // 必须信息缺一不可,返回信息缺失
-            return new Message().error(4004, "当前用户未登录");
-        }
-        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String taskId = params.get("id");
-        if (StringUtils.isEmpty(taskId)) {
-            // 必须信息缺一不可,返回信息缺失
-            return new Message().error(5042, "当前无法操作");
-        }
-        boolean flag = taskService.delTask(Long.parseLong(taskId));
-        if (flag){
-            return new Message().ok(0, "success");
-        } else {
-            return new Message().error(5041, "删除失败");
-        }
-    }
-
-    @ApiOperation(value = "删除任务", notes = "删除当前选中的任务")
-    @ResponseBody
-    @PostMapping("/todayCount")
-    public Message getTodayCount(HttpServletRequest request, HttpServletResponse response){
-        String appId =request.getHeader("appId");
-        if (StringUtils.isEmpty(appId)) {
-            // 必须信息缺一不可,返回信息缺失
-            return new Message().error(4004, "当前用户未登录");
-        }
-        Object [] data = taskUserService.getCountToday(appId);
-        return new Message().ok(0, "success").addData("today",data);
-    }
 }
