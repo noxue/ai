@@ -80,7 +80,6 @@ public class TaskController extends BasicAction{
         //获取参数
         String user_id =  request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-
         String taskName = params.get("taskName");
         if (StringUtils.isEmpty(taskName)) {
             return new Message().error(5007, "请填写任务名称");
@@ -104,6 +103,9 @@ public class TaskController extends BasicAction{
         task.setUserId(user_id);
         if(!StringUtils.isEmpty(params.get("num"))){
             task.setThread(Integer.parseInt(params.get("num")));
+        }
+        if(!StringUtils.isEmpty(params.get("radio"))){
+            task.setInterrupt(Integer.parseInt(params.get("radio")));
         }
         task.setTotal(0);
         task.setThread(0);
