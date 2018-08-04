@@ -90,6 +90,8 @@ public class TaskController extends BasicAction{
             return new Message().error(5007, "请选择模板信息");
         }
 
+        int Break = Integer.valueOf(params.get("break"));
+
         PageInfo<Sim> simList= simService.findAllSim(1,1000,user_id,"");
         List<SimUser> simUserList= simService.getListByUserId(user_id);
         if(simList.getTotal()==0  &&  simUserList.size()==0){
@@ -98,6 +100,7 @@ public class TaskController extends BasicAction{
         String test = params.get("test");
         Task task = new Task();
         task.setName(taskName);
+        task.setInterrupt(Break);
         task.setUserId(user_id);
         if(!StringUtils.isEmpty(params.get("num"))){
             task.setThread(Integer.parseInt(params.get("num")));
