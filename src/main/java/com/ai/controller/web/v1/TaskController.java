@@ -220,6 +220,7 @@ public class TaskController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String id =params.get("id");
         String mobile = params.get("mobile");
+        String name = params.get("name");
         String type = params.get("type");
         String remark = params.get("remark");
         // 必须信息缺一不可,返回验证消息
@@ -232,6 +233,7 @@ public class TaskController extends BasicAction{
         TaskUser taskUser =  new TaskUser();
         taskUser.setId(Long.parseLong(id));
         taskUser.setMobile(mobile);
+        taskUser.setName(name);
         taskUser.setRemark(remark);
         if(!StringUtils.isEmpty(type)){
             taskUser.setType(Byte.valueOf(type));
@@ -263,6 +265,10 @@ public class TaskController extends BasicAction{
         if(oldTask.getStatus() == 0){
             return new Message().error(5043, "当前任务已结束");
         }
+        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(1,500,appId,id,"","","","");
+        if(taskUserList.getSize()==0){
+            return new Message().error(5035, "当前任务没有客户信息，请在导入后继续操作");
+        }
         if(status.equals("2") && oldTask.getStatus()==2){
             return new Message().error(5032, "当前任务正在执行中");
         }
@@ -282,10 +288,6 @@ public class TaskController extends BasicAction{
                     return new Message().error(5032, "当前任务不在执行列表中");
                 }
             }
-        }
-        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(1,500,appId,id,"","","","");
-        if(taskUserList.getSize()==0){
-            return new Message().error(5035, "当前任务没有客户信息，请在导入后继续操作");
         }
 
         //判断当前登陆用户是否有权限操作任务
