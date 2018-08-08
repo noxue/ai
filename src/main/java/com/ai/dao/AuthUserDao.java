@@ -16,12 +16,14 @@ public interface AuthUserDao extends AuthUserMapper{
 
     List<AuthUser> selectUserList() throws DataAccessException;
 
-    List<AuthUser> selectUserAndRoleList(@Param("appId") String appId,@Param("uid") String uid) throws DataAccessException;
+    List<AuthUser> selectUserAndRoleList(@Param("pid") String pid,@Param("uid") String uid) throws DataAccessException;
 
     List<AuthUser> selectUserListByRoleId(Integer roleId) throws DataAccessException;
 
     List<AuthUser> selectUserListExtendByRoleId(Integer roleId) throws DataAccessException;
 
     AuthUser getUserByUidAndPid(@Param("uid") String uid , @Param("pid") String pid);
+
+    List<AuthUser> selectUsers(@Param("pid") String pid, @Param("uid") String uid );
 
 }
