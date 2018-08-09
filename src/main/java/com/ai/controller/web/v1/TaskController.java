@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /* *
  * @Author ws
@@ -113,10 +114,13 @@ public class TaskController extends BasicAction{
         task.setCreatedAt(new Date());
         task.setStatus(new Byte("1"));
         if (test.equals("1")) {
-
             String testPhone = params.get("testPhone");
             if (StringUtils.isEmpty(testPhone)) {
                 return new Message().error(5034, "请填写手机号码");
+            }
+            String regex="^[0-9]{1,7}$";
+            if(Pattern.matches(regex, testPhone)){
+                return new Message().error(4001, "请输入正确的手机号码");
             }
             task.setTest(true);
             task.setStatus((byte)2); // 如果是测试任务，直接设置为开始状态

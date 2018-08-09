@@ -55,7 +55,7 @@
     from auth_user a
     where 1=1
       AND pid = #{pid}
-      AND uid like CONCAT('%',#{uid},'%')
+      AND uid like CONCAT('%',#{uid},'%') OR username like CONCAT('%',#{uid},'%')
   </select>
 
   <select id="selectUsers" resultMap="BaseResultMap">
