@@ -165,13 +165,23 @@ public class UserController extends BasicAction{
 
         String appId = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String uid = params.get("uid");
+        String password = params.get("password");
+        //String userKey = params.get("userKey");
+        if (StringUtils.isEmpty(uid) || StringUtils.isEmpty(password)) {
+            // 必须信息缺一不可,返回注册账号信息缺失
+            return new Message().error(1111, "账户信息缺失");
+        }
         String roleId = params.get("roleId");
+        if(StringUtils.isEmpty(roleId)){
+            return new Message().error(1009, "请选择创建用户的角色");
+        }
         boolean flag = false;
         // 获取当前用户能创建那些角色的用户
         String authRoleId = accountService.loadAccountRoleId(appId);
         List<AuthRole> roleList = roleService.getRolesById(Integer.parseInt(authRoleId));
         if(roleList ==null){
-            return new Message().ok(1009, "当前角色无法创建用户");
+            return new Message().error(1009, "当前角色无法创建用户");
         }
         //判断是否能创建这类角色的用户
         for (int i = 0; i < roleList.size(); i++){
@@ -180,13 +190,6 @@ public class UserController extends BasicAction{
             }
         }
         AuthUser authUser = new AuthUser();
-        String uid = params.get("uid");
-        String password = params.get("password");
-        //String userKey = params.get("userKey");
-        if (StringUtils.isEmpty(uid) || StringUtils.isEmpty(password)) {
-            // 必须信息缺一不可,返回注册账号信息缺失
-            return new Message().error(1111, "账户信息缺失");
-        }
         Pattern pattern = Pattern.compile("[a-zA-Z0-9]{5,30}");
         Matcher matcher = pattern.matcher(uid);
         boolean b= matcher.matches();
@@ -253,6 +256,7 @@ public class UserController extends BasicAction{
         }else{
             //返回错误信息
                         return new Message().ok(1009, "注册失败");
+
         }
     }
 

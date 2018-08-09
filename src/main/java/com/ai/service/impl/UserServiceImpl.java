@@ -10,6 +10,7 @@ import com.ai.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -40,8 +41,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AuthUser> getUserList(String appId,String uid) throws DataAccessException {
-        return userMapper.selectUserAndRoleList(appId ,uid);
+    public List<AuthUser> getUserList(String pid,String uid) throws DataAccessException {
+        if(StringUtils.isEmpty(uid)){
+            uid = pid;
+            return userMapper.selectUsers(pid,uid);
+        }else{
+            return userMapper.selectUserAndRoleList(pid ,uid);
+        }
     }
 
     @Override
