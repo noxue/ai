@@ -4,6 +4,7 @@ import com.ai.domain.bo.Template;
 import com.ai.domain.vo.Message;
 import com.ai.service.AccountService;
 import com.ai.service.TemplateService;
+import com.ai.service.UserService;
 import com.ai.util.RequestResponseUtil;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
@@ -38,6 +39,8 @@ public class TemplateController extends BasicAction{
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Autowired
+    private UserService userService;
 
     @ApiOperation(value = "新增Template", notes = "增加一个Template模板信息")
     @ResponseBody
@@ -47,13 +50,29 @@ public class TemplateController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         Template template = new Template();
         String content = params.get("content");
-        String name = params.get("name");
-        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(appId) || StringUtils.isEmpty(content)) {
+        if (StringUtils.isEmpty(content)) {
             // 必须信息缺一不可,返回信息不全
-            return new Message().error(4400, "信息不全");
+            return new Message().error(4400, "模板内容不能为空");
         }
+        String name = params.get("name");
+        if (StringUtils.isEmpty(name)) {
+            // 必须信息缺一不可,返回信息不全
+            return new Message().error(4400, "模板名称不能为空");
+        }
+        String uid = params.get("uid");
+
+        if (StringUtils.isEmpty(uid)) {
+            // 必须信息缺一不可,返回信息不全
+            return new Message().error(4400, "模板拥有人不能为空");
+        }
+
+        if (null == userService.getUserByAppId(uid)) {
+            return new Message().error(4400, "模板拥有人不存在，请确认输入的是正确的登录名");
+        }
+
         template.setUserId(appId);
         template.setName(name);
+        template.setUserId(uid);
         template.setContent(content);
         template.setCreatedAt(new Date());
         if (templateService.registerTemplate(template)) {
@@ -71,13 +90,27 @@ public class TemplateController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         Template template = new Template();
         String content = params.get("content");
-        String name = params.get("name");
-        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(appId) || StringUtils.isEmpty(content)|| !(id>0)) {
+        if (StringUtils.isEmpty(content)) {
             // 必须信息缺一不可,返回信息不全
-            return new Message().error(4404, "信息不全");
+            return new Message().error(4400, "模板内容不能为空");
+        }
+        String name = params.get("name");
+        if (StringUtils.isEmpty(name)) {
+            // 必须信息缺一不可,返回信息不全
+            return new Message().error(4400, "模板名称不能为空");
+        }
+        String uid = params.get("uid");
+
+        if (StringUtils.isEmpty(uid)) {
+            // 必须信息缺一不可,返回信息不全
+            return new Message().error(4400, "模板拥有人不能为空");
+        }
+
+        if (null == userService.getUserByAppId(uid)) {
+            return new Message().error(4400, "模板拥有人不存在，请确认输入的是正确的登录名");
         }
         template.setId(id);
-        template.setUserId(appId);
+        template.setUserId(uid);
         template.setName(name);
         template.setContent(content);
         //修改
@@ -89,6 +122,21 @@ public class TemplateController extends BasicAction{
         }
     }
 
+    @ApiOperation(value = "编辑Template", notes = "Template")
+    @ResponseBody
+    @PostMapping("/{id}/copy")
+    public Message editTemplate(@PathVariable long id){
+        Template template = templateService.getTemplateById(id);
+        if (template == null){
+            return new Message().error(4406, "该模板不存在");
+        }
+        template.setName(template.getName()+" - 复制版本");
+        if (templateService.registerTemplate(template)) {
+            return new Message().ok(0, "success");
+        } else {
+            return new Message().error(4406, "复制模板失败");
+        }
+    }
     @ApiOperation(value = "删除template", notes = "删除template信息")
     @ResponseBody
     @PostMapping("/del")

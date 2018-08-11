@@ -288,6 +288,7 @@ public class UserController extends BasicAction{
         }else{
             return new Message().error(1111, "当前用户无权操作");
         }
+
         //执行更新操作
         if(flag){
             String password = params.get("password");
