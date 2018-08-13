@@ -33,6 +33,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<Task> getStartedTasksByUserId(List<String> userIds) {
+        return taskMapper.selectStartedByIds(userIds);
+    }
+
+    @Override
     public List<Task> getTasksWithStatus(int status) {
         TaskExample example = new TaskExample();
         TaskExample.Criteria cr = example.createCriteria();

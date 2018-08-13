@@ -44,11 +44,11 @@ public class SimController {
     @GetMapping("/sim/{sim_id}/tasks")
     public Message findTaskBySimId(@PathVariable int sim_id){
         if(sim_id<=0){
-            return new Message().error(3107, "缺少参数 id");
+            return new Message().error(1, "缺少参数 id");
         }
         PageInfo<SimUser> SimUserList = simService.findSimUserBySimId(1,1000,sim_id+"");
-        if(SimUserList==null){
-            return new Message().error(3104, "查询失败");
+        if(SimUserList == null){
+            return new Message().error(2, "查询失败");
         }
 
         List<String> ids = new ArrayList<>();
@@ -60,11 +60,17 @@ public class SimController {
         ids.add(simService.getSimById(sim_id).getUserId());
 
         //根据userId获取task集合
-        List<Task> tasks =taskService.findTaskByUserId(ids);
+        List<Task> tasks =taskService.getStartedTasksByUserId(ids);
         if(tasks.size()>0){
+            for (Task t : tasks) {
+                Task t1 = new Task();
+                t1.setId(t.getId());
+                t1.setStatus((byte)3);
+                taskService.editTask(t1);
+            }
             return new Message().ok(0, "success").addData("tasks",tasks);
         } else {
-            return new Message().error(3104, "查询失败");
+            return new Message().error(3, "没有准备好的任务");
         }
     }
 }
