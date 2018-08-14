@@ -49,7 +49,7 @@
     <select id="selectStartedByIds"  resultMap="BaseResultMap">
       select <include refid="Base_Column_List" />
         from task t
-        where (status=2 or status=3) and t.user_id in
+        where (t.status=2 or t.status=3) and t.user_id in
         <foreach collection ="userIds" item="id" open="(" close=")" separator =",">
           #{id}
         </foreach >

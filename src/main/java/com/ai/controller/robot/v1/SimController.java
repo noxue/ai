@@ -63,10 +63,8 @@ public class SimController {
         List<Task> tasks =taskService.getStartedTasksByUserId(ids);
         if(tasks.size()>0){
             for (Task t : tasks) {
-                Task t1 = new Task();
-                t1.setId(t.getId());
-                t1.setStatus((byte)3);
-                taskService.editTask(t1);
+                t.setStatus((byte)3);
+                taskService.editTask(t);
             }
             return new Message().ok(0, "success").addData("tasks",tasks);
         } else {
