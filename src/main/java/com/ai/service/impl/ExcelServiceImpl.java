@@ -87,10 +87,6 @@ public class ExcelServiceImpl implements ExcelService {
             if(Pattern.matches(regex, phone.get(j))){
                 return new Message().error(4001, "请输入正确的手机号码");
             }
-//            String flag = isPhone(phone.get(j));
-//            if(!flag.equals("OK")){
-//                return new Message().error(-1,flag);
-//            }
             user.setMobile(phone.get(j));
             user.setName(name.get(j));
             user.setRemark(remark.get(j));
@@ -105,12 +101,12 @@ public class ExcelServiceImpl implements ExcelService {
             task.setTotal(total);
             task.setUpdateAt(new Date());
             if( taskService.editTask(task)){
-                                return new Message().ok(1,"操作成功");
+                return new Message().ok(1,"操作成功");
             }else{
-                                return new Message().error(1,"操作失败");
+                return new Message().error(1,"操作失败");
             }
         }else{
-                        return new Message().error(1,"操作失败");
+            return new Message().error(1,"操作失败");
         }
     }
 

@@ -94,7 +94,7 @@
      </select>
 
     <select id="countToday" resultMap="BaseResultMap">
-        select t2.* from
+        select t2.time,t2.type from
           task_user t2   left join  task t  on t.id = t2.task_id
         where 1=1 and t.user_id =#{userId} and t2.status = 0
           between  #{staTime} and #{endTime}
