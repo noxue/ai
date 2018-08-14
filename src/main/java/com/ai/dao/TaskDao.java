@@ -12,6 +12,7 @@ public interface TaskDao extends TaskMapper{
     List<Task> selectTaskList(@Param("userId") String appId,@Param("name") String name);
 
     List<Task> selectBatch(@Param("userIds") List<String> userIds);
+    List<Task> selectStartedByIds(@Param("userIds") List<String> userIds);
 
     int getCountTaskToDo(@Param("userId")String userId);
 }

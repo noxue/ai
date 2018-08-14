@@ -33,8 +33,18 @@ public class TaskController {
             return new Message().error(1, "缺少参数 id");
         }
         synchronized(this) {
-            List<TaskUser> taskUserList = taskUserService.getTaskUserAndUpdate(taskId);
             Task task = taskService.getTaskById(taskId);
+
+            // 如果是未开始的任务，就不要获取
+            if (task.getStatus() != 3 ){
+                return new Message().error(2, "任务未开始");
+            } else if (task.getStatus() == 0) {
+                return new Message().error(3, "任务已结束");
+            } else if (task.getStatus() == 4) {
+                return new Message().error(4, "任务已暂停");
+            }
+
+            List<TaskUser> taskUserList = taskUserService.getTaskUserAndUpdate(taskId);
 
             if (taskUserList.size()>0) {
                 task.setCalled(task.getCalled() + taskUserList.size());
@@ -46,7 +56,7 @@ public class TaskController {
             if (taskUserList.size() > 0) {
                 return new Message().ok(0, "success").addData("users", new HashSet<>(taskUserList));
             } else {
-                return new Message().error(2, "没有客户信息");
+                return new Message().error(5, "没有客户信息");
             }
         }
     }

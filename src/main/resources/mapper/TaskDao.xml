@@ -46,6 +46,16 @@
         order by t.test desc
     </select>
 
+    <select id="selectStartedByIds"  resultMap="BaseResultMap">
+      select <include refid="Base_Column_List" />
+        from task t
+        where (t.status=2 or t.status=3) and t.user_id in
+        <foreach collection ="userIds" item="id" open="(" close=")" separator =",">
+          #{id}
+        </foreach >
+        order by t.test desc
+    </select>
+
     <select id="getCountTaskToDo" resultType="java.lang.Integer">
       select count(`status`) from task where user_id=#{userId} and `status`!=0;
     </select>
