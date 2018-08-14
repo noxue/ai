@@ -77,7 +77,7 @@
       where t.user_id=#{userId}
         and t2.`status` = 0
         and t2.called_at  between  #{staTime} and #{endTime}
-        group by t2.called_at,type  order by t2.called_at;
+        group by DATE_FORMAT(t2.called_at,'%Y-%m-%d'),type  order by  t2.called_at;
     </select>
 
     <select id="getCountTaskUserToDo" resultType="java.lang.Integer">

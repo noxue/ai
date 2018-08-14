@@ -85,13 +85,13 @@ public class TaskUserServiceImpl implements TaskUserService {
     @Override
     public List<String> getTaskUserCount(String userId, String staTime, String endTime) {
         if(StringUtils.isEmpty(staTime)||StringUtils.isEmpty(endTime)) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH：mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Calendar now = new GregorianCalendar();
             Date d = new Date();
-            endTime= sdf.format(d);
+            endTime= sdf.format(d)+" 23：59:59" ;
             now.setTime(d);
             now.set(Calendar.DATE, now.get(Calendar.DATE) - 7);
-            staTime = sdf.format(now.getTime());
+            staTime = sdf.format(now.getTime())+" 00：00:00" ;
         }
         return taskUserDao.getCountTaskUser(userId,staTime,endTime);
     }
