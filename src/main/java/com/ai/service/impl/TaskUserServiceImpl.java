@@ -14,7 +14,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Service("TaskUserServicgetCountTodaye")
+@Service
 public class TaskUserServiceImpl implements TaskUserService {
 
     @Autowired
