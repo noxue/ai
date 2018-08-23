@@ -96,6 +96,12 @@
 			<version>${mybatis-generator.version}</version>
 		</dependency>
 
+		<!--微信sdk-->
+		<dependency>
+			<groupId>cn.com.riversoft</groupId>
+			<artifactId>weixin-mp</artifactId>
+			<version>0.9.1</version>
+		</dependency>
 
 		<!-- shiro安全框架 -->
 		<!--<dependency>-->

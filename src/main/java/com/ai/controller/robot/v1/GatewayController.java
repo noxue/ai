@@ -4,7 +4,6 @@ import com.ai.domain.bo.Gateway;
 import com.ai.domain.vo.Message;
 import com.ai.service.GatewayService;
 import com.ai.support.factory.LogTaskFactory;
-import com.ai.support.manager.LogExeManager;
 import com.ai.util.RequestResponseUtil;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
