@@ -155,7 +155,7 @@ public class WXTemplateController {
     public void testSendTemplate(){
         String openId = "oELhlt7Q-lRmLbRsPsaKeVX6pqjg";
         String templateId = "sGy7O4ZbXfzF1suGoCR0Gst1IQNe0df5ewTZy7NaR9g";
-        String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxd1a32e23ee80bf7a&redirect_uri=http%3A%2F%2Fwxtest.gzriver.com%2Fcss%2Fthemes%2Fsmoothness%2Fjquery-ui.min.css&response_type=code&scope=snsapi_userinfo&state=state111#wechat_redirect";
+        String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx74755fbba35c24da&redirect_uri=http%3A%2F%2Fwxtest.gzriver.com%2Fcss%2Fthemes%2Fsmoothness%2Fjquery-ui.min.css&response_type=code&scope=snsapi_userinfo&state=state111#wechat_redirect";
         Map<String, Data> data = new HashMap<>();
         data.put("productType", new Data("商品名", "#173177"));
         data.put("name", new Data("微信某某店某商品", "#173177"));
