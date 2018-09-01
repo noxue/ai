@@ -41,7 +41,7 @@
 
 
         <!--数据库链接地址账号密码-->
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://192.168.1.20:3306/ai" userId="root"
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://192.168.1.22:3306/ai" userId="root"
                         password="root">
         </jdbcConnection>
         <!--不知道做什么用的。。。反正贴上来了~-->
@@ -128,8 +128,11 @@
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
 
-
         <table tableName="user_config" domainObjectName="UserConfig" >
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
+        <table tableName="wechat" domainObjectName="Wechat" >
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
     </context>

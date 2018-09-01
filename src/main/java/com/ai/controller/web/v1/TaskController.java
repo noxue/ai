@@ -3,6 +3,7 @@ package com.ai.controller.web.v1;
 import com.ai.domain.bo.*;
 import com.ai.domain.vo.Message;
 import com.ai.service.*;
+import com.ai.test.test;
 import com.ai.util.RequestResponseUtil;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
@@ -103,6 +104,9 @@ public class TaskController extends BasicAction{
         if(!StringUtils.isEmpty(params.get("num"))){
             task.setThread(Integer.parseInt(params.get("num")));
         }
+
+        task.setFollow(params.get("follows"));
+
         if(!StringUtils.isEmpty(params.get("break"))){
             task.setInterrupt(Integer.parseInt(params.get("break")));
         }
@@ -342,6 +346,22 @@ public class TaskController extends BasicAction{
         Task task = taskService.getTaskById(Long.parseLong(id));
         if (task !=null){
             return new Message().ok(0, "success").addData("task",task);
+        } else {
+            return new Message().error(5023, "查询失败");
+        }
+    }
+
+    @ApiOperation(value = "获取TaskUser", notes = "根据id获取TaskUser信息")
+    @ResponseBody
+    @GetMapping("/user/{id}")
+    public Object selectTaskUserById(@PathVariable int id){
+        if (!(id>0)) {
+            // 必须信息缺一不可,返回信息不全
+            return new Message().error(4407, "id值不合法");
+        }
+        TaskUser taskUser = taskUserService.getTaskUserById(id);
+        if (taskUser !=null){
+            return new Message().ok(0, "success").addData("taskUser",taskUser);
         } else {
             return new Message().error(5023, "查询失败");
         }

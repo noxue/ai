@@ -16,6 +16,7 @@
     <result column="test" jdbcType="BIT" property="test" />
     <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
     <result column="interrupt" jdbcType="INTEGER" property="interrupt" />
+    <result column="follow" jdbcType="VARCHAR" property="follow" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -77,7 +78,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, user_id, template_id, `name`, thread, total, `called`, created_at, start_at, 
-    finish_at, `status`, test, update_at, interrupt
+    finish_at, `status`, test, update_at, interrupt, follow
   </sql>
   <select id="selectByExample" parameterType="com.ai.domain.bo.TaskExample" resultMap="BaseResultMap">
     select
@@ -117,12 +118,12 @@
       thread, total, `called`, 
       created_at, start_at, finish_at, 
       `status`, test, update_at, 
-      interrupt)
+      interrupt, follow)
     values (#{userId,jdbcType=VARCHAR}, #{templateId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
       #{thread,jdbcType=INTEGER}, #{total,jdbcType=INTEGER}, #{called,jdbcType=INTEGER}, 
       #{createdAt,jdbcType=TIMESTAMP}, #{startAt,jdbcType=TIMESTAMP}, #{finishAt,jdbcType=TIMESTAMP}, 
       #{status,jdbcType=TINYINT}, #{test,jdbcType=BIT}, #{updateAt,jdbcType=TIMESTAMP}, 
-      #{interrupt,jdbcType=INTEGER})
+      #{interrupt,jdbcType=INTEGER}, #{follow,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.Task">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -169,6 +170,9 @@
       <if test="interrupt != null">
         interrupt,
       </if>
+      <if test="follow != null">
+        follow,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -209,6 +213,9 @@
       </if>
       <if test="interrupt != null">
         #{interrupt,jdbcType=INTEGER},
+      </if>
+      <if test="follow != null">
+        #{follow,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -263,6 +270,9 @@
       <if test="record.interrupt != null">
         interrupt = #{record.interrupt,jdbcType=INTEGER},
       </if>
+      <if test="record.follow != null">
+        follow = #{record.follow,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -283,7 +293,8 @@
       `status` = #{record.status,jdbcType=TINYINT},
       test = #{record.test,jdbcType=BIT},
       update_at = #{record.updateAt,jdbcType=TIMESTAMP},
-      interrupt = #{record.interrupt,jdbcType=INTEGER}
+      interrupt = #{record.interrupt,jdbcType=INTEGER},
+      follow = #{record.follow,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -330,6 +341,9 @@
       <if test="interrupt != null">
         interrupt = #{interrupt,jdbcType=INTEGER},
       </if>
+      <if test="follow != null">
+        follow = #{follow,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -347,7 +361,8 @@
       `status` = #{status,jdbcType=TINYINT},
       test = #{test,jdbcType=BIT},
       update_at = #{updateAt,jdbcType=TIMESTAMP},
-      interrupt = #{interrupt,jdbcType=INTEGER}
+      interrupt = #{interrupt,jdbcType=INTEGER},
+      follow = #{follow,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
