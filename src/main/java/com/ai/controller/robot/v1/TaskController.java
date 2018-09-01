@@ -116,6 +116,7 @@ public class TaskController {
                         atten.add(task.getName());
                         atten.add(taskUser.getMobile());
                         atten.add(replaceType(follow[i]));
+                        atten.add(taskUser.getId().toString());
                     }
                 }
                 List<String> openids = wechatService.getOpenid(task.getUserId());

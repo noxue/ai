@@ -68,10 +68,10 @@ public class WechatServiceImpl implements WechatService {
             String accessToken = redisTemplate.opsForValue().get("access_token");
             System.out.println("accessToken1:" + accessToken);
             //调用发送微信消息给用户的接口
-            String result = sendWechatMsgToUser(openId,"xMO4W9kvGHay4kmCyj7CSGANkfuwxqelN1JTftndusw", "www.baidu.com",
+            String result = sendWechatMsgToUser(openId,"xMO4W9kvGHay4kmCyj7CSGANkfuwxqelN1JTftndusw", "http://crm.ai-xg.com/#/weChat/taskDetail?id="+atten.get(3),
                     "#000000", jsonObject , accessToken);
             if(!"success".equals(result)){
-                sendWechatMsgToUser(openId,"xMO4W9kvGHay4kmCyj7CSGANkfuwxqelN1JTftndusw", "www.baidu.com",
+                sendWechatMsgToUser(openId,"xMO4W9kvGHay4kmCyj7CSGANkfuwxqelN1JTftndusw", "http://crm.ai-xg.com/#/weChat/taskDetail?id="+atten.get(3),
                         "#000000", jsonObject , getAccessToken());
             }
         //}
