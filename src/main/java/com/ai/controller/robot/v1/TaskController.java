@@ -5,11 +5,15 @@ import com.ai.domain.bo.TaskUser;
 import com.ai.domain.vo.Message;
 import com.ai.service.TaskService;
 import com.ai.service.TaskUserService;
+import com.ai.service.wx.WechatService;
+import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -21,9 +25,11 @@ public class TaskController {
     @Autowired
     private TaskUserService taskUserService;
 
-
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private WechatService wechatService;
 
     @ApiOperation(value = "分页获取taskUser", notes = "根据id查询taskUser信息")
     @ResponseBody
@@ -87,18 +93,57 @@ public class TaskController {
             return new Message().error(1, "缺少参数 id");
         }
 
-        TaskUser taskUser = new TaskUser();
+        TaskUser taskUser = taskUserService.getTaskUserById(userId);
         taskUser.setId(userId);
-        taskUser.setContent(report);
         taskUser.setStatus((byte)0);
         taskUser.setCalledAt(new Date());
         taskUser.setTime(time);
         taskUser.setType((byte)type);
+        taskUser.setContent(report);
 
         if(taskUserService.editTaskUser(taskUser)){
+
+            Task task = taskService.getTaskById(taskUser.getTaskId());
+            String follows = task.getFollow();
+            if(StringUtils.isEmpty(follows)){
+                return new Message().ok(0, "success");
+            }else{
+                JSONObject jsStr = JSONObject.parseObject(report);
+                String[] follow=follows.split(",");
+                List<String> atten = new ArrayList<>();
+                for(int i=0,len=follow.length;i<len;i++){
+                    if(follow[i].equals(jsStr.get("type"))){
+                        atten.add(task.getName());
+                        atten.add(taskUser.getMobile());
+                        atten.add(replaceType(follow[i]));
+                    }
+                }
+                List<String> openids = wechatService.getOpenid(task.getUserId());
+                for (int i = 0; i<openids.size();i++){
+                    wechatService.senMsg(openids.get(i),atten);
+                }
+            }
             return new Message().ok(0, "success");
         } else {
             return new Message().error(2, "添加失败");
         }
+    }
+
+    public String replaceType(String type){
+        String retype = "";
+        if("5".equals(type)){
+            retype = "A类";
+        }else if("6".equals(type)){
+            retype = "B类";
+        }else if("7".equals(type)){
+            retype = "C类";
+        }else if("8".equals(type)){
+            retype = "D类";
+        }else if("9".equals(type)){
+            retype = "E类";
+        }else if("10".equals(type)){
+            retype = "F类";
+        }
+        return retype;
     }
 }

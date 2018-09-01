@@ -12,10 +12,10 @@ public interface WechatService {
 
     List<String> getOpenid(String uid);
 
-    void senMsg(String openId);
+    void senMsg(String openId,List<String> atten);
 
     String getAccessToken();
 
-    public String sendWechatMsgToUser(String touser, String templatId, String clickurl, String topcolor, JSONObject data , String accessToken);
+    String sendWechatMsgToUser(String touser, String templatId, String clickurl, String topcolor, JSONObject data , String accessToken);
 
 }

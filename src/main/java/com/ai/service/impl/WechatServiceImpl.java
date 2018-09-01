@@ -47,17 +47,17 @@ public class WechatServiceImpl implements WechatService {
     }
 
     @Override
-    public void senMsg(String openId) {
+    public void senMsg(String openId,List<String> atten) {
         //用户是否订阅该公众号标识 (0代表此用户没有关注该公众号 1表示关注了该公众号)
         //Integer  state= WX_UserUtil.subscribeState(openId);
         // 对关注了服务号的用户进行推送模板消息
         //if(state==1){
             Map<String,TemplateData> param = new HashMap<>();
             //param.put("first",new TemplateData("以下是我们根据您关注的用户类型而筛选的意向客户","#696969"));
-            param.put("keyword1",new TemplateData("今晚打老虎","#286bb2"));
-            param.put("keyword2",new TemplateData("15252331260","#286bb2"));
+            param.put("keyword1",new TemplateData(atten.get(0),"#286bb2"));
+            param.put("keyword2",new TemplateData(atten.get(1),"#286bb2"));
             param.put("keyword3",new TemplateData(new SimpleDateFormat("HH时mm分ss秒").format(new Date()),"#286bb2"));
-            param.put("keyword4",new TemplateData("A类","#286bb2"));
+            param.put("keyword4",new TemplateData(atten.get(2),"#286bb2"));
             //param.put("remark",new TemplateData("点我查看更多详情,如有疑问请联系110","#696969"));
 
             //注册的微信-模板Id

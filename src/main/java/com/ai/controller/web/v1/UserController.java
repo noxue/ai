@@ -396,15 +396,15 @@ public class UserController extends BasicAction{
         }
     }
 
-    @ApiOperation(value = "发送微信模板信息", notes = "群发模板消息")
-    @PostMapping("/sendToUser")
-    public void sendToUser(HttpServletRequest request, HttpServletResponse response){
-        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-        String uid = params.get("uid");
-        List<String> openids = wechatService.getOpenid(uid);
-        for (int i = 0; i<openids.size();i++){
-            wechatService.senMsg(openids.get(i));
-        }
-    }
+//    @ApiOperation(value = "发送微信模板信息", notes = "群发模板消息")
+//    @PostMapping("/sendToUser")
+//    public void sendToUser(HttpServletRequest request, HttpServletResponse response){
+//        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+//        String uid = params.get("uid");
+//        List<String> openids = wechatService.getOpenid(uid);
+//        for (int i = 0; i<openids.size();i++){
+//            wechatService.senMsg(openids.get(i));
+//        }
+//    }
 
 }
