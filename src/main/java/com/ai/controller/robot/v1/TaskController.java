@@ -111,17 +111,20 @@ public class TaskController {
                 JSONObject jsStr = JSONObject.parseObject(report);
                 String[] follow=follows.split(",");
                 List<String> atten = new ArrayList<>();
+                String userType = jsStr.get("type")+"";
                 for(int i=0,len=follow.length;i<len;i++){
-                    if(follow[i].equals(jsStr.get("type"))){
+                    if(follow[i].equals(userType)){
                         atten.add(task.getName());
                         atten.add(taskUser.getMobile());
                         atten.add(replaceType(follow[i]));
                         atten.add(taskUser.getId().toString());
                     }
                 }
-                List<String> openids = wechatService.getOpenid(task.getUserId());
-                for (int i = 0; i<openids.size();i++){
-                    wechatService.senMsg(openids.get(i),atten);
+                if(atten.size()>0){
+                    List<String> openids = wechatService.getOpenid(task.getUserId());
+                    for (int i = 0; i<openids.size();i++){
+                        wechatService.senMsg(openids.get(i),atten);
+                    }
                 }
             }
             return new Message().ok(0, "success");
