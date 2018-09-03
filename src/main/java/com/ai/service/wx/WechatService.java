@@ -19,5 +19,6 @@ public interface WechatService {
     String sendWechatMsgToUser(String touser, String templatId, String clickurl, String topcolor, JSONObject data , String accessToken);
 
     // boolean unBanding(String openid);
+    boolean checkRepeat(String uid, String openid);
 
 }

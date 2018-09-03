@@ -18,4 +18,12 @@
     where uid = #{uid,jdbcType=VARCHAR}
   </select>
 
+  <select id="getByOpenid"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from wechat
+    where uid = #{uid}
+    AND openid = #{openid}
+  </select>
+
 </mapper>

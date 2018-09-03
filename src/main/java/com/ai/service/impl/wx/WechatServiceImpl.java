@@ -28,6 +28,16 @@ public class WechatServiceImpl implements WechatService {
     @Autowired
     private WechatConfig wechatConfig;
 
+    @Override
+    public boolean checkRepeat(String uid, String openid) {
+        Wechat wechat = wechatDao.getByOpenid(uid,openid);
+        if(wechat == null){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     @Autowired
     private StringRedisTemplate redisTemplate;
 

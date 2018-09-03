@@ -386,6 +386,13 @@ public class UserController extends BasicAction{
         if(StringUtils.isEmpty(uid)|| StringUtils.isEmpty(openid) ){
             return new Message().error(1116, "信息缺失");
         }
+        if("undefined".equals(openid)){
+            return new Message().error(1116, "请在微信中使用,谢谢");
+        }
+        if(!wechatService.checkRepeat(uid,openid)){
+            return new Message().error(1118, "您已绑定成功，请勿重复绑定");
+        }
+
         Wechat wechat =  new Wechat();
         wechat.setUid(uid);
         wechat.setOpenid(openid);
@@ -396,15 +403,20 @@ public class UserController extends BasicAction{
         }
     }
 
-//    @ApiOperation(value = "发送微信模板信息", notes = "群发模板消息")
-//    @PostMapping("/sendToUser")
-//    public void sendToUser(HttpServletRequest request, HttpServletResponse response){
-//        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
-//        String uid = params.get("uid");
-//        List<String> openids = wechatService.getOpenid(uid);
-//        for (int i = 0; i<openids.size();i++){
-//            wechatService.senMsg(openids.get(i));
-//        }
-//    }
+    @ApiOperation(value = "发送微信模板信息", notes = "群发模板消息")
+    @PostMapping("/sendToUser")
+    public void sendToUser(HttpServletRequest request, HttpServletResponse response){
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String uid = params.get("uid");
+        List<String> openids = wechatService.getOpenid(uid);
+        List<String> atten =  new ArrayList<>();
+        atten.add("测试1");
+        atten.add("测试2");
+        atten.add("测试3");
+        atten.add("测试4");
+        for (int i = 0; i<openids.size();i++){
+            wechatService.senMsg(openids.get(i),atten);
+        }
+    }
 
 }

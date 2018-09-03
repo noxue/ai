@@ -18,7 +18,7 @@
 1115: 用户不可以删除自己
 1116：openid或uid为空
 1117：wechatService.isBanding(wechat)执行失败
-
+1118：您已绑定成功，请勿重复绑定
 
 ...  
 
