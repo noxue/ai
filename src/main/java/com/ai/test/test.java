@@ -32,10 +32,10 @@ public class test {
 //		cbtn2.setType("click");
 //		cbtn2.setKey("KEY_MUSIC");
 
-        ViewButton vbtn = new ViewButton();
-        vbtn.setName("百度搜索");
-        vbtn.setType("view");
-        vbtn.setUrl("http://www.baidu.com/");
+//        ViewButton vbtn = new ViewButton();
+//        vbtn.setName("百度搜索");
+//        vbtn.setType("view");
+//        vbtn.setUrl("http://www.baidu.com/");
 
 //		ComplexButton btn = new ComplexButton();
 //		btn.setName("菜单");
@@ -43,8 +43,8 @@ public class test {
 
         //菜单对象
         Menu menu = new Menu();
-        menu.setButton(new BaseButton[]{cbtn1,vbtn});
-
+//        menu.setButton(new BaseButton[]{cbtn1,vbtn});
+        menu.setButton(new BaseButton[]{cbtn1});
         //将Java对象转换成json字符串      JSONObject.fromObject(menu);//将字符串转换成Java对象
         String json = JSONObject.fromObject(menu).toString();
 //		System.out.println(json);

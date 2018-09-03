@@ -38,6 +38,23 @@ public class UserContorller {
         response.sendRedirect("http://crm.ai-xg.com/#/weChat?contNo="+openid);
     }
 
+    @ApiOperation(value = "解绑", notes = "微信返回访问的地址")
+    @ResponseBody
+    @RequestMapping(value = "/unBanding", method = {RequestMethod.GET, RequestMethod.POST})
+    public void unBanding(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        request.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("utf-8");
+        //获取code
+        String code = request.getParameter(" code");
+        String requestUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
 
+        requestUrl = requestUrl.replace("APPID", wechatConfig.getAppId());
+        requestUrl = requestUrl.replace("SECRET",wechatConfig.getAppSecret());
+        requestUrl = requestUrl.replace("CODE", code);
+        JSONObject jsonObject = WX_HttpsUtil.httpsRequest(requestUrl,"GET",null);
+        String openid = jsonObject.getString("openid");
+
+    }
 
 }

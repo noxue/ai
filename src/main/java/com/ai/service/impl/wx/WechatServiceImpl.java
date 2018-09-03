@@ -1,4 +1,4 @@
-package com.ai.service.impl;
+package com.ai.service.impl.wx;
 
 import com.ai.dao.WechatDao;
 import com.ai.domain.bo.Wechat;
@@ -56,7 +56,7 @@ public class WechatServiceImpl implements WechatService {
             //param.put("first",new TemplateData("以下是我们根据您关注的用户类型而筛选的意向客户","#696969"));
             param.put("keyword1",new TemplateData(atten.get(0),"#286bb2"));
             param.put("keyword2",new TemplateData(atten.get(1),"#286bb2"));
-            param.put("keyword3",new TemplateData(new SimpleDateFormat("HH时mm分ss秒").format(new Date()),"#286bb2"));
+            param.put("keyword3",new TemplateData(new SimpleDateFormat("HH:mm:ss").format(new Date()),"#286bb2"));
             param.put("keyword4",new TemplateData(atten.get(2),"#286bb2"));
             //param.put("remark",new TemplateData("点我查看更多详情,如有疑问请联系110","#696969"));
 
