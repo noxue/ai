@@ -118,7 +118,7 @@ public class ExcelServiceImpl implements ExcelService {
             for (int i = 0; i < result.length; i++) {
                 String[] arrays = new String[8];
                 arrays[0] = result[i].getName();
-                arrays[1] = result[i].getMobile().toString();
+                arrays[1] = result[i].getMobile()+"";
                 if (result[i].getStatus().toString().equals("0")) {
                     arrays[2] = "通话完毕";
                 } else if (result[i].getStatus().toString().equals("1")) {
@@ -126,14 +126,14 @@ public class ExcelServiceImpl implements ExcelService {
                 } else if (result[i].getStatus().toString().equals("2")) {
                     arrays[2] = "任务被客户端获取";
                 }
-                arrays[3] = result[i].getType().toString();
+                arrays[3] = replaceType(result[i].getType().toString());
                 arrays[4] = result[i].getRemark().toString();
                 if (result[i].getCalledAt() != null) {
                     arrays[5] = sdf.format(result[i].getCalledAt());
                 } else {
                     arrays[5] = "";
                 }
-                arrays[6] = result[i].getTime().toString();
+                arrays[6] = result[i].getTime().toString()+"s";
                 if (result[i].getShare()) {
                     arrays[7] = "公开";
                 } else {
@@ -143,5 +143,24 @@ public class ExcelServiceImpl implements ExcelService {
             }
         }
         return listArray;
+    }
+    public String replaceType(String type){
+        String retype = "";
+        if("5".equals(type)){
+            retype = "A类";
+        }else if("6".equals(type)){
+            retype = "B类";
+        }else if("7".equals(type)){
+            retype = "C类";
+        }else if("8".equals(type)){
+            retype = "D类";
+        }else if("9".equals(type)){
+            retype = "E类";
+        }else if("10".equals(type)){
+            retype = "F类";
+        }else{
+            retype = "未分类";
+        }
+        return retype;
     }
 }

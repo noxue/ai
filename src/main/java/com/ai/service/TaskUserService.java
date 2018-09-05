@@ -23,8 +23,11 @@ public interface TaskUserService {
 
     //批量插入
     boolean insertTaskUserList (List<TaskUser> list);
-    //导出
+    //导出 1.0
     TaskUser[] taskUserList(String appId,String task_id);
+    //导出 2.0
+    TaskUser[] taskUserList(String appId,String task_id ,String name,String type,String share,String status);
+
 
     List<String> getTaskUserCount(String userId ,String staTime,String endTime);
 

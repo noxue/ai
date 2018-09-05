@@ -454,7 +454,11 @@ public class TaskController extends BasicAction{
         if (StringUtils.isEmpty(taskId)) {
             return new Message().error(5021, "缺少信息");
         }
-        TaskUser[] result = taskUserService.taskUserList(appId,taskId);
+        String status  =params.get("status");
+        String share =params.get("share");
+        String type  =params.get("type");
+        String name  =params.get("name");
+        TaskUser[] result = taskUserService.taskUserList(appId,taskId,name,type,share,status);
         List<String[]> listArray = excelService.downloadExcel(result);
         // 指定允许其他域名访问    // 响应类型
         response.setHeader("Access-Control-Allow-Origin", "*");

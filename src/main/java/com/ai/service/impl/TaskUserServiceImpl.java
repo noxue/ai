@@ -6,6 +6,7 @@ import com.ai.domain.bo.TaskUserExample;
 import com.ai.service.TaskUserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Case;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -80,6 +81,11 @@ public class TaskUserServiceImpl implements TaskUserService {
     @Override
     public TaskUser[] taskUserList(String user_id ,String task_id) {
         return taskUserDao.getAllTaskUsers(user_id ,Integer.parseInt(task_id));
+    }
+
+    @Override
+    public TaskUser[] taskUserList(String userId, String taskId, String name, String type, String share, String status) {
+        return taskUserDao.getTaskUserListByConditions(userId,taskId,name,type,share,status);
     }
 
     @Override

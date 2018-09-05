@@ -23,7 +23,6 @@
     content
   </sql>
   <select id="selectTaskUserListByConditions"  resultMap="BaseResultMap">
-
     select u.* from task_user u
     left join task t on u.task_id = t.id
     where 1=1
@@ -45,6 +44,29 @@
     </if>
     order by u.called_at desc
   </select>
+
+    <select id="getTaskUserListByConditions"  resultMap="BaseResultMap">
+        select u.* from task_user u
+        left join task t on u.task_id = t.id
+        where 1=1
+        and  u.task_id = #{taskId}
+        <if test="userId != null and userId != ''">
+            AND t.user_id =  #{userId}
+        </if>
+        <if test="name != null and name != ''">
+            AND u.`name`  LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <if test="type != null and type != ''">
+            AND u.`type` = #{type}
+        </if>
+        <if test="share != null and share != ''">
+            AND u.`share` = #{share}
+        </if>
+        <if test="status != null and status != ''">
+            AND u.`status` = #{status}
+        </if>
+        order by u.called_at desc
+    </select>
 
     <select id="getAllTaskUsers" resultMap="BaseResultMap">
         select u.* from task_user u
