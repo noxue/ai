@@ -155,5 +155,5 @@ spring:
 # 微信公众号
 
 wechat:
-    AppId: wx354bcb423c2dd062
-    AppSecret: 0801246c4cb5126b633234700763165e
+    AppId: wx5cca7d43b7351114
+    AppSecret: adce147722dbe4dbe259adf3c6f8c464

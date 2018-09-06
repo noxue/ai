@@ -63,11 +63,11 @@ public class WechatServiceImpl implements WechatService {
         // 对关注了服务号的用户进行推送模板消息
         //if(state==1){
             Map<String,TemplateData> param = new HashMap<>();
-            //param.put("first",new TemplateData("以下是我们根据您关注的用户类型而筛选的意向客户","#696969"));
+            param.put("first",new TemplateData("以下是我们根据您关注的用户类型而筛选的意向客户","#286bb2"));
             param.put("keyword1",new TemplateData(atten.get(0),"#286bb2"));
             param.put("keyword2",new TemplateData(atten.get(1),"#286bb2"));
             param.put("keyword3",new TemplateData(new SimpleDateFormat("HH:mm:ss").format(new Date()),"#286bb2"));
-            param.put("keyword4",new TemplateData(atten.get(2),"#286bb2"));
+            param.put("remark",new TemplateData(atten.get(2),"#286bb2"));
             //param.put("remark",new TemplateData("点我查看更多详情,如有疑问请联系110","#696969"));
 
             //注册的微信-模板Id
@@ -78,10 +78,10 @@ public class WechatServiceImpl implements WechatService {
             String accessToken = redisTemplate.opsForValue().get("access_token");
             System.out.println("accessToken1:" + accessToken);
             //调用发送微信消息给用户的接口
-            String result = sendWechatMsgToUser(openId,"xMO4W9kvGHay4kmCyj7CSGANkfuwxqelN1JTftndusw", "http://crm.ai-xg.com/#/weChat/taskDetail?id="+atten.get(3),
+            String result = sendWechatMsgToUser(openId,"zDaksq1-ltwfQoO0NiwKGWzGrWB4unaNhBEOCHFCMJ0", "http://crm.ai-xg.com/#/weChat/taskDetail?id="+atten.get(3),
                     "#000000", jsonObject , accessToken);
             if(!"success".equals(result)){
-                sendWechatMsgToUser(openId,"xMO4W9kvGHay4kmCyj7CSGANkfuwxqelN1JTftndusw", "http://crm.ai-xg.com/#/weChat/taskDetail?id="+atten.get(3),
+                sendWechatMsgToUser(openId,"zDaksq1-ltwfQoO0NiwKGWzGrWB4unaNhBEOCHFCMJ0", "http://crm.ai-xg.com/#/weChat/taskDetail?id="+atten.get(3),
                         "#000000", jsonObject , getAccessToken());
             }
         //}
