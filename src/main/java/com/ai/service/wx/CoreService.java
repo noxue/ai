@@ -32,33 +32,34 @@ public class CoreService {
 			
 			//判断：对不同的消息回复不同的内容
 			//文本消息
-			if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)){
-//				tm.setContent("点击<a href=\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf23b20ca38223427&redirect_uri=http%3A%2F%2Fcisscool.imwork.net%2Fwx219%2FoauthServlet&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect\">获取基本信息</a>");
-				//tm.setContent("点击<a href=\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf23b20ca38223427&redirect_uri=http%3A%2F%2Fwx.cisscool.cn%2Fwx219%2FoauthServlet&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect\">获取基本信息</a>");
-			}
-			//图片消息
-			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)){
-//				String imageUrl = requestMap.get("PicUrl");
-//				tm.setContent(FacePlusPlusUtil.detectFace(imageUrl));
-			}
-			//链接消息
-			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_LIKE)){
-				//tm.setContent("您发送的是链接消息！");
-			}
-			//地理位置消息
-			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_LOCATION)){
-				//tm.setContent("您发送的是地理位置消息！");
-			}
-			//视频消息
-			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VIDEO)){
-				//tm.setContent("您发送的是视频消息！");
-			}
-			//语音消息
-			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VOICE)){
-				//tm.setContent("您发送的是语音消息！");
-			}
-			//事件
-			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_EVENT)){
+//			if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)){
+////				tm.setContent("点击<a href=\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf23b20ca38223427&redirect_uri=http%3A%2F%2Fcisscool.imwork.net%2Fwx219%2FoauthServlet&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect\">获取基本信息</a>");
+//				//tm.setContent("点击<a href=\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf23b20ca38223427&redirect_uri=http%3A%2F%2Fwx.cisscool.cn%2Fwx219%2FoauthServlet&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect\">获取基本信息</a>");
+//			}
+//			//图片消息
+//			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)){
+////				String imageUrl = requestMap.get("PicUrl");
+////				tm.setContent(FacePlusPlusUtil.detectFace(imageUrl));
+//			}
+//			//链接消息
+//			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_LIKE)){
+//				//tm.setContent("您发送的是链接消息！");
+//			}
+//			//地理位置消息
+//			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_LOCATION)){
+//				//tm.setContent("您发送的是地理位置消息！");
+//			}
+//			//视频消息
+//			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VIDEO)){
+//				//tm.setContent("您发送的是视频消息！");
+//			}
+//			//语音消息
+//			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VOICE)){
+//				//tm.setContent("您发送的是语音消息！");
+//			}
+//			//事件
+//			else
+				if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_EVENT)){
 				//事件类型
 				String eventType = requestMap.get("Event");
 				//关注事件
