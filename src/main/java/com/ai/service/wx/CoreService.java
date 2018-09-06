@@ -57,18 +57,20 @@ public class CoreService {
 //			else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VOICE)){
 //				//tm.setContent("您发送的是语音消息！");
 //			}
-//			//事件
-//			else
-				if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_EVENT)){
+			//事件
+			//else
+			if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_EVENT)){
 				//事件类型
 				String eventType = requestMap.get("Event");
 				//关注事件
 				if(eventType.equals(MessageUtil.EVENT_TYPE_SUBSCRIBE)){
 					tm.setContent("欢迎关注，希高智能！");
 				}
-				else if(eventType.equals(MessageUtil.EVENT_TYPE_UNSUBSCRIBE)){
-					tm.setContent("");
-				}
+//				else if(eventType.equals(MessageUtil.EVENT_TYPE_UNSUBSCRIBE)){
+//					tm.setContent("");
+//				}
+			}else{
+
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
