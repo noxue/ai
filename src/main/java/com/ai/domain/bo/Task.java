@@ -31,6 +31,8 @@ public class Task {
 
     private Integer interrupt;
 
+    private String follow;
+
     public Long getId() {
         return id;
     }
@@ -141,5 +143,13 @@ public class Task {
 
     public void setInterrupt(Integer interrupt) {
         this.interrupt = interrupt;
+    }
+
+    public String getFollow() {
+        return follow;
+    }
+
+    public void setFollow(String follow) {
+        this.follow = follow == null ? null : follow.trim();
     }
 }

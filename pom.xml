@@ -96,6 +96,24 @@
 			<version>${mybatis-generator.version}</version>
 		</dependency>
 
+		<!--微信sdk-->
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.9</version>
+		</dependency>
+
 
 		<!-- shiro安全框架 -->
 		<!--<dependency>-->
@@ -203,7 +221,6 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.15</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>

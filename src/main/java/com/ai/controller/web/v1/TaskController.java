@@ -3,6 +3,7 @@ package com.ai.controller.web.v1;
 import com.ai.domain.bo.*;
 import com.ai.domain.vo.Message;
 import com.ai.service.*;
+import com.ai.test.test;
 import com.ai.util.RequestResponseUtil;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -103,6 +105,9 @@ public class TaskController extends BasicAction{
         if(!StringUtils.isEmpty(params.get("num"))){
             task.setThread(Integer.parseInt(params.get("num")));
         }
+
+        task.setFollow(params.get("follows"));
+
         if(!StringUtils.isEmpty(params.get("break"))){
             task.setInterrupt(Integer.parseInt(params.get("break")));
         }
@@ -330,6 +335,22 @@ public class TaskController extends BasicAction{
         }
     }
 
+    @ApiOperation(value = "获取TaskUser", notes = "根据id获取TaskUser信息")
+    @ResponseBody
+    @GetMapping("/user/{id}")
+    public Object selectTaskUserById(@PathVariable int id){
+        if (!(id>0)) {
+            // 必须信息缺一不可,返回信息不全
+            return new Message().error(4407, "id值不合法");
+        }
+        TaskUser taskUser = taskUserService.getTaskUserById(id);
+        if (taskUser !=null){
+            return new Message().ok(0, "success").addData("taskUser",taskUser);
+        } else {
+            return new Message().error(5023, "查询失败");
+        }
+    }
+
     @ApiOperation(value = "获取Task列表信息", notes = "根据appId分页获取所有Task信息")
     @ResponseBody
     @PostMapping("/taskList")
@@ -404,10 +425,10 @@ public class TaskController extends BasicAction{
         return excelService.importExcel(Integer.parseInt(id),file);
     }
 
-    @ApiOperation(value = "导出excel", notes = "根据当前的用户信息按照规定的模板导出execl信息")
+    @ApiOperation(value = "导出excel，版本2", notes = "步骤1：将获取到的条件信息存入redis")
     @ResponseBody
-    @PostMapping("/exp")
-    public Message ExportExcel(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @PostMapping("/expExc")
+    public Message ExportExcelSecond(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String appId = request.getHeader("appId");
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         String taskId = params.get("taskId");
@@ -417,23 +438,55 @@ public class TaskController extends BasicAction{
         if (StringUtils.isEmpty(taskId)) {
             return new Message().error(5021, "缺少信息");
         }
-        TaskUser[] result = taskUserService.taskUserList(appId,taskId);
-        List<String[]> listArray = excelService.downloadExcel(result);
-        // 指定允许其他域名访问    // 响应类型
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "POST");
-        // 响应头设置
-        response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
-        String data = "";
-        data += "客户姓名\t客户电话\t呼叫状态\t客户分类\t分类原因\t呼叫时间\t通话时间\t跟进状态\r\n";
-        //填充数据
-        for (int i = 0; i < listArray.size(); i++) {
-            for (int j = 0; j < listArray.get(i).length; j++) {
-                data += listArray.get(i)[j] + "\t";
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        String form = appId +","+taskId+","+
+                params.get("name") +","+
+                params.get("type") +"," +
+                params.get("share")+","+
+                params.get("status");
+        redisTemplate.opsForValue().set(uuid,form);
+        // redisTemplate.expire(uuid,60L,null);
+        return new Message().ok(0,"success").addData("task",uuid);
+    }
+
+    @ApiOperation(value = "导出excel，版本2", notes = "步骤2：根据uuid查询缓存中的条件信息")
+    @ResponseBody
+    @GetMapping("/{id}")
+    public void expExc2(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id ) throws Exception {
+        response.setContentType("application/force-download");
+        response.setCharacterEncoding("gbk");
+        response.setContentType("application/octet-stream");//告诉浏览器输出内容为流
+        response.setHeader("Content-Disposition","attachment; filename=detail.csv");
+        PrintWriter out = response.getWriter();//放在第一句是会出现乱码
+
+        String condition= redisTemplate.opsForValue().get(id);
+        String form[] = new String[6];
+        if(!StringUtils.isEmpty( condition)){
+            String[] strs=condition.split(",");
+            for(int i=0,len=strs.length;i<len;i++){
+                form[i] = strs[i].toString();
             }
-            data += "\r\n";
         }
-        return new Message().ok(0,"success").addData("task",new String(Base64.encodeBase64(data.getBytes("gbk"))));
+
+        String data = "客户姓名,客户电话,呼叫状态,客户分类,分类原因,呼叫时间,通话时间,跟进状态\n";
+        long total = 0;
+        int sum = 0;
+        do{
+            PageInfo<TaskUser> taskUserList = taskUserService.exportTaskUser(sum++,500,
+                    form[0],form[1],form[2],form[3],form[4],form[5]);
+            total = taskUserList.getTotal();
+            List<String[]>  listArray = excelService.formatList(taskUserList.getList());
+            for (int i = 0; i < listArray.size(); i++) {
+                for (int j = 0; j < listArray.get(i).length; j++) {
+                    data += listArray.get(i)[j] + ",";
+                }
+                out.print(data);
+                data = "\r\n";
+            }
+        }
+        while (sum*500 < total);
+        out.flush();
+        out.close();
     }
 
     @ApiOperation(value = "删除任务", notes = "删除当前选中的任务")

@@ -2,19 +2,19 @@ package com.ai.controller.web.v1;
 
 import com.ai.domain.bo.AuthRole;
 import com.ai.domain.bo.AuthUserRole;
+import com.ai.domain.bo.Wechat;
 import com.ai.domain.vo.Account;
 import com.ai.service.AccountService;
 import com.ai.service.RoleService;
+import com.ai.service.wx.WechatService;
 import com.ai.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ai.domain.bo.AuthUser;
 import com.ai.domain.vo.Message;
 import com.ai.service.UserService;
-import com.ai.support.factory.LogTaskFactory;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +23,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,6 +49,11 @@ public class UserController extends BasicAction{
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private WechatService wechatService;
+
+
 
 
     @ApiOperation(value = "获取对应用户角色",notes = "GET根据用户的appId获取对应用户的角色")
@@ -251,16 +251,16 @@ public class UserController extends BasicAction{
                     return new Message().ok(1010, "注册失败");
                 }
             } else {
-                                return new Message().ok(1111, "注册失败");
+                return new Message().ok(1111, "注册失败");
             }
         }else{
             //返回错误信息
-                        return new Message().ok(1009, "注册失败");
+            return new Message().ok(1009, "注册失败");
 
         }
     }
 
-    @ApiOperation(value = "添加用户", notes = "添加用户")
+    @ApiOperation(value = "获取用户信息成功", notes = "获取用户信息成功")
     @PostMapping("/roleList")
     public Message roleList(HttpServletRequest request, HttpServletResponse response) {
         String appId = request.getHeader("appId");
@@ -269,7 +269,7 @@ public class UserController extends BasicAction{
         if(roleList!=null){
             return new Message().ok(1112, "获取用户信息成功").addData("roleList",roleList);
         }else {
-            return new Message().error(1113, "注册失败");
+            return new Message().error(1113, "操作失败");
         }
     }
 
@@ -334,14 +334,14 @@ public class UserController extends BasicAction{
             authUser.setStatus((byte) 1);
             //插入用户表
             if (accountService.editAuthUser(authUser)) {
-                                return new Message().ok(1010, "编辑成功");
+                return new Message().ok(1010, "编辑成功");
             } else {
-                                return new Message().error(1111, "编辑失败");
+                return new Message().error(1111, "编辑失败");
             }
 
         }else{
             //返回错误信息
-                        return new Message().error(1009, "编辑失败");
+            return new Message().error(1009, "编辑失败");
         }
     }
 
@@ -376,5 +376,47 @@ public class UserController extends BasicAction{
         }
     }
 
+
+    @ApiOperation(value = "微信接口", notes = "用于绑定openid和uid用")
+    @PostMapping("/banding")
+    public Message bandingWX(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String uid = params.get("username");
+        String openid = params.get("openid");
+        if(StringUtils.isEmpty(uid)|| StringUtils.isEmpty(openid) ){
+            return new Message().error(1116, "信息缺失");
+        }
+        if("undefined".equals(openid)){
+            return new Message().error(1116, "请在微信中使用,谢谢");
+        }
+        if(!wechatService.checkRepeat(uid,openid)){
+            return new Message().error(1118, "您已绑定成功，请勿重复绑定");
+        }
+
+        Wechat wechat =  new Wechat();
+        wechat.setUid(uid);
+        wechat.setOpenid(openid);
+        if(wechatService.isBanding(wechat)){
+            return new Message().ok(0, "success");
+        }else {
+            return new Message().error(1117, "服务器暂忙，请稍后重试");
+        }
+    }
+
+    @ApiOperation(value = "发送微信模板信息", notes = "群发模板消息")
+    @PostMapping("/sendToUser")
+    public void sendToUser(HttpServletRequest request, HttpServletResponse response){
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String uid = params.get("uid");
+        List<String> openids = wechatService.getOpenid(uid);
+        List<String> atten =  new ArrayList<>();
+        atten.add("测试1");
+        atten.add("测试2");
+        atten.add("测试3");
+        atten.add("测试4");
+        for (int i = 0; i<openids.size();i++){
+            wechatService.senMsg(openids.get(i),atten);
+        }
+    }
 
 }

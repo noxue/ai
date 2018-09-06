@@ -19,4 +19,6 @@ public interface ExcelService {
 
     List<String[]> downloadExcel(TaskUser[] rowList) throws IOException;
 
+    List<String[]> formatList(List<TaskUser> rowList) throws IOException;
+
 }

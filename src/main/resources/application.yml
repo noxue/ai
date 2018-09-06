@@ -106,7 +106,7 @@ jasypt:
 spring:
     profiles: dev
     datasource:
-      url: jdbc:mysql://127.0.0.1:3306/ai?useUnicode=true&characterEncoding=utf-8&useSSL=false
+      url: jdbc:mysql://192.168.1.22:3306/ai?useUnicode=true&characterEncoding=utf-8&useSSL=false
       username: root
       password: root
     redis:
@@ -150,3 +150,10 @@ spring:
       port: 6379
       # Redis服务器连接密码（默认为空）
       password:
+
+---
+# 微信公众号
+
+wechat:
+    AppId: wx5cca7d43b7351114
+    AppSecret: adce147722dbe4dbe259adf3c6f8c464

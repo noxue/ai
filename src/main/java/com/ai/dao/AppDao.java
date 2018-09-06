@@ -1,7 +1,6 @@
 package com.ai.dao;
 
 import com.ai.domain.bo.App;
-import org.apache.catalina.User;
 
 import java.util.List;
 

@@ -964,6 +964,76 @@ public class TaskExample {
             addCriterion("interrupt not between", value1, value2, "interrupt");
             return (Criteria) this;
         }
+
+        public Criteria andFollowIsNull() {
+            addCriterion("follow is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowIsNotNull() {
+            addCriterion("follow is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowEqualTo(String value) {
+            addCriterion("follow =", value, "follow");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowNotEqualTo(String value) {
+            addCriterion("follow <>", value, "follow");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowGreaterThan(String value) {
+            addCriterion("follow >", value, "follow");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowGreaterThanOrEqualTo(String value) {
+            addCriterion("follow >=", value, "follow");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowLessThan(String value) {
+            addCriterion("follow <", value, "follow");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowLessThanOrEqualTo(String value) {
+            addCriterion("follow <=", value, "follow");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowLike(String value) {
+            addCriterion("follow like", value, "follow");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowNotLike(String value) {
+            addCriterion("follow not like", value, "follow");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowIn(List<String> values) {
+            addCriterion("follow in", values, "follow");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowNotIn(List<String> values) {
+            addCriterion("follow not in", values, "follow");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowBetween(String value1, String value2) {
+            addCriterion("follow between", value1, value2, "follow");
+            return (Criteria) this;
+        }
+
+        public Criteria andFollowNotBetween(String value1, String value2) {
+            addCriterion("follow not between", value1, value2, "follow");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
