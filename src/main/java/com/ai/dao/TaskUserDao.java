@@ -13,7 +13,7 @@ public interface TaskUserDao extends TaskUserMapper{
                                                   @Param("share") String share,@Param("status") String status);
 
     //根据taskId,test,type,share获取TaskUser  导出2.0
-    TaskUser[] getTaskUserListByConditions(@Param("userId") String userId, @Param("taskId") String taskId,
+    List<TaskUser> getTaskUserListByConditions(@Param("userId") String userId, @Param("taskId") String taskId,
                                                   @Param("name") String name,  @Param("type") String type,
                                                   @Param("share") String share,@Param("status") String status);
 

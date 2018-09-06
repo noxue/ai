@@ -163,4 +163,39 @@ public class ExcelServiceImpl implements ExcelService {
         }
         return retype;
     }
+
+    @Override
+    public List<String[]> formatList(List<TaskUser> rowList) throws IOException {
+        List<String[]> listArray = new ArrayList<String[]>();
+        if (rowList != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            for (int i = 0; i < rowList.size(); i++) {
+                String[] arrays = new String[8];
+                arrays[0] = rowList.get(i).getName();
+                arrays[1] = rowList.get(i).getMobile()+"";
+                if (rowList.get(i).getStatus().toString().equals("0")) {
+                    arrays[2] = "通话完毕";
+                } else if (rowList.get(i).getStatus().toString().equals("1")) {
+                    arrays[2] = "任务未执行";
+                } else if (rowList.get(i).getStatus().toString().equals("2")) {
+                    arrays[2] = "任务被客户端获取";
+                }
+                arrays[3] = replaceType(rowList.get(i).getType().toString());
+                arrays[4] = rowList.get(i).getRemark().toString();
+                if (rowList.get(i).getCalledAt() != null) {
+                    arrays[5] = sdf.format(rowList.get(i).getCalledAt());
+                } else {
+                    arrays[5] = "";
+                }
+                arrays[6] = rowList.get(i).getTime().toString()+"s";
+                if (rowList.get(i).getShare()) {
+                    arrays[7] = "公开";
+                } else {
+                    arrays[7] = "未公开";
+                }
+                listArray.add(arrays);
+            }
+        }
+        return listArray;
+    }
 }

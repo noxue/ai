@@ -8,6 +8,8 @@ import java.util.List;
 public interface TaskUserService {
 
     PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize,String userId, String taskId, String name, String type, String share,String status);
+    //导出excel 2.0 用于去掉多余的字段
+    PageInfo<TaskUser> exportTaskUser(int pageNum, int pageSize,String userId, String taskId, String name, String type, String share,String status);
 
     List<TaskUser> selectTaskUserByTaskId(int id);
 
@@ -25,9 +27,6 @@ public interface TaskUserService {
     boolean insertTaskUserList (List<TaskUser> list);
     //导出 1.0
     TaskUser[] taskUserList(String appId,String task_id);
-    //导出 2.0
-    TaskUser[] taskUserList(String appId,String task_id ,String name,String type,String share,String status);
-
 
     List<String> getTaskUserCount(String userId ,String staTime,String endTime);
 

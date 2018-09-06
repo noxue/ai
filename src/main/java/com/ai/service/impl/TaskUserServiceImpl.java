@@ -31,6 +31,14 @@ public class TaskUserServiceImpl implements TaskUserService {
     }
 
     @Override
+    public PageInfo<TaskUser> exportTaskUser(int pageNum, int pageSize, String userId, String taskId, String name, String type, String share, String status) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<TaskUser> taskUserList = taskUserDao.getTaskUserListByConditions(userId,taskId,name,type,share,status);
+        PageInfo result = new PageInfo(taskUserList);
+        return result;
+    }
+
+    @Override
     public List<TaskUser> selectTaskUserByTaskId(int id) {
         List<TaskUser> taskUserList = taskUserDao.getTaskUserByTaskId(id);
         return taskUserList;
@@ -84,11 +92,6 @@ public class TaskUserServiceImpl implements TaskUserService {
     }
 
     @Override
-    public TaskUser[] taskUserList(String userId, String taskId, String name, String type, String share, String status) {
-        return taskUserDao.getTaskUserListByConditions(userId,taskId,name,type,share,status);
-    }
-
-    @Override
     public List<String> getTaskUserCount(String userId, String staTime, String endTime) {
         if(StringUtils.isEmpty(staTime)||StringUtils.isEmpty(endTime)) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -118,9 +121,10 @@ public class TaskUserServiceImpl implements TaskUserService {
         Calendar now = new GregorianCalendar();
         Date d = new Date();
         String endTime= sdf.format(d) + " 23:59:59";
-        now.setTime(d);
-        now.set(Calendar.DATE, now.get(Calendar.DATE) - 7);
-        String staTime = sdf.format(now.getTime()) + " 00:00:00";
+//        now.setTime(d);
+//        now.set(Calendar.DATE, now.get(Calendar.DATE) - 7);
+//        String staTime = sdf.format(now.getTime()) + " 00:00:00";
+        String staTime = sdf.format(d)  + " 00:00:00";
         List<TaskUser> list =  taskUserDao.countToday(userId,staTime,endTime);
         Object [] countData = {0,0,0,0,0};
         if(list.size()==0){
