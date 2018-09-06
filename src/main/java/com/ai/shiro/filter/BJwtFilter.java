@@ -64,7 +64,7 @@ public class BJwtFilter extends BPathMatchingFilter {
                         // 重新申请新的JWT
                         // 根据appId获取其对应所拥有的角色(这里设计为角色对应资源，没有权限对应资源)
                         String roles = accountService.loadAccountRole(appId);
-                        long refreshPeriodTime = 36000L;  //seconds为单位,10 hours
+                        long refreshPeriodTime = 3600L*48;  //seconds为单位,10 hours
                         String newJwt = JsonWebTokenUtil.issueJWT(UUID.randomUUID().toString(),appId,
                                 "token-server",refreshPeriodTime >> 2,roles,null, SignatureAlgorithm.HS512);
                         // 将签发的JWT存储到Redis： {JWT-SESSION-{appID} , jwt}

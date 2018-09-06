@@ -63,7 +63,7 @@ public class AccountController extends BasicAction {
         // 根据appid获取其对应所拥有的角色(这里设计为角色对应资源，没有权限对应资源)
         String roles = accountService.loadAccountRole(appid);
         // 时间以秒计算,token有效刷新时间是token有效过期时间的2倍
-        long refreshPeriodTime = 36000L;
+        long refreshPeriodTime = 3600L*48;
         String jwt = JsonWebTokenUtil.issueJWT(UUID.randomUUID().toString(), appid,
                 "token-server", refreshPeriodTime >> 2, roles, null, SignatureAlgorithm.HS512);
         // 将签发的JWT存储到Redis： {JWT-SESSION-{appID} , jwt}
