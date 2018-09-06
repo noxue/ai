@@ -112,19 +112,19 @@ public class TaskController extends BasicAction{
             task.setInterrupt(Integer.parseInt(params.get("break")));
         }
         task.setTotal(0);
-        task.setThread(0);
+        task.setThread(1);
         task.setCalled(0);
         task.setTemplateId(Long.parseLong(template_id));
         task.setCreatedAt(new Date());
-        task.setStatus(new Byte("1"));
+        task.setStatus((byte)1);
         if (test.equals("1")) {
             String testPhone = params.get("testPhone");
             if (StringUtils.isEmpty(testPhone)) {
-                return new Message().error(5034, "请填写手机号码");
+                return new Message().error(5034, "请填写电话号码");
             }
-            String regex="^[0-9]{1,7}$";
-            if(Pattern.matches(regex, testPhone)){
-                return new Message().error(4001, "请输入正确的手机号码");
+            String regex="^[0-9-]{8,}$";
+            if(!Pattern.matches(regex, testPhone)){
+                return new Message().error(4001, "请输入正确的电话号码");
             }
             task.setTest(true);
             task.setStatus((byte)2); // 如果是测试任务，直接设置为开始状态
@@ -151,25 +151,8 @@ public class TaskController extends BasicAction{
                 if(!taskUserService.addTaskUser(taskUser)){
                     return new Message().error(5012, "新增失败");
                 }
-
-                // 获取当前任务发送用户能使用的卡
-                List<Sim> sims = new ArrayList<>();
-                sims.addAll(simList.getList());
-                for (SimUser su: simUserList){
-                    Sim s = new Sim();
-                    s.setId(su.getSimId());
-                    sims.add(s);
-                }
-                // 通知每一张卡
-                for (Sim s:sims) {
-                    String v = redisTemplate.opsForValue().get("task_start_"+s.getId());
-                    Set<String> arr = new HashSet<>();
-                    if (v!=null) {
-                        arr = new HashSet<>(Arrays.asList(v.split(",")));
-                    }
-                    arr.add(s.getId()+"");
-                    redisTemplate.opsForValue().set("task_start_"+s.getId(), String.join(",", org.apache.commons.lang.StringUtils.join(arr.toArray(),",")));
-                }
+                task.setStatus((byte)2);
+                taskService.editTask(task);
             }
             return new Message().ok(0, "success");
         } else {
