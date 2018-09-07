@@ -94,12 +94,14 @@ public class TaskController {
         }
 
         TaskUser taskUser = taskUserService.getTaskUserById(userId);
-        taskUser.setId(userId);
-        taskUser.setStatus((byte)0);
-        taskUser.setCalledAt(new Date());
-        taskUser.setTime(time);
-        taskUser.setType((byte)type);
-        taskUser.setContent(report);
+        if (taskUser != null ){
+            taskUser.setId(userId);
+            taskUser.setStatus((byte)0);
+            taskUser.setCalledAt(new Date());
+            taskUser.setTime(time);
+            taskUser.setType((byte)type);
+            taskUser.setContent(report);
+        }
 
         if(taskUserService.editTaskUser(taskUser)){
             Task task = taskService.getTaskById(taskUser.getTaskId());
@@ -121,10 +123,8 @@ public class TaskController {
                 }
                 if(atten.size()>0){
                     List<String> openids = wechatService.getOpenid(task.getUserId());
-                    if(openids!=null){
-                        for (int i = 0; i<openids.size();i++){
-                            wechatService.senMsg(openids.get(i),atten);
-                        }
+                    for (int i = 0; i<openids.size();i++){
+                        wechatService.senMsg(openids.get(i),atten);
                     }
                 }
             }

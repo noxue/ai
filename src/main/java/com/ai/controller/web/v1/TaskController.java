@@ -3,6 +3,7 @@ package com.ai.controller.web.v1;
 import com.ai.domain.bo.*;
 import com.ai.domain.vo.Message;
 import com.ai.service.*;
+import com.ai.service.wx.WechatService;
 import com.ai.test.test;
 import com.ai.util.RequestResponseUtil;
 import com.github.pagehelper.PageInfo;
@@ -52,6 +53,9 @@ public class TaskController extends BasicAction{
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private WechatService wechatService;
 
     /* *
      * @Description 根据taskUserId获取TaskUserReport信息
@@ -636,4 +640,20 @@ public class TaskController extends BasicAction{
         }
     }
 
+    @ApiOperation(value = "用于前台判断", notes = "验证当前用户是否绑定微信")
+    @ResponseBody
+    @PostMapping("/isBanding")
+    public Message isBanding(HttpServletRequest request, HttpServletResponse response){
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回信息缺失
+            return new Message().error(4004, "当前用户未登录");
+        }
+        List s = wechatService.getOpenid(appId);
+        if ( s.size()>0){
+            return new Message().ok(0, "success");
+        } else {
+            return new Message().ok(8500, "success");
+        }
+    }
 }

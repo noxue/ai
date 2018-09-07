@@ -186,5 +186,8 @@
 8009: 该卡当前未绑定用户
 8010: taskUserService.selectTaskUserByTaskId(id)执行时异常
 
+//微信
+8500: list集合为空
+
 
 
