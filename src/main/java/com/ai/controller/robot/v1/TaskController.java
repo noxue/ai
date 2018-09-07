@@ -6,6 +6,7 @@ import com.ai.domain.vo.Message;
 import com.ai.service.TaskService;
 import com.ai.service.TaskUserService;
 import com.ai.service.wx.WechatService;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,9 @@ public class TaskController {
         }
 
         TaskUser taskUser = taskUserService.getTaskUserById(userId);
+        if (taskUser == null) {
+            return new Message().ok(0, "success");
+        }
         taskUser.setId(userId);
         taskUser.setStatus((byte)0);
         taskUser.setCalledAt(new Date());
@@ -103,29 +107,37 @@ public class TaskController {
 
         if(taskUserService.editTaskUser(taskUser)){
             Task task = taskService.getTaskById(taskUser.getTaskId());
+            if (task == null) {
+                return new Message().ok(0, "success");
+            }
             String follows = task.getFollow();
             if(StringUtils.isEmpty(follows)){
                 return new Message().ok(0, "success");
             }else{
-                JSONObject jsStr = JSONObject.parseObject(report);
-                String[] follow=follows.split(",");
-                List<String> atten = new ArrayList<>();
-                String userType = jsStr.get("type")+"";
-                for(int i=0,len=follow.length;i<len;i++){
-                    if(follow[i].equals(userType)){
-                        atten.add(task.getName());
-                        atten.add(taskUser.getMobile());
-                        atten.add(replaceType(follow[i]));
-                        atten.add(taskUser.getId().toString());
-                    }
-                }
-                if(atten.size()>0){
-                    List<String> openids = wechatService.getOpenid(task.getUserId());
-                    if(openids!=null){
-                        for (int i = 0; i<openids.size();i++){
-                            wechatService.senMsg(openids.get(i),atten);
+                try {
+                    JSONObject jsStr = JSONObject.parseObject(report);
+
+                    String[] follow = follows.split(",");
+                    List<String> atten = new ArrayList<>();
+                    String userType = jsStr.get("type") + "";
+                    for (int i = 0, len = follow.length; i < len; i++) {
+                        if (follow[i].equals(userType)) {
+                            atten.add(task.getName());
+                            atten.add(taskUser.getMobile());
+                            atten.add(replaceType(follow[i]));
+                            atten.add(taskUser.getId().toString());
                         }
                     }
+                    if (atten.size() > 0) {
+                        List<String> openids = wechatService.getOpenid(task.getUserId());
+                        if (openids != null) {
+                            for (int i = 0; i < openids.size(); i++) {
+                                wechatService.senMsg(openids.get(i), atten);
+                            }
+                        }
+                    }
+                }catch (JSONException ex) {
+                    return new Message().ok(0, "success");
                 }
             }
             return new Message().ok(0, "success");
