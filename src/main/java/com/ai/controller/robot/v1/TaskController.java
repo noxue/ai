@@ -102,7 +102,6 @@ public class TaskController {
         taskUser.setContent(report);
 
         if(taskUserService.editTaskUser(taskUser)){
-
             Task task = taskService.getTaskById(taskUser.getTaskId());
             String follows = task.getFollow();
             if(StringUtils.isEmpty(follows)){
@@ -122,8 +121,10 @@ public class TaskController {
                 }
                 if(atten.size()>0){
                     List<String> openids = wechatService.getOpenid(task.getUserId());
-                    for (int i = 0; i<openids.size();i++){
-                        wechatService.senMsg(openids.get(i),atten);
+                    if(openids!=null){
+                        for (int i = 0; i<openids.size();i++){
+                            wechatService.senMsg(openids.get(i),atten);
+                        }
                     }
                 }
             }
