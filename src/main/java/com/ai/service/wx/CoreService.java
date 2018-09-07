@@ -70,11 +70,13 @@ public class CoreService {
 //					tm.setContent("");
 //				}
 			}else{
-
+				tm.setContent("希高智能有你更精彩");
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally {
+			tm.setContent("希高智能有你更精彩");
 		}
 		
 		return MessageUtil.messageToXML(tm);
