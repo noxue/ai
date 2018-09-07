@@ -42,6 +42,7 @@
 	</properties>
 
 	<dependencies>
+
 		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
@@ -96,41 +97,22 @@
 			<version>${mybatis-generator.version}</version>
 		</dependency>
 
-		<!--微信sdk-->
-		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib</artifactId>
-			<version>2.4</version>
-			<classifier>jdk15</classifier>
-		</dependency>
-		<dependency>
-			<groupId>dom4j</groupId>
-			<artifactId>dom4j</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream</artifactId>
-			<version>1.4.9</version>
-		</dependency>
-
-
 		<!-- shiro安全框架 -->
 		<!--<dependency>-->
-			<!--<groupId>org.apache.shiro</groupId>-->
-			<!--<artifactId>shiro-core</artifactId>-->
-			<!--<version>${shiro.version}</version>-->
+		<!--<groupId>org.apache.shiro</groupId>-->
+		<!--<artifactId>shiro-core</artifactId>-->
+		<!--<version>${shiro.version}</version>-->
 		<!--</dependency>-->
 		<!--<dependency>-->
-			<!--<groupId>org.apache.shiro</groupId>-->
-			<!--<artifactId>shiro-web</artifactId>-->
-			<!--<version>${shiro.version}</version>-->
+		<!--<groupId>org.apache.shiro</groupId>-->
+		<!--<artifactId>shiro-web</artifactId>-->
+		<!--<version>${shiro.version}</version>-->
 		<!--</dependency>-->
 
 		<!--<dependency>-->
-			<!--<groupId>org.apache.shiro</groupId>-->
-			<!--<artifactId>shiro-quartz</artifactId>-->
-			<!--<version>${shiro.version}</version>-->
+		<!--<groupId>org.apache.shiro</groupId>-->
+		<!--<artifactId>shiro-quartz</artifactId>-->
+		<!--<version>${shiro.version}</version>-->
 		<!--</dependency>-->
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
@@ -198,7 +180,7 @@
 			<scope>true</scope>
 		</dependency>
 
-        <!--test-->
+		<!--test-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -220,6 +202,24 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.15</version>
+		</dependency>
+
+		<!--微信sdk-->
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.9</version>
 		</dependency>
 	</dependencies>
 
