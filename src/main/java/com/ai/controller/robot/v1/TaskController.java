@@ -116,7 +116,9 @@ public class TaskController {
             }else{
                 try {
                     JSONObject jsStr = JSONObject.parseObject(report);
-
+                    if (jsStr==null) {
+                        return new Message().ok(0, "success");
+                    }
                     String[] follow = follows.split(",");
                     List<String> atten = new ArrayList<>();
                     String userType = jsStr.get("type") + "";
