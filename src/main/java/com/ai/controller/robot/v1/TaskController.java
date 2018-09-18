@@ -115,6 +115,12 @@ public class TaskController {
                 return new Message().ok(0, "success");
             }else if (!"".equalsIgnoreCase(report)){
                 try {
+
+                    JSONObject jsStr = JSONObject.parseObject(report);
+                    if (jsStr==null) {
+                        return new Message().ok(0, "success");
+                    }
+
                     String[] follow = follows.split(",");
                     List<String> atten = new ArrayList<>();
                     for (String f:follow) {
