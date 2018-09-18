@@ -4,12 +4,16 @@
   <resultMap id="BaseResultMap" type="com.ai.domain.bo.UserConfig">
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="key" jdbcType="VARCHAR" property="key" />
+    <result column="thread_num" jdbcType="INTEGER" property="threadNum" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ai.domain.bo.UserConfig">
     <result column="value" jdbcType="LONGVARCHAR" property="value" />
   </resultMap>
+  <sql id="Base_Column_List">
+    user_id, `key`, thread_num
+  </sql>
   <sql id="Blob_Column_List">
-    user_id,`key`,`value`
+    `value`
   </sql>
 
   <select id="selectByUserId" resultMap="BaseResultMap">

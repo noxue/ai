@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.dao.TaskSipDao">
+    <resultMap id="BaseResultMap" type="com.ai.domain.bo.TaskSip">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="task_id" jdbcType="BIGINT" property="taskId" />
+        <result column="sip_id" jdbcType="BIGINT" property="sipId" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, task_id, sip_id
+  </sql>
+
+  <insert id="insertBatch">
+    INSERT INTO task_sip
+    (task_id, sip_id)
+    VALUES
+    <foreach collection ="list" item="TaskSip" separator =",">
+        (#{TaskSip.taskId}, #{TaskSip.sipId})
+    </foreach >
+  </insert>
+</mapper>

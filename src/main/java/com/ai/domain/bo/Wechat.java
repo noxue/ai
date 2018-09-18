@@ -7,6 +7,10 @@ public class Wechat {
 
     private String openid;
 
+    private String wechatname;
+
+    private String headimg;
+
     public Long getId() {
         return id;
     }
@@ -29,5 +33,21 @@ public class Wechat {
 
     public void setOpenid(String openid) {
         this.openid = openid == null ? null : openid.trim();
+    }
+
+    public String getWechatname() {
+        return wechatname;
+    }
+
+    public void setWechatname(String wechatname) {
+        this.wechatname = wechatname == null ? null : wechatname.trim();
+    }
+
+    public String getHeadimg() {
+        return headimg;
+    }
+
+    public void setHeadimg(String headimg) {
+        this.headimg = headimg == null ? null : headimg.trim();
     }
 }

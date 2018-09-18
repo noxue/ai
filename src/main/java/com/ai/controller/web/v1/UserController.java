@@ -357,22 +357,26 @@ public class UserController extends BasicAction{
         if(StringUtils.isEmpty(uid)){
             return new Message().error(1114, "信息缺失");
         }
-        //判断当前用户是否可以进行删除操作
-        if(uid.equals(appId)){
-            return new Message().error(1115, "无法对自己操作");
-        }
-        //判断当前用户是否可以进行删除操作
-        if(accountService.getUserByUidAndPid(uid,appId) == null){
-            return new Message().error(2004, "无法进行删除操作");
-        }
-        if(userService.delUser(uid)){
-            if(userService.deleteAuthRoleUserByUserId(uid)){
+        if(appId.equals("admin")){
+            if(userService.delUser(uid)){
                 return new Message().ok(0, "success");
-            }else{
+            }else {
                 return new Message().error(1113, "删除失败");
             }
         }else {
-            return new Message().error(1113, "删除失败");
+            //判断当前用户是否可以进行删除操作
+            if(uid.equals(appId)){
+                return new Message().error(1115, "无法对自己操作");
+            }
+            //判断当前用户是否可以进行删除操作
+            if(accountService.getUserByUidAndPid(uid,appId) == null){
+                return new Message().error(2004, "无法进行删除操作");
+            }
+            if(userService.delUser(uid)){
+                return new Message().ok(0, "success");
+            }else {
+                return new Message().error(1113, "删除失败");
+            }
         }
     }
 

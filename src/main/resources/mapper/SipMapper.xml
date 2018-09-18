@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.dao.SipMapper">
+  <resultMap id="BaseResultMap" type="com.ai.domain.bo.Sip">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="host" jdbcType="VARCHAR" property="host" />
+    <result column="charged" jdbcType="DECIMAL" property="charged" />
+    <result column="createAt" jdbcType="DATE" property="createat" />
+    <result column="firms" jdbcType="VARCHAR" property="firms" />
+    <result column="maxThread" jdbcType="INTEGER" property="maxthread" />
+    <result column="currentThread" jdbcType="INTEGER" property="currentthread" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, `name`, username, `password`, `host`, charged, createAt, firms, maxThread, currentThread, 
+    remark
+  </sql>
+  <select id="selectByExample" parameterType="com.ai.domain.bo.SipExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from sip
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sip
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sip
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ai.domain.bo.SipExample">
+    delete from sip
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ai.domain.bo.Sip">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sip (`name`, username, `password`, 
+      `host`, charged, createAt, 
+      firms, maxThread, currentThread, 
+      remark)
+    values (#{name,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{host,jdbcType=VARCHAR}, #{charged,jdbcType=DECIMAL}, #{createat,jdbcType=DATE}, 
+      #{firms,jdbcType=VARCHAR}, #{maxthread,jdbcType=INTEGER}, #{currentthread,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ai.domain.bo.Sip">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sip
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="password != null">
+        `password`,
+      </if>
+      <if test="host != null">
+        `host`,
+      </if>
+      <if test="charged != null">
+        charged,
+      </if>
+      <if test="createat != null">
+        createAt,
+      </if>
+      <if test="firms != null">
+        firms,
+      </if>
+      <if test="maxthread != null">
+        maxThread,
+      </if>
+      <if test="currentthread != null">
+        currentThread,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="host != null">
+        #{host,jdbcType=VARCHAR},
+      </if>
+      <if test="charged != null">
+        #{charged,jdbcType=DECIMAL},
+      </if>
+      <if test="createat != null">
+        #{createat,jdbcType=DATE},
+      </if>
+      <if test="firms != null">
+        #{firms,jdbcType=VARCHAR},
+      </if>
+      <if test="maxthread != null">
+        #{maxthread,jdbcType=INTEGER},
+      </if>
+      <if test="currentthread != null">
+        #{currentthread,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ai.domain.bo.SipExample" resultType="java.lang.Long">
+    select count(*) from sip
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update sip
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.name != null">
+        `name` = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.username != null">
+        username = #{record.username,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null">
+        `password` = #{record.password,jdbcType=VARCHAR},
+      </if>
+      <if test="record.host != null">
+        `host` = #{record.host,jdbcType=VARCHAR},
+      </if>
+      <if test="record.charged != null">
+        charged = #{record.charged,jdbcType=DECIMAL},
+      </if>
+      <if test="record.createat != null">
+        createAt = #{record.createat,jdbcType=DATE},
+      </if>
+      <if test="record.firms != null">
+        firms = #{record.firms,jdbcType=VARCHAR},
+      </if>
+      <if test="record.maxthread != null">
+        maxThread = #{record.maxthread,jdbcType=INTEGER},
+      </if>
+      <if test="record.currentthread != null">
+        currentThread = #{record.currentthread,jdbcType=INTEGER},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update sip
+    set id = #{record.id,jdbcType=BIGINT},
+      `name` = #{record.name,jdbcType=VARCHAR},
+      username = #{record.username,jdbcType=VARCHAR},
+      `password` = #{record.password,jdbcType=VARCHAR},
+      `host` = #{record.host,jdbcType=VARCHAR},
+      charged = #{record.charged,jdbcType=DECIMAL},
+      createAt = #{record.createat,jdbcType=DATE},
+      firms = #{record.firms,jdbcType=VARCHAR},
+      maxThread = #{record.maxthread,jdbcType=INTEGER},
+      currentThread = #{record.currentthread,jdbcType=INTEGER},
+      remark = #{record.remark,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ai.domain.bo.Sip">
+    update sip
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        `password` = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="host != null">
+        `host` = #{host,jdbcType=VARCHAR},
+      </if>
+      <if test="charged != null">
+        charged = #{charged,jdbcType=DECIMAL},
+      </if>
+      <if test="createat != null">
+        createAt = #{createat,jdbcType=DATE},
+      </if>
+      <if test="firms != null">
+        firms = #{firms,jdbcType=VARCHAR},
+      </if>
+      <if test="maxthread != null">
+        maxThread = #{maxthread,jdbcType=INTEGER},
+      </if>
+      <if test="currentthread != null">
+        currentThread = #{currentthread,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.Sip">
+    update sip
+    set `name` = #{name,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=VARCHAR},
+      `host` = #{host,jdbcType=VARCHAR},
+      charged = #{charged,jdbcType=DECIMAL},
+      createAt = #{createat,jdbcType=DATE},
+      firms = #{firms,jdbcType=VARCHAR},
+      maxThread = #{maxthread,jdbcType=INTEGER},
+      currentThread = #{currentthread,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
