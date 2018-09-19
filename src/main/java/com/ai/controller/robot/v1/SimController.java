@@ -52,7 +52,6 @@ public class SimController {
         }
 
         List<String> ids = new ArrayList<>();
-
         List<SimUser> users = SimUserList.getList();
         for (SimUser user : users) {
             ids.add(user.getUserId());
@@ -61,6 +60,7 @@ public class SimController {
         if (sim != null) {
             ids.add(sim.getUserId());
         }
+
         //根据userId获取task集合
         List<Task> tasks =taskService.getStartedTasksByUserId(ids);
         if(tasks.size()>0){

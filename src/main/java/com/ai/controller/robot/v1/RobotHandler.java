@@ -72,7 +72,7 @@ public class RobotHandler extends TextWebSocketHandler {
         super.handleTextMessage(session, message);
         String msg = message.getPayload();
 
-//        System.out.println(webSocketServeice.getUsers().get(session)+msg);
+        System.out.println(webSocketServeice.getUsers().get(session)+msg);
 
         BaseAction action =  Utils.Json2Bean(msg, BaseAction.class);
         if (!action.getAction().equals("auth") && !this.checkAuth(session)) {

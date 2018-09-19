@@ -34,6 +34,17 @@ public class BeanUtil {
     @Autowired
     private SimService simService;
 
+    @Autowired
+    private TaskService taskService;
+
+    public TaskService getTaskService() {
+        return taskService;
+    }
+
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
     public SimService getSimService() {
         return simService;
     }

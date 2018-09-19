@@ -21,7 +21,9 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -79,9 +81,7 @@ public class WebSocketServeice {
     }
 
     public boolean workTime(String appid, String uid) {
-
         UserConfig config = userConfigService.getConfigByUserId(uid, "schedule");
-
         Gson gson = new Gson();
         Map map = new HashMap();
         map.put("action", "WorkTimeUpdate");
@@ -95,7 +95,7 @@ public class WebSocketServeice {
         return sendMap(appid, map);
     }
 
-    private Map getTplMap(TemplateService templateService,long id) {
+    private Map getTplMap(TemplateService templateService, long id) {
         Gson gson = new Gson();
         Map map = new HashMap();
         map.put("action", "TplUpdate");
@@ -118,11 +118,11 @@ public class WebSocketServeice {
     public String on_tpl(BeanUtil beanUtil, WebSocketSession session, String content) {
         String idStr = new JsonParser().parse(content).getAsJsonObject().get("content").getAsString();
         Gson gson = new Gson();
-        return gson.toJson(getTplMap(beanUtil.getTemplateService(),Long.parseLong(idStr)));
+        return gson.toJson(getTplMap(beanUtil.getTemplateService(), Long.parseLong(idStr)));
     }
 
     public boolean tpl(String appid, long id) {
-        return sendMap(appid, getTplMap(templateService,id));
+        return sendMap(appid, getTplMap(templateService, id));
     }
 
     public boolean sim(String appid, long id) {
@@ -136,6 +136,72 @@ public class WebSocketServeice {
             map.put("data", "not found this sim id:" + id);
         } else {
             map.put("data", gson.toJson(sim));
+        }
+        return sendMap(appid, map);
+    }
+
+    public String on_sim_tasks(BeanUtil beanUtil, WebSocketSession session, String content) {
+        String idStr = new JsonParser().parse(content).getAsJsonObject().get("content").getAsString();
+        long sim_id = Long.parseLong(idStr);
+
+        Map map = new HashMap();
+        map.put("action", "TasksUpdate");
+        map.put("code", 0);
+
+        if(sim_id<=0){
+            map.put("code", -1);
+            map.put("data", "param sim_id format is invalid");
+        }
+        PageInfo<SimUser> SimUserList = beanUtil.getSimService().findSimUserBySimId(1,1000,sim_id+"");
+        if(SimUserList == null){
+            map.put("code", -2);
+            map.put("data", "select simUser failed");
+        }
+
+        List<String> ids = new ArrayList<>();
+        List<SimUser> users = SimUserList.getList();
+        for (SimUser user : users) {
+            ids.add(user.getUserId());
+        }
+
+        Sim sim = beanUtil.getSimService().getSimById(sim_id);
+        if (sim != null) {
+            ids.add(sim.getUserId());
+        }
+
+        //根据userId获取task集合
+        List<Task> tasks =beanUtil.getTaskService().getStartedTasksByUserId(ids);
+        if(tasks.size()>0){
+            for (Task t : tasks) {
+                t.setStatus((byte)3);
+                taskService.editTask(t);
+            }
+            Map map1 = new HashMap();
+            map1.put("sim_id",sim_id);
+            map1.put("tasks",new Gson().toJson(tasks));
+            map.put("data", new Gson().toJson(map1));
+        } else {
+            map.put("code", -3);
+        }
+        return new Gson().toJson(map);
+    }
+
+    /**
+     * @param appid
+     * @param id    task id
+     * @return
+     */
+    public boolean task(String appid, long id) {
+        Gson gson = new Gson();
+        Map map = new HashMap();
+        map.put("action", "TaskUpdate");
+        map.put("code", 0);
+        Task task = this.taskService.getTaskById(id);
+        if (task == null) {
+            map.put("code", -1);
+            map.put("data", "not found this task id:" + id);
+        } else {
+            map.put("data", gson.toJson(task));
         }
         return sendMap(appid, map);
     }
@@ -167,7 +233,7 @@ public class WebSocketServeice {
         return null;
     }
 
-    public boolean delete(String appid, String name,  int id) {
+    public boolean delete(String appid, String name, int id) {
         WebSocketSession session = getSession(appid);
         if (session == null) {
             System.out.println("get session failed");
@@ -177,7 +243,7 @@ public class WebSocketServeice {
         map.put("action", name);
         map.put("data", id + "");
 
-        return sendMap(appid,map);
+        return sendMap(appid, map);
     }
 
     /**
@@ -205,16 +271,44 @@ public class WebSocketServeice {
     }
 
     public boolean gateways(String appid) {
-        boolean ok = false;
         PageInfo<Gateway> pageInfo = gatewayService.findGatewaysByAppId(1, 1000000, appid);
 
         Gson gson = new Gson();
         Map map = new HashMap();
-        map.put("action", "GatewayUpdate");
+        map.put("action", "GatewaysUpdate");
         map.put("code", 0);
         map.put("data", gson.toJson(pageInfo.getList()));
         return sendMap(appid, map);
     }
+
+    /**
+     * @param appid
+     * @param id    gateway id
+     * @return
+     */
+    public boolean gateway(String appid, long id) {
+        Gson gson = new Gson();
+        Map map = new HashMap();
+        map.put("action", "GatewayUpdate");
+        map.put("code", 0);
+        Gateway gateway = gatewayService.getGateById(id);
+        if (gateway == null) {
+            map.put("code", -1);
+            map.put("data", "gateway is not found, id:" + id);
+        } else {
+            map.put("data", gson.toJson(gateway));
+        }
+        return sendMap(appid, map);
+    }
+
+    public Map<WebSocketSession, String> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Map<WebSocketSession, String> users) {
+        this.users = users;
+    }
+
 
 //    public boolean tasks(String appid) {
 //        boolean ok = false;
@@ -241,15 +335,5 @@ public class WebSocketServeice {
 //        }
 //        return ok;
 //    }
-
-
-    public Map<WebSocketSession, String> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Map<WebSocketSession, String> users) {
-        this.users = users;
-    }
-
 
 }
