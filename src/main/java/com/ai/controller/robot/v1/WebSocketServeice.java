@@ -148,12 +148,12 @@ public class WebSocketServeice {
         map.put("action", "TasksUpdate");
         map.put("code", 0);
 
-        if(sim_id<=0){
+        if (sim_id <= 0) {
             map.put("code", -1);
             map.put("data", "param sim_id format is invalid");
         }
-        PageInfo<SimUser> SimUserList = beanUtil.getSimService().findSimUserBySimId(1,1000,sim_id+"");
-        if(SimUserList == null){
+        PageInfo<SimUser> SimUserList = beanUtil.getSimService().findSimUserBySimId(1, 1000, sim_id + "");
+        if (SimUserList == null) {
             map.put("code", -2);
             map.put("data", "select simUser failed");
         }
@@ -170,21 +170,52 @@ public class WebSocketServeice {
         }
 
         //根据userId获取task集合
-        List<Task> tasks =beanUtil.getTaskService().getStartedTasksByUserId(ids);
-        if(tasks.size()>0){
+        List<Task> tasks = beanUtil.getTaskService().getStartedTasksByUserId(ids);
+        if (tasks.size() > 0) {
             for (Task t : tasks) {
-                t.setStatus((byte)3);
-                taskService.editTask(t);
+                t.setStatus((byte) 3);
+                beanUtil.getTaskService().editTask(t);
             }
             Map map1 = new HashMap();
-            map1.put("sim_id",sim_id);
-            map1.put("tasks",new Gson().toJson(tasks));
+            map1.put("sim_id", sim_id);
+            map1.put("tasks", new Gson().toJson(tasks));
             map.put("data", new Gson().toJson(map1));
         } else {
             map.put("code", -3);
         }
         return new Gson().toJson(map);
     }
+
+
+    public String on_sip_tasks(BeanUtil beanUtil, WebSocketSession session, String content) {
+        String idStr = new JsonParser().parse(content).getAsJsonObject().get("content").getAsString();
+        long sip_id = Long.parseLong(idStr);
+        Map map = new HashMap();
+        map.put("action", "TasksUpdate");
+        map.put("code", 0);
+
+        if (sip_id <= 0) {
+            map.put("code", -1);
+            map.put("data", "param sip_id format is invalid");
+        }
+
+
+        List<Task> tasks = beanUtil.getTaskSipService().getTasksBySip(sip_id);
+        if (tasks.size() > 0) {
+            for (Task t : tasks) {
+                t.setStatus((byte) 3);
+                beanUtil.getTaskService().editTask(t);
+            }
+            Map map1 = new HashMap();
+            map1.put("sip_id", sip_id);
+            map1.put("tasks", new Gson().toJson(tasks));
+            map.put("data", new Gson().toJson(map1));
+        } else {
+            map.put("code", -2);
+        }
+        return new Gson().toJson(map);
+    }
+
 
     /**
      * @param appid

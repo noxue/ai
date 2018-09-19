@@ -37,6 +37,17 @@ public class BeanUtil {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private TaskSipService taskSipService;
+
+    public TaskSipService getTaskSipService() {
+        return taskSipService;
+    }
+
+    public void setTaskSipService(TaskSipService taskSipService) {
+        this.taskSipService = taskSipService;
+    }
+
     public TaskService getTaskService() {
         return taskService;
     }
