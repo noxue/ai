@@ -852,6 +852,76 @@ public class SipExample {
             addCriterion("remark not between", value1, value2, "remark");
             return (Criteria) this;
         }
+
+        public Criteria andAppidIsNull() {
+            addCriterion("appid is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidIsNotNull() {
+            addCriterion("appid is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidEqualTo(String value) {
+            addCriterion("appid =", value, "appid");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidNotEqualTo(String value) {
+            addCriterion("appid <>", value, "appid");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidGreaterThan(String value) {
+            addCriterion("appid >", value, "appid");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidGreaterThanOrEqualTo(String value) {
+            addCriterion("appid >=", value, "appid");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidLessThan(String value) {
+            addCriterion("appid <", value, "appid");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidLessThanOrEqualTo(String value) {
+            addCriterion("appid <=", value, "appid");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidLike(String value) {
+            addCriterion("appid like", value, "appid");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidNotLike(String value) {
+            addCriterion("appid not like", value, "appid");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidIn(List<String> values) {
+            addCriterion("appid in", values, "appid");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidNotIn(List<String> values) {
+            addCriterion("appid not in", values, "appid");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidBetween(String value1, String value2) {
+            addCriterion("appid between", value1, value2, "appid");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppidNotBetween(String value1, String value2) {
+            addCriterion("appid not between", value1, value2, "appid");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

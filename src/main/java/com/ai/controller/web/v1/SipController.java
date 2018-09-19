@@ -1,8 +1,10 @@
 package com.ai.controller.web.v1;
 
+import com.ai.domain.bo.AuthUserInfo;
 import com.ai.domain.bo.Sip;
 import com.ai.domain.bo.SipUser;
 import com.ai.domain.vo.Message;
+import com.ai.service.AuthUserInfoService;
 import com.ai.service.SipService;
 import com.ai.service.SipUserService;
 import com.ai.util.RequestResponseUtil;
@@ -31,6 +33,9 @@ public class SipController extends BasicAction {
 
     @Autowired
     private SipUserService sipUserService;
+
+    @Autowired
+    private AuthUserInfoService authUserInfoService;
 
     @ApiOperation(value = "新增sip", notes = "增加一个新的,name不可重复的sip")
     @ResponseBody
@@ -248,6 +253,7 @@ public class SipController extends BasicAction {
             return new Message().error(3001, "请登陆后操作");
         }
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+
         String user_id = params.get("userid");
         if (StringUtils.isEmpty(user_id)) {
             // 必须信息缺一不可,返回请检查用户，线路
@@ -256,8 +262,21 @@ public class SipController extends BasicAction {
         if(user_id.equals(appId)){
             return new Message().error(3001, "请重新选择用户");
         }
-        String sip_id = params.get("sip_id");
+        String toAss = params.get("toAss");
+        String forAss = params.get("forAss");
 
+        if(!appId.equals("admin")){
+            AuthUserInfo aui = authUserInfoService.getUserById(appId);
+            AuthUserInfo aui1 = authUserInfoService.getUserById(user_id);
+            if((aui.getThreadNum() + aui1.getThreadNum())!=(Integer.parseInt(toAss) +Integer.parseInt(forAss) )){
+                return new Message().error(3004, "操作失败,请刷新后重试");
+            }
+            authUserInfoService.editUser(appId,Integer.parseInt(toAss));
+        }
+        authUserInfoService.editUser(user_id,Integer.parseInt(forAss));
+
+
+        String sip_id = params.get("sip_id");
         //数据库中的sip_id集合
         List<SipUser> lists = sipUserService.findSipUser(user_id);
         //转换成数组
@@ -353,11 +372,49 @@ public class SipController extends BasicAction {
         if (StringUtils.isEmpty(user_id) ) {
             return new Message().error(3001, "请确认信息后重新操作");
         }
+        if(uid.equals(user_id)){
+            return new Message().error(3001, "请确认信息后重新操作");
+        }
         List<Sip> sipList =  sipUserService.findAllSipUser(user_id);
         sipList.forEach(sip->sip.setUsername(null));
         sipList.forEach(sip->sip.setPassword(null));
         sipList.forEach(sip->sip.setHost(null));
-        return new Message().ok(0, "success").addData("userList",sipList);
+
+        List<Object> userInfos = new ArrayList<>();
+        AuthUserInfo aui = new AuthUserInfo();
+        if(uid.equals("admin")){
+            userInfos.add(1000);
+        }else{
+            aui = authUserInfoService.getUserById(uid);
+            if(aui == null){
+                userInfos.add(0);
+                AuthUserInfo aui1 = new AuthUserInfo();
+                aui1.setUserId(uid);
+                aui1.setThreadNum(0);
+                aui1.setCharged(new BigDecimal(0.00));
+                authUserInfoService.addUser(aui1);
+                if( !authUserInfoService.addUser(aui1)){
+                    return new Message().error(3001, "请确认信息后重新操作");
+                }
+            }else{
+                userInfos.add( authUserInfoService.getUserById(uid).getThreadNum());
+            }
+        }
+        aui = authUserInfoService.getUserById(user_id);
+        if(aui == null){
+            userInfos.add(0);
+            AuthUserInfo aui2 = new AuthUserInfo();
+            aui2.setUserId(user_id);
+            aui2.setThreadNum(0);
+            aui2.setCharged(new BigDecimal(0.00));
+            authUserInfoService.addUser(aui2);
+            if(!authUserInfoService.addUser(aui2)){
+                return new Message().error(3001, "请确认信息后重新操作");
+            }
+        }else{
+            userInfos.add( authUserInfoService.getUserById(user_id).getThreadNum());
+        }
+        return new Message().ok(0, "success").addData("userList",sipList).addData("userInfos",userInfos);
     }
 
     @ApiOperation(value = "获取sip信息,线路列表", notes = "根据当前用户查询sip信息")

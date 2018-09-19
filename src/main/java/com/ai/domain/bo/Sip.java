@@ -26,6 +26,8 @@ public class Sip {
 
     private String remark;
 
+    private String appid;
+
     public Long getId() {
         return id;
     }
@@ -112,5 +114,13 @@ public class Sip {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public String getAppid() {
+        return appid;
+    }
+
+    public void setAppid(String appid) {
+        this.appid = appid == null ? null : appid.trim();
     }
 }

@@ -147,5 +147,10 @@
         <table tableName="task_sip" domainObjectName="TaskSip" >
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
+
+        <table tableName="auth_user_info" domainObjectName="AuthUserInfo" >
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
     </context>
 </generatorConfiguration>

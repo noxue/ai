@@ -13,6 +13,7 @@
     <result column="maxThread" jdbcType="INTEGER" property="maxthread" />
     <result column="currentThread" jdbcType="INTEGER" property="currentthread" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="appid" jdbcType="VARCHAR" property="appid" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -74,7 +75,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, `name`, username, `password`, `host`, charged, createAt, firms, maxThread, currentThread, 
-    remark
+    remark, appid
   </sql>
   <select id="selectByExample" parameterType="com.ai.domain.bo.SipExample" resultMap="BaseResultMap">
     select
@@ -113,11 +114,11 @@
     insert into sip (`name`, username, `password`, 
       `host`, charged, createAt, 
       firms, maxThread, currentThread, 
-      remark)
+      remark, appid)
     values (#{name,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{host,jdbcType=VARCHAR}, #{charged,jdbcType=DECIMAL}, #{createat,jdbcType=DATE}, 
       #{firms,jdbcType=VARCHAR}, #{maxthread,jdbcType=INTEGER}, #{currentthread,jdbcType=INTEGER}, 
-      #{remark,jdbcType=VARCHAR})
+      #{remark,jdbcType=VARCHAR}, #{appid,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.Sip">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -155,6 +156,9 @@
       <if test="remark != null">
         remark,
       </if>
+      <if test="appid != null">
+        appid,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -186,6 +190,9 @@
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="appid != null">
+        #{appid,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -231,6 +238,9 @@
       <if test="record.remark != null">
         remark = #{record.remark,jdbcType=VARCHAR},
       </if>
+      <if test="record.appid != null">
+        appid = #{record.appid,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -248,7 +258,8 @@
       firms = #{record.firms,jdbcType=VARCHAR},
       maxThread = #{record.maxthread,jdbcType=INTEGER},
       currentThread = #{record.currentthread,jdbcType=INTEGER},
-      remark = #{record.remark,jdbcType=VARCHAR}
+      remark = #{record.remark,jdbcType=VARCHAR},
+      appid = #{record.appid,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -286,6 +297,9 @@
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
+      <if test="appid != null">
+        appid = #{appid,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -300,7 +314,8 @@
       firms = #{firms,jdbcType=VARCHAR},
       maxThread = #{maxthread,jdbcType=INTEGER},
       currentThread = #{currentthread,jdbcType=INTEGER},
-      remark = #{remark,jdbcType=VARCHAR}
+      remark = #{remark,jdbcType=VARCHAR},
+      appid = #{appid,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
