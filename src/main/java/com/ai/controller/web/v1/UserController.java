@@ -1,16 +1,14 @@
 package com.ai.controller.web.v1;
 
-import com.ai.domain.bo.AuthRole;
-import com.ai.domain.bo.AuthUserRole;
-import com.ai.domain.bo.Wechat;
+import com.ai.domain.bo.*;
 import com.ai.domain.vo.Account;
 import com.ai.service.AccountService;
+import com.ai.service.AuthUserInfoService;
 import com.ai.service.RoleService;
 import com.ai.service.wx.WechatService;
 import com.ai.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ai.domain.bo.AuthUser;
 import com.ai.domain.vo.Message;
 import com.ai.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -53,7 +51,8 @@ public class UserController extends BasicAction{
     @Autowired
     private WechatService wechatService;
 
-
+    @Autowired
+    private AuthUserInfoService authUserInfoService;
 
 
     @ApiOperation(value = "获取对应用户角色",notes = "GET根据用户的appId获取对应用户的角色")
@@ -357,7 +356,22 @@ public class UserController extends BasicAction{
         if(StringUtils.isEmpty(uid)){
             return new Message().error(1114, "信息缺失");
         }
+        //判断当前用户是否可以进行删除操作
+        if(uid.equals(appId)){
+            return new Message().error(1115, "无法对自己操作");
+        }
         if(appId.equals("admin")){
+            AuthUser au = userService.getUserByAppId(uid);
+            if(!au.getPid().equals("admin")){
+                if(!StringUtils.isEmpty(au.getPid())){
+                    AuthUserInfo  duser = authUserInfoService.getUserById(uid);
+                    if(duser!=null){
+                        int threadNum = duser.getThreadNum();
+                        AuthUserInfo  puser = authUserInfoService.getUserById(au.getPid());
+                        authUserInfoService.editUser(au.getPid(),(threadNum + puser.getThreadNum()));
+                    }
+                }
+            }
             if(userService.delUser(uid)){
                 return new Message().ok(0, "success");
             }else {
@@ -365,12 +379,14 @@ public class UserController extends BasicAction{
             }
         }else {
             //判断当前用户是否可以进行删除操作
-            if(uid.equals(appId)){
-                return new Message().error(1115, "无法对自己操作");
-            }
-            //判断当前用户是否可以进行删除操作
             if(accountService.getUserByUidAndPid(uid,appId) == null){
                 return new Message().error(2004, "无法进行删除操作");
+            }
+            AuthUserInfo  duser = authUserInfoService.getUserById(uid);
+            if(duser!=null){
+                int threadNum = duser.getThreadNum();
+                AuthUserInfo  puser = authUserInfoService.getUserById(appId);
+                authUserInfoService.editUser(appId,(threadNum + puser.getThreadNum()));
             }
             if(userService.delUser(uid)){
                 return new Message().ok(0, "success");
