@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.dao.SipUserDao">
+  <resultMap id="BaseResultMap" type="com.ai.domain.bo.SipUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="sip_id" jdbcType="BIGINT" property="sipId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, sip_id
+  </sql>
+
+  <select id="selectByUid" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from sip_user
+          where user_id = #{_parameter}
+  </select>
+
+  <insert id="insertBatch">
+    INSERT INTO sip_user
+    (user_id, sip_id)
+    VALUES
+    <foreach collection ="list" item="SipUser" separator =",">
+      (#{SipUser.userId}, #{SipUser.sipId})
+    </foreach >
+  </insert>
+
+  <select id="isRepeat" resultMap="BaseResultMap">
+
+    select * from sip_user
+    where user_id=#{user_id} AND sip_id = #{sip_id}
+
+  </select>
+
+
+  <delete id="deleteBySipId"  parameterType = "java.util.List">
+    delete from sip_user
+    where
+    sip_user.id in
+    <foreach collection="list"  item="item" open="(" separator="," close=")"  >
+      #{item}
+    </foreach>
+  </delete>
+
+</mapper>

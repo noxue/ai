@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /* *
@@ -56,6 +57,9 @@ public class TaskController extends BasicAction{
 
     @Autowired
     private WechatService wechatService;
+
+    @Autowired
+    private TaskSipService taskSipService;
 
     /* *
      * @Description 根据taskUserId获取TaskUserReport信息
@@ -96,12 +100,12 @@ public class TaskController extends BasicAction{
             return new Message().error(5007, "请选择模板信息");
         }
 
+//        PageInfo<Sim> simList= simService.findAllSim(1,1000,user_id,"");
+//        List<SimUser> simUserList= simService.getListByUserId(user_id);
+//        if(simList.getTotal()==0  &&  simUserList.size()==0){
+//            return new Message().error(5005, "请先分配sim卡后再创建任务");
+//        }
 
-        PageInfo<Sim> simList= simService.findAllSim(1,1000,user_id,"");
-        List<SimUser> simUserList= simService.getListByUserId(user_id);
-        if(simList.getTotal()==0  &&  simUserList.size()==0){
-            return new Message().error(5005, "请先分配sim卡后再创建任务");
-        }
         String test = params.get("test");
         Task task = new Task();
         task.setName(taskName);
@@ -138,6 +142,23 @@ public class TaskController extends BasicAction{
         }
 
         if (taskService.registerTask(task)) {
+            Long taskid = task.getId();
+            String sip_id = params.get("sip");
+            if(!StringUtils.isEmpty(sip_id)){
+                List<TaskSip> taskSipList = new ArrayList<>();
+                String [] sip = sip_id.split(",");
+                for(int i=0;i<sip.length;i++){
+                    TaskSip taskSip = new TaskSip();
+                    taskSip.setTaskId(taskid);
+                    taskSip.setSipId(Long.parseLong(sip[i]));
+                    taskSipList.add(taskSip);
+                }
+                if(taskSipList.size()>0){
+                    if(!taskSipService.insertList(taskSipList)){
+                        return new Message().error(5012, "新增失败");
+                    }
+                }
+            }
             if(task.getTest()){
                 String testName = params.get("testName");
                 String testPhone = params.get("testPhone");
@@ -145,7 +166,6 @@ public class TaskController extends BasicAction{
                 if (StringUtils.isEmpty(testPhone)) {
                     return new Message().error(5034, "请填写手机号码");
                 }
-                Long taskid = task.getId();
                 TaskUser taskUser = new TaskUser();
                 taskUser.setTaskId(taskid);
                 taskUser.setName(testName);
@@ -399,7 +419,7 @@ public class TaskController extends BasicAction{
         Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
         //String test  =params.get("test");
         String status  =params.get("status");
-        String share =params.get("share");
+        //String share =params.get("share");
         String type  =params.get("type");
         String name  =params.get("name");
         String taskId =params.get("taskId");
@@ -408,7 +428,7 @@ public class TaskController extends BasicAction{
 //            if(roleId.equals("100")){
 //            appId = "";
 //        }
-        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(pageNum,pageSize,appId,taskId,name,type,share,status);
+        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(pageNum,pageSize,appId,taskId,name,type,null,status);
         if (taskUserList != null){
             return new Message().ok(0, "success").addData("taskUserList",taskUserList);
         } else {
@@ -448,7 +468,7 @@ public class TaskController extends BasicAction{
                 params.get("type") +"," +
                 params.get("share")+","+
                 params.get("status");
-        redisTemplate.opsForValue().set(uuid,form);
+        redisTemplate.opsForValue().set(uuid,form,30,TimeUnit.SECONDS);
         // redisTemplate.expire(uuid,60L,null);
         return new Message().ok(0,"success").addData("task",uuid);
     }

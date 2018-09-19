@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.dao.SipDao">
+  <resultMap id="BaseResultMap" type="com.ai.domain.bo.Sip">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="host" jdbcType="VARCHAR" property="host" />
+    <result column="charged" jdbcType="DECIMAL" property="charged" />
+    <result column="createAt" jdbcType="DATE" property="createat" />
+    <result column="firms" jdbcType="VARCHAR" property="firms" />
+    <result column="maxThread" jdbcType="INTEGER" property="maxthread" />
+    <result column="currentThread" jdbcType="INTEGER" property="currentthread" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, username, `password`, `host`, charged, createAt, firms, maxThread, currentThread, 
+    remark
+  </sql>
+  <select id="getSipsList" parameterType="java.lang.String"  resultType="com.ai.domain.bo.Sip">
+
+    select
+    <include refid="Base_Column_List" />
+    from sip
+    where 1=1
+    <if test="_parameter != null and _parameter != ''">
+      AND `name` LIKE  CONCAT('%',#{_parameter},'%')
+    </if>
+  </select>
+  <select id="selectByName" parameterType="java.lang.String" resultType="com.ai.domain.bo.Sip">
+        select
+          <include refid="Base_Column_List" />
+        from sip a
+        where a.`name` = #{name,jdbcType=VARCHAR}
+  </select>
+
+
+</mapper>

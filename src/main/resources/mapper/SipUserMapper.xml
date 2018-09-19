@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ai.dao.WechatMapper">
-  <resultMap id="BaseResultMap" type="com.ai.domain.bo.Wechat">
+<mapper namespace="com.ai.dao.SipUserMapper">
+  <resultMap id="BaseResultMap" type="com.ai.domain.bo.SipUser">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="uid" jdbcType="VARCHAR" property="uid" />
-    <result column="openid" jdbcType="VARCHAR" property="openid" />
-    <result column="wechatName" jdbcType="VARCHAR" property="wechatname" />
-    <result column="headImg" jdbcType="VARCHAR" property="headimg" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="sip_id" jdbcType="BIGINT" property="sipId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -67,15 +65,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, `uid`, openid, wechatName, headImg
+    id, user_id, sip_id
   </sql>
-  <select id="selectByExample" parameterType="com.ai.domain.bo.WechatExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.ai.domain.bo.SipUserExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from wechat
+    from sip_user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -86,85 +84,65 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from wechat
+    from sip_user
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from wechat
+    delete from sip_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.ai.domain.bo.WechatExample">
-    delete from wechat
+  <delete id="deleteByExample" parameterType="com.ai.domain.bo.SipUserExample">
+    delete from sip_user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.ai.domain.bo.Wechat">
+  <insert id="insert" parameterType="com.ai.domain.bo.SipUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into wechat (`uid`, openid, wechatName, 
-      headImg)
-    values (#{uid,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{wechatname,jdbcType=VARCHAR}, 
-      #{headimg,jdbcType=VARCHAR})
+    insert into sip_user (user_id, sip_id)
+    values (#{userId,jdbcType=VARCHAR}, #{sipId,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.ai.domain.bo.Wechat">
+  <insert id="insertSelective" parameterType="com.ai.domain.bo.SipUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into wechat
+    insert into sip_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="uid != null">
-        `uid`,
+      <if test="userId != null">
+        user_id,
       </if>
-      <if test="openid != null">
-        openid,
-      </if>
-      <if test="wechatname != null">
-        wechatName,
-      </if>
-      <if test="headimg != null">
-        headImg,
+      <if test="sipId != null">
+        sip_id,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="uid != null">
-        #{uid,jdbcType=VARCHAR},
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
       </if>
-      <if test="openid != null">
-        #{openid,jdbcType=VARCHAR},
-      </if>
-      <if test="wechatname != null">
-        #{wechatname,jdbcType=VARCHAR},
-      </if>
-      <if test="headimg != null">
-        #{headimg,jdbcType=VARCHAR},
+      <if test="sipId != null">
+        #{sipId,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.ai.domain.bo.WechatExample" resultType="java.lang.Long">
-    select count(*) from wechat
+  <select id="countByExample" parameterType="com.ai.domain.bo.SipUserExample" resultType="java.lang.Long">
+    select count(*) from sip_user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update wechat
+    update sip_user
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.uid != null">
-        `uid` = #{record.uid,jdbcType=VARCHAR},
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=VARCHAR},
       </if>
-      <if test="record.openid != null">
-        openid = #{record.openid,jdbcType=VARCHAR},
-      </if>
-      <if test="record.wechatname != null">
-        wechatName = #{record.wechatname,jdbcType=VARCHAR},
-      </if>
-      <if test="record.headimg != null">
-        headImg = #{record.headimg,jdbcType=VARCHAR},
+      <if test="record.sipId != null">
+        sip_id = #{record.sipId,jdbcType=BIGINT},
       </if>
     </set>
     <if test="_parameter != null">
@@ -172,40 +150,30 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update wechat
+    update sip_user
     set id = #{record.id,jdbcType=BIGINT},
-      `uid` = #{record.uid,jdbcType=VARCHAR},
-      openid = #{record.openid,jdbcType=VARCHAR},
-      wechatName = #{record.wechatname,jdbcType=VARCHAR},
-      headImg = #{record.headimg,jdbcType=VARCHAR}
+      user_id = #{record.userId,jdbcType=VARCHAR},
+      sip_id = #{record.sipId,jdbcType=BIGINT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ai.domain.bo.Wechat">
-    update wechat
+  <update id="updateByPrimaryKeySelective" parameterType="com.ai.domain.bo.SipUser">
+    update sip_user
     <set>
-      <if test="uid != null">
-        `uid` = #{uid,jdbcType=VARCHAR},
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
       </if>
-      <if test="openid != null">
-        openid = #{openid,jdbcType=VARCHAR},
-      </if>
-      <if test="wechatname != null">
-        wechatName = #{wechatname,jdbcType=VARCHAR},
-      </if>
-      <if test="headimg != null">
-        headImg = #{headimg,jdbcType=VARCHAR},
+      <if test="sipId != null">
+        sip_id = #{sipId,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.Wechat">
-    update wechat
-    set `uid` = #{uid,jdbcType=VARCHAR},
-      openid = #{openid,jdbcType=VARCHAR},
-      wechatName = #{wechatname,jdbcType=VARCHAR},
-      headImg = #{headimg,jdbcType=VARCHAR}
+  <update id="updateByPrimaryKey" parameterType="com.ai.domain.bo.SipUser">
+    update sip_user
+    set user_id = #{userId,jdbcType=VARCHAR},
+      sip_id = #{sipId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

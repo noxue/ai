@@ -135,5 +135,22 @@
         <table tableName="wechat" domainObjectName="Wechat" >
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
+
+        <table tableName="sip" domainObjectName="Sip" >
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
+        <table tableName="sip_user" domainObjectName="SipUser" >
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
+        <table tableName="task_sip" domainObjectName="TaskSip" >
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
+        <table tableName="auth_user_info" domainObjectName="AuthUserInfo" >
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
     </context>
 </generatorConfiguration>

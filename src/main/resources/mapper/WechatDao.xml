@@ -5,10 +5,12 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="uid" jdbcType="VARCHAR" property="uid" />
     <result column="openid" jdbcType="VARCHAR" property="openid" />
+    <result column="wechatName" jdbcType="VARCHAR" property="wechatname" />
+    <result column="headImg" jdbcType="VARCHAR" property="headimg" />
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, `uid`, openid
+    id, `uid`, openid, wechatName, headImg
   </sql>
 
   <select id="selectByUid"  resultMap="BaseResultMap">
