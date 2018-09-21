@@ -13,10 +13,11 @@
     <result column="maxThread" jdbcType="INTEGER" property="maxthread" />
     <result column="currentThread" jdbcType="INTEGER" property="currentthread" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="appid" jdbcType="BIGINT" property="appid" />
   </resultMap>
   <sql id="Base_Column_List">
     id, `name`, username, `password`, `host`, charged, createAt, firms, maxThread, currentThread, 
-    remark
+    remark, appid
   </sql>
   <select id="getSipsList" parameterType="java.lang.String"  resultType="com.ai.domain.bo.Sip">
 

@@ -39,7 +39,7 @@
 
   <select id="selectByUniqueKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT uid, username, password, salt, real_name, avatar, phone, email, sex, status, CREATE_TIME,
-    UPDATE_TIME, CREATE_WHERE
+    UPDATE_TIME, CREATE_WHERE, pid
     FROM auth_user user
     WHERE user.uid = #{appId,jdbcType=VARCHAR} or user.phone = #{appId,jdbcType=VARCHAR} or user.email = #{appId,jdbcType=VARCHAR}
   </select>

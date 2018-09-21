@@ -2,9 +2,11 @@ package com.ai.controller.web.v1;
 
 import com.ai.domain.bo.AuthUserInfo;
 import com.ai.domain.bo.Sip;
+import com.ai.domain.bo.SipLog;
 import com.ai.domain.bo.SipUser;
 import com.ai.domain.vo.Message;
 import com.ai.service.AuthUserInfoService;
+import com.ai.service.SipLogService;
 import com.ai.service.SipService;
 import com.ai.service.SipUserService;
 import com.ai.util.RequestResponseUtil;
@@ -37,6 +39,9 @@ public class SipController extends BasicAction {
     @Autowired
     private AuthUserInfoService authUserInfoService;
 
+    @Autowired
+    private SipLogService sipLogService;
+
     @ApiOperation(value = "新增sip", notes = "增加一个新的,name不可重复的sip")
     @ResponseBody
     @PostMapping("/add")
@@ -52,11 +57,12 @@ public class SipController extends BasicAction {
         String username = params.get("username");
         String password = params.get("password");
         String host = params.get("host");
+        String app_id = params.get("app_id");
 
-        if (StringUtils.isEmpty(name) ||StringUtils.isEmpty(username) ||StringUtils.isEmpty(password) ||
-            StringUtils.isEmpty(host) ) {
+        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(username) || StringUtils.isEmpty(password) ||
+            StringUtils.isEmpty(host) || StringUtils.isEmpty(app_id)) {
             // 必须信息缺一不可,返回请检查 线路名，用户名，密码，端口
-            return new Message().error(3001, "线路名");
+            return new Message().error(3001, "缺少必要信息项，请检查");
         }
         if (sipService.isSipExistByName(name)) {
             // name已存在
@@ -71,6 +77,7 @@ public class SipController extends BasicAction {
         sip.setUsername(username);
         sip.setPassword(password);
         sip.setHost(host);
+        sip.setAppid(Long.parseLong(app_id));
         sip.setCharged(BigDecimal.valueOf(0.00));
         sip.setCreateat(new Date());
         sip.setFirms(firms);
@@ -102,9 +109,10 @@ public class SipController extends BasicAction {
         String username = params.get("username");
         String password = params.get("password");
         String host = params.get("host");
+        String app_id = params.get("app_id");
 
-        if (StringUtils.isEmpty(name) ||StringUtils.isEmpty(username) ||StringUtils.isEmpty(password) ||
-                StringUtils.isEmpty(host) ){
+        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(username) || StringUtils.isEmpty(password) ||
+                StringUtils.isEmpty(host) || StringUtils.isEmpty(app_id) ){
             // 必须信息缺一不可,返回信息缺失
             return new Message().error(3005, "sip信息缺失");
         }
@@ -123,6 +131,7 @@ public class SipController extends BasicAction {
         sip.setUsername(username);
         sip.setPassword(password);
         sip.setHost(host);
+        sip.setAppid(Long.parseLong(app_id));
         if(!StringUtils.isEmpty(firms)){
             sip.setFirms(firms);
         }
@@ -265,9 +274,10 @@ public class SipController extends BasicAction {
         String toAss = params.get("toAss");
         String forAss = params.get("forAss");
 
+        AuthUserInfo aui = null;
+        AuthUserInfo aui1 = authUserInfoService.getUserById(user_id);
         if(!appId.equals("admin")){
-            AuthUserInfo aui = authUserInfoService.getUserById(appId);
-            AuthUserInfo aui1 = authUserInfoService.getUserById(user_id);
+            aui = authUserInfoService.getUserById(appId);
             if((aui.getThreadNum() + aui1.getThreadNum())!=(Integer.parseInt(toAss) +Integer.parseInt(forAss) )){
                 return new Message().error(3004, "操作失败,请刷新后重试");
             }
@@ -275,6 +285,27 @@ public class SipController extends BasicAction {
         }
         authUserInfoService.editUser(user_id,Integer.parseInt(forAss));
 
+        SipLog sl = new SipLog();
+        sl.setAccepter(user_id);
+        sl.setHandler(appId);
+        sl.setCreateat(new Date());
+
+        String thread_num = "";
+        int res = 0;
+        if(aui1.getThreadNum() > Integer.parseInt(forAss)){
+            res = aui1.getThreadNum() - Integer.parseInt(forAss);
+            thread_num = "-" + res;
+        }else {
+            res = Integer.parseInt(forAss) - aui1.getThreadNum() ;
+            thread_num = res +"";
+        }
+        if(appId.equals("admin")){
+            sl.setResult(1000L);
+        }else{
+            sl.setResult(Long.parseLong(toAss));
+        }
+        sl.setNum(thread_num);
+        sipLogService.addSipLog(sl);
 
         String sip_id = params.get("sip_id");
         //数据库中的sip_id集合
@@ -311,6 +342,7 @@ public class SipController extends BasicAction {
                 }
             }
             sipUserService.delSipUserList(delId);
+
         }
         if(compareOrg.size()>0 && !StringUtils.isEmpty(compareOrg.get(0))){
             List<SipUser> list =  new ArrayList<>();
@@ -381,38 +413,34 @@ public class SipController extends BasicAction {
         sipList.forEach(sip->sip.setHost(null));
 
         List<Object> userInfos = new ArrayList<>();
-        AuthUserInfo aui = new AuthUserInfo();
+
+        // 当前用户为admin时
         if(uid.equals("admin")){
             userInfos.add(1000);
         }else{
+            AuthUserInfo aui = new AuthUserInfo();
             aui = authUserInfoService.getUserById(uid);
-            if(aui == null){
-                userInfos.add(0);
-                AuthUserInfo aui1 = new AuthUserInfo();
-                aui1.setUserId(uid);
-                aui1.setThreadNum(0);
-                aui1.setCharged(new BigDecimal(0.00));
-                authUserInfoService.addUser(aui1);
-                if( !authUserInfoService.addUser(aui1)){
-                    return new Message().error(3001, "请确认信息后重新操作");
-                }
+            if(aui != null){
+                userInfos.add(aui.getThreadNum());
             }else{
-                userInfos.add( authUserInfoService.getUserById(uid).getThreadNum());
+                userInfos.add(0);
+                AuthUserInfo app_aui = new AuthUserInfo();
+                app_aui.setUserId(uid);
+                app_aui.setThreadNum(0);
+                app_aui.setCharged(new BigDecimal(0.00));
+                authUserInfoService.addUser(app_aui);
             }
         }
-        aui = authUserInfoService.getUserById(user_id);
-        if(aui == null){
-            userInfos.add(0);
-            AuthUserInfo aui2 = new AuthUserInfo();
-            aui2.setUserId(user_id);
-            aui2.setThreadNum(0);
-            aui2.setCharged(new BigDecimal(0.00));
-            authUserInfoService.addUser(aui2);
-            if(!authUserInfoService.addUser(aui2)){
-                return new Message().error(3001, "请确认信息后重新操作");
-            }
+        AuthUserInfo aui = authUserInfoService.getUserById(user_id);
+        if(aui !=null){
+            userInfos.add(aui.getThreadNum());
         }else{
-            userInfos.add( authUserInfoService.getUserById(user_id).getThreadNum());
+            userInfos.add(0);
+            AuthUserInfo user_aui = new AuthUserInfo();
+            user_aui.setUserId(user_id);
+            user_aui.setThreadNum(0);
+            user_aui.setCharged(new BigDecimal(0.00));
+            authUserInfoService.addUser(user_aui);
         }
         return new Message().ok(0, "success").addData("userList",sipList).addData("userInfos",userInfos);
     }
@@ -439,4 +467,31 @@ public class SipController extends BasicAction {
         userList.forEach(sip->sip.setHost(null));
         return new Message().ok(0, "success").addData("sipList",userList);
     }
+
+    @ApiOperation(value = "获取sipLog信息", notes = "根据当前用户查询")
+    @ResponseBody
+    @PostMapping("/log/all")
+    public Object selectSipLog(HttpServletRequest request, HttpServletResponse response,
+                               @RequestParam(name = "pageNum", required = false, defaultValue = "1")
+                                       int pageNum,
+                               @RequestParam(name = "pageSize", required = false, defaultValue = "15")
+                                           int pageSize) {
+        String appId =request.getHeader("appId");
+        if (StringUtils.isEmpty(appId)) {
+            // 必须信息缺一不可,返回网关信息缺失
+            return new Message().error(4004, "当前用户未登录");
+        }
+        Map<String, String> params = RequestResponseUtil.getRequestBodyMap(request);
+        String uid = params.get("uid");
+        if(appId.equals("admin")){
+            appId = "";
+        }
+        PageInfo<SipLog> sipLogList = sipLogService.findSipLog(1,15,appId,uid);
+        if(sipLogList!=null){
+            return new Message().ok(0, "success").addData("sipLogList",sipLogList);
+        }else {
+            return new Message().ok(4005, "获取失败");
+        }
+    }
+
 }

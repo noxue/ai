@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.dao.SipLogDao">
+  <resultMap id="BaseResultMap" type="com.ai.domain.bo.SipLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="createAt" jdbcType="DATE" property="createat" />
+    <result column="accepter" jdbcType="VARCHAR" property="accepter" />
+    <result column="handler" jdbcType="VARCHAR" property="handler" />
+    <result column="num" jdbcType="BIGINT" property="num" />
+    <result column="result" jdbcType="BIGINT" property="result" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, createAt, accepter, `handler`, num, `result`
+  </sql>
+
+  <select id="selectSipLogs" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT * FROM sip_log
+    WHERE 1=1
+    <if test="appId != null and appId != ''">
+      AND `handler` LIKE  CONCAT('%',#{appId},'%')
+    </if>
+    <if test="uid != null and uid != ''">
+      AND accepter LIKE  CONCAT('%',#{uid},'%')
+    </if>
+    ORDER BY id desc
+  </select>
+
+  <insert id="insertBatch">
+    INSERT INTO sip_log
+    (createAt, accepter, `handler`, num, `result`)
+    VALUES
+    <foreach collection ="list" item="SipLog" separator =",">
+      (#{SipLog.createat}, #{SipLog.accepter}, #{SipLog.handler}, #{SipLog.num}, #{SipLog.result})
+    </foreach >
+  </insert>
+
+</mapper>

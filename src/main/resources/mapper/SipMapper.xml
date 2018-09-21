@@ -13,7 +13,7 @@
     <result column="maxThread" jdbcType="INTEGER" property="maxthread" />
     <result column="currentThread" jdbcType="INTEGER" property="currentthread" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="appid" jdbcType="VARCHAR" property="appid" />
+    <result column="appid" jdbcType="BIGINT" property="appid" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -118,7 +118,7 @@
     values (#{name,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{host,jdbcType=VARCHAR}, #{charged,jdbcType=DECIMAL}, #{createat,jdbcType=DATE}, 
       #{firms,jdbcType=VARCHAR}, #{maxthread,jdbcType=INTEGER}, #{currentthread,jdbcType=INTEGER}, 
-      #{remark,jdbcType=VARCHAR}, #{appid,jdbcType=VARCHAR})
+      #{remark,jdbcType=VARCHAR}, #{appid,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.ai.domain.bo.Sip">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -192,7 +192,7 @@
         #{remark,jdbcType=VARCHAR},
       </if>
       <if test="appid != null">
-        #{appid,jdbcType=VARCHAR},
+        #{appid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -239,7 +239,7 @@
         remark = #{record.remark,jdbcType=VARCHAR},
       </if>
       <if test="record.appid != null">
-        appid = #{record.appid,jdbcType=VARCHAR},
+        appid = #{record.appid,jdbcType=BIGINT},
       </if>
     </set>
     <if test="_parameter != null">
@@ -259,7 +259,7 @@
       maxThread = #{record.maxthread,jdbcType=INTEGER},
       currentThread = #{record.currentthread,jdbcType=INTEGER},
       remark = #{record.remark,jdbcType=VARCHAR},
-      appid = #{record.appid,jdbcType=VARCHAR}
+      appid = #{record.appid,jdbcType=BIGINT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -298,7 +298,7 @@
         remark = #{remark,jdbcType=VARCHAR},
       </if>
       <if test="appid != null">
-        appid = #{appid,jdbcType=VARCHAR},
+        appid = #{appid,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -315,7 +315,7 @@
       maxThread = #{maxthread,jdbcType=INTEGER},
       currentThread = #{currentthread,jdbcType=INTEGER},
       remark = #{remark,jdbcType=VARCHAR},
-      appid = #{appid,jdbcType=VARCHAR}
+      appid = #{appid,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

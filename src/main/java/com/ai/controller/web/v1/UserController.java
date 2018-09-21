@@ -361,32 +361,36 @@ public class UserController extends BasicAction{
             return new Message().error(1115, "无法对自己操作");
         }
         if(appId.equals("admin")){
+            // 获取pid
             AuthUser au = userService.getUserByAppId(uid);
-            if(!au.getPid().equals("admin")){
-                if(!StringUtils.isEmpty(au.getPid())){
-                    AuthUserInfo  duser = authUserInfoService.getUserById(uid);
-                    if(duser!=null){
-                        int threadNum = duser.getThreadNum();
-                        AuthUserInfo  puser = authUserInfoService.getUserById(au.getPid());
-                        authUserInfoService.editUser(au.getPid(),(threadNum + puser.getThreadNum()));
-                    }
+            // 判断pid是否为admin,为true时，直接删除
+            if(au.getPid().equals(appId)){
+                userService.delUser(uid);
+            }else{
+                // 根据uid获取AuthUserInfo
+                AuthUserInfo uid_info = authUserInfoService.getUserById(uid);
+                if(uid_info != null){
+                    AuthUserInfo pid_info = authUserInfoService.getUserById(au.getPid());
+                    int thread_num = uid_info.getThreadNum() + pid_info.getThreadNum();
+                    authUserInfoService.editUser(pid_info.getUserId(),thread_num);
+                }
+                if(userService.delUser(uid)){
+                    return new Message().ok(0, "success");
+                }else {
+                    return new Message().error(1113, "删除失败");
                 }
             }
-            if(userService.delUser(uid)){
-                return new Message().ok(0, "success");
-            }else {
-                return new Message().error(1113, "删除失败");
-            }
-        }else {
+        }else{
             //判断当前用户是否可以进行删除操作
             if(accountService.getUserByUidAndPid(uid,appId) == null){
                 return new Message().error(2004, "无法进行删除操作");
             }
-            AuthUserInfo  duser = authUserInfoService.getUserById(uid);
-            if(duser!=null){
-                int threadNum = duser.getThreadNum();
-                AuthUserInfo  puser = authUserInfoService.getUserById(appId);
-                authUserInfoService.editUser(appId,(threadNum + puser.getThreadNum()));
+            // 当前用户的并发数
+            AuthUserInfo uid_info = authUserInfoService.getUserById(uid);
+            if(uid_info != null){
+                AuthUserInfo pid_info = authUserInfoService.getUserById(appId);
+                int thread_num = uid_info.getThreadNum() + pid_info.getThreadNum();
+                authUserInfoService.editUser(pid_info.getUserId(),thread_num);
             }
             if(userService.delUser(uid)){
                 return new Message().ok(0, "success");
@@ -394,6 +398,7 @@ public class UserController extends BasicAction{
                 return new Message().error(1113, "删除失败");
             }
         }
+        return new Message().ok(0, "success");
     }
 
 
