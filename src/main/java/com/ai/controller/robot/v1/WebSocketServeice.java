@@ -21,10 +21,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class WebSocketServeice {
@@ -182,6 +179,7 @@ public class WebSocketServeice {
             map.put("data", new Gson().toJson(map1));
         } else {
             map.put("code", -3);
+            map.put("data","not found tasks");
         }
         return new Gson().toJson(map);
     }
@@ -216,6 +214,49 @@ public class WebSocketServeice {
         return new Gson().toJson(map);
     }
 
+
+    public String on_task_user(BeanUtil beanUtil, WebSocketSession session, String content) {
+        Map map = new HashMap();
+        map.put("action", "TaskUserUpdate");
+        map.put("code", 0);
+
+        String idStr = new JsonParser().parse(content).getAsJsonObject().get("content").getAsString();
+        long taskId = Long.parseLong(idStr);
+        Task task = beanUtil.getTaskService().getTaskById(taskId);
+        if (task==null){
+            map.put("code", -1);
+            map.put("data","not found the task, id:"+taskId);
+            return new Gson().toJson(map);
+        }
+        int status = task.getStatus();
+        if (status != 3) {
+            map.put("code", -2);
+            map.put("data","this task is not running, id:"+taskId);
+            return new Gson().toJson(map);
+        }
+        List<TaskUser> taskUserList = beanUtil.getTaskUserService().getTaskUserAndUpdate(taskId);
+
+        if (taskUserList.size()>0) {
+            task.setCalled(task.getCalled() + taskUserList.size());
+        } else {
+            task.setFinishAt(new Date());
+            task.setStatus((byte)0);
+            map.put("code",-3);
+            map.put("data", "task is finished");
+        }
+
+        if (!map.get("code").toString().equals("0")) {
+            beanUtil.getWebSocketServeice().deleteTask(beanUtil.getWebSocketServeice().getUsers().get(session),(int)taskId);
+        }
+
+        if (!beanUtil.getTaskService().editTask(task)){
+            return new Gson().toJson(map);
+        }
+
+        map.put("data", new Gson().toJson(taskUserList.get(0)));
+
+        return new Gson().toJson(map);
+    }
 
     /**
      * @param appid
@@ -264,7 +305,11 @@ public class WebSocketServeice {
         return null;
     }
 
-    public boolean delete(String appid, String name, int id) {
+    public boolean delete(String name, String appid,  int id) {
+        if (appid==null||"".equals(appid)){
+            System.out.println("appid is empty");
+            return false;
+        }
         WebSocketSession session = getSession(appid);
         if (session == null) {
             System.out.println("get session failed");
@@ -331,6 +376,8 @@ public class WebSocketServeice {
         }
         return sendMap(appid, map);
     }
+
+
 
     public Map<WebSocketSession, String> getUsers() {
         return users;

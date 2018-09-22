@@ -40,6 +40,18 @@ public class BeanUtil {
     @Autowired
     private TaskSipService taskSipService;
 
+    @Autowired
+    private TaskUserService taskUserService;
+
+
+    public TaskUserService getTaskUserService() {
+        return taskUserService;
+    }
+
+    public void setTaskUserService(TaskUserService taskUserService) {
+        this.taskUserService = taskUserService;
+    }
+
     public TaskSipService getTaskSipService() {
         return taskSipService;
     }

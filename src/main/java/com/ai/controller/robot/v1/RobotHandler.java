@@ -69,26 +69,28 @@ public class RobotHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        super.handleTextMessage(session, message);
-        String msg = message.getPayload();
+        synchronized (webSocketServeice) {
+            super.handleTextMessage(session, message);
+            String msg = message.getPayload();
 
-        System.out.println(webSocketServeice.getUsers().get(session)+msg);
+            System.out.println(webSocketServeice.getUsers().get(session) + msg);
 
-        BaseAction action =  Utils.Json2Bean(msg, BaseAction.class);
-        if (!action.getAction().equals("auth") && !this.checkAuth(session)) {
-            session.sendMessage(new TextMessage("{\"action\":\"NotAuth\"}\r\n\r\n"));
-            return;
-        }
-        String str = this.exec(session,action.getAction(),msg);
-        if (str != null && !"".equals(msg)) {
-            session.sendMessage(new TextMessage(str+"\r\n\r\n"));
-        }
+            BaseAction action = Utils.Json2Bean(msg, BaseAction.class);
+            if (!action.getAction().equals("auth") && !this.checkAuth(session)) {
+                session.sendMessage(new TextMessage("{\"action\":\"NotAuth\"}\r\n\r\n"));
+                return;
+            }
+            String str = this.exec(session, action.getAction(), msg);
+            if (str != null && !"".equals(msg)) {
+                session.sendMessage(new TextMessage(str + "\r\n\r\n"));
+            }
 
-        if(action.getAction().equals("auth") && this.checkAuth(session)) {
-            // auth success
-            String appid = webSocketServeice.getUsers().get(session);
-            authSuccess(appid);
+            if (action.getAction().equals("auth") && this.checkAuth(session)) {
+                // auth success
+                String appid = webSocketServeice.getUsers().get(session);
+                authSuccess(appid);
 
+            }
         }
     }
 
