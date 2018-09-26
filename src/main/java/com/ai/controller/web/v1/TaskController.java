@@ -362,13 +362,17 @@ public class TaskController extends BasicAction{
     @ApiOperation(value = "获取TaskUser", notes = "根据id获取TaskUser信息")
     @ResponseBody
     @GetMapping("/user/{id}")
-    public Object selectTaskUserById(@PathVariable int id){
+    public Object selectTaskUserById(HttpServletRequest request,@PathVariable int id){
         if (!(id>0)) {
             // 必须信息缺一不可,返回信息不全
             return new Message().error(4407, "id值不合法");
         }
         TaskUser taskUser = taskUserService.getTaskUserById(id);
         if (taskUser !=null){
+            Task task = taskService.getTaskById(taskUser.getTaskId());
+            if(!task.getUserId().equals(request.getHeader("appId"))){
+                return new Message().error(5023, "您暂无权限查看该信息");
+            }
             return new Message().ok(0, "success").addData("taskUser",taskUser);
         } else {
             return new Message().error(5023, "查询失败");
