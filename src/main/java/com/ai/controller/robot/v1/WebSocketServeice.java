@@ -23,8 +23,11 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.util.*;
 
+
 @Component
 public class WebSocketServeice {
+
+    final public static List<WebSocketMsg> msgs = new LinkedList<>();
 
     @Autowired
     private GatewayService gatewayService;
@@ -42,6 +45,12 @@ public class WebSocketServeice {
     private TemplateService templateService;
 
     private Map<WebSocketSession, String> users = new HashMap<>();
+
+    public void deleteUser(WebSocketSession session) {
+        synchronized (users){
+            users.remove(session);
+        }
+    }
 
     public String on_auth(BeanUtil beanUtil, WebSocketSession session, String content) {
 
@@ -72,7 +81,10 @@ public class WebSocketServeice {
             map.put("code", -2);
             map.put("data", "appid or key is not match");
         }
-
+        WebSocketSession oldSession  = beanUtil.getWebSocketServeice().getSession(appid);
+        if (null!=oldSession){
+            beanUtil.getWebSocketServeice().getUsers().remove(oldSession);
+        }
         beanUtil.getWebSocketServeice().getUsers().put(session, appid);
         return gson.toJson(map);
     }
@@ -179,7 +191,7 @@ public class WebSocketServeice {
             map.put("data", new Gson().toJson(map1));
         } else {
             map.put("code", -3);
-            map.put("data","not found tasks");
+            map.put("data", "not found tasks");
         }
         return new Gson().toJson(map);
     }
@@ -214,48 +226,71 @@ public class WebSocketServeice {
         return new Gson().toJson(map);
     }
 
-
-    public String on_task_user(BeanUtil beanUtil, WebSocketSession session, String content) {
+    public String task_user(BeanUtil beanUtil, WebSocketSession session, String content, String userType) {
         Map map = new HashMap();
         map.put("action", "TaskUserUpdate");
         map.put("code", 0);
 
-        String idStr = new JsonParser().parse(content).getAsJsonObject().get("content").getAsString();
-        long taskId = Long.parseLong(idStr);
+
+        long taskId = new JsonParser().parse(content).getAsJsonObject().get("task_id").getAsLong();
+        long id = new JsonParser().parse(content).getAsJsonObject().get("id").getAsLong();
+
         Task task = beanUtil.getTaskService().getTaskById(taskId);
-        if (task==null){
+        if (task == null) {
             map.put("code", -1);
-            map.put("data","not found the task, id:"+taskId);
+            map.put("data", "not found the task, id:" + taskId);
             return new Gson().toJson(map);
         }
         int status = task.getStatus();
         if (status != 3) {
             map.put("code", -2);
-            map.put("data","this task is not running, id:"+taskId);
-            return new Gson().toJson(map);
+            map.put("data", "this task is not running, id:" + taskId);
+            beanUtil.getWebSocketServeice().deleteTask(beanUtil.getWebSocketServeice().getUsers().get(session), (int) taskId);
+            return "";
         }
         List<TaskUser> taskUserList = beanUtil.getTaskUserService().getTaskUserAndUpdate(taskId);
 
-        if (taskUserList.size()>0) {
+        if (taskUserList.size() > 0) {
             task.setCalled(task.getCalled() + taskUserList.size());
         } else {
             task.setFinishAt(new Date());
-            task.setStatus((byte)0);
-            map.put("code",-3);
+            task.setStatus((byte) 0);
+            map.put("code", -3);
             map.put("data", "task is finished");
         }
 
+        if (!beanUtil.getTaskService().editTask(task)) {
+            map.put("code",-4);
+            map.put("data","edit task failed");
+        }
+
         if (!map.get("code").toString().equals("0")) {
-            beanUtil.getWebSocketServeice().deleteTask(beanUtil.getWebSocketServeice().getUsers().get(session),(int)taskId);
+            beanUtil.getWebSocketServeice().deleteTask(beanUtil.getWebSocketServeice().getUsers().get(session), (int) taskId);
+            return "";
         }
 
-        if (!beanUtil.getTaskService().editTask(task)){
-            return new Gson().toJson(map);
+        TaskUser taskUser = new TaskUser();
+        if (taskUserList.size()>0){
+            taskUser = taskUserList.get(0);
         }
 
-        map.put("data", new Gson().toJson(taskUserList.get(0)));
+        Map map1 = new HashMap();
+        map1.put("user",new Gson().toJson(taskUser));
+        map1.put("type",userType);
+        if ("sim".equals(userType)){
+            map1.put("sim_id",id);
+        } else {
+            map1.put("sip_id",id);
+        }
+        map.put("data", new Gson().toJson(map1));
 
         return new Gson().toJson(map);
+    }
+    public String on_sip_task_user(BeanUtil beanUtil, WebSocketSession session, String content) {
+        return this.task_user(beanUtil, session, content,"sip");
+    }
+    public String on_sim_task_user(BeanUtil beanUtil, WebSocketSession session, String content) {
+        return this.task_user(beanUtil, session, content,"sim");
     }
 
     /**
@@ -282,17 +317,16 @@ public class WebSocketServeice {
         boolean ok = false;
         Gson gson = new Gson();
         WebSocketSession session = getSession(appid);
-        try {
-            if (session == null) {
-                map.put("code", -1);
-                map.put("data", "websocket session is not found");
-            } else {
-                ok = true;
-            }
-            session.sendMessage(new TextMessage(gson.toJson(map) + "\r\n\r\n"));
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        if (session == null) {
+            map.put("code", -1);
+            map.put("data", "websocket session is not found");
+        } else {
+            ok = true;
         }
+
+        WebSocketServeice.putMsg(session, gson.toJson(map) + "\r\n\r\n");
+
         return ok;
     }
 
@@ -305,8 +339,8 @@ public class WebSocketServeice {
         return null;
     }
 
-    public boolean delete(String name, String appid,  int id) {
-        if (appid==null||"".equals(appid)){
+    public boolean delete(String name, String appid, int id) {
+        if (appid == null || "".equals(appid)) {
             System.out.println("appid is empty");
             return false;
         }
@@ -378,7 +412,6 @@ public class WebSocketServeice {
     }
 
 
-
     public Map<WebSocketSession, String> getUsers() {
         return users;
     }
@@ -388,30 +421,32 @@ public class WebSocketServeice {
     }
 
 
-//    public boolean tasks(String appid) {
-//        boolean ok = false;
-//        PageInfo<Gateway> pageInfo = taskService.findAllTaskByAppId(1, 1000000, appid);
-//
-//        Gson gson = new Gson();
-//        Map map = new HashMap();
-//        map.put("action", "GatewayUpdate");
-//        map.put("code", 0);
-//        map.put("data", gson.toJson(pageInfo.getList()));
-//
-//        WebSocketSession session = getSession(appid);
-//        try {
-//            if (session == null) {
-//                map.put("code", -1);
-//                map.put("data", "websocket session is not found");
-//            } else {
-//                ok = true;
-//            }
-//            session.sendMessage(new TextMessage(gson.toJson(map) + "\r\n\r\n"));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            ok = false;
-//        }
-//        return ok;
-//    }
+
+    public static boolean putMsg(WebSocketSession session, String msg) {
+        boolean ok = false;
+        synchronized (WebSocketServeice.msgs) {
+            ok = WebSocketServeice.msgs.add(new WebSocketMsg(session, msg));
+        }
+        return ok;
+    }
+
+    public static WebSocketMsg getMsg() {
+        synchronized (WebSocketServeice.msgs) {
+            for (WebSocketMsg msg : WebSocketServeice.msgs) {
+
+                return msg;
+            }
+        }
+        return null;
+    }
+
+    public static WebSocketMsg deleteMsg(WebSocketMsg msg) {
+        synchronized (WebSocketServeice.msgs) {
+            WebSocketServeice.msgs.remove(msg);
+        }
+        return null;
+    }
+
 
 }
+
