@@ -77,10 +77,15 @@ public class RobotHandler extends TextWebSocketHandler {
                         continue;
                     }
                     try {
+                        if (!msg.getSession().isOpen()) {
+                            continue;
+                        }
+
                         msg.getSession().sendMessage(new TextMessage(msg.getMsg()));
                         WebSocketServeice.deleteMsg(msg);
                     } catch (IOException e) {
                         e.printStackTrace();
+                        webSocketServeice.deleteUser(session);
                     }
 
                 }

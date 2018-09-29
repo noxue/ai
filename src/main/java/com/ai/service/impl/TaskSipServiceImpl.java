@@ -44,6 +44,9 @@ public class TaskSipServiceImpl implements TaskSipService {
             ids.add(taskSip.getTaskId());
         }
 
+        if (ids.size()==0){
+            return null;
+        }
         TaskExample tex = new TaskExample();
         TaskExample.Criteria tcr = tex.createCriteria();
         tcr.andIdIn(ids);

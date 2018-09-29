@@ -49,6 +49,7 @@ public class WebSocketServeice {
     public void deleteUser(WebSocketSession session) {
         synchronized (users){
             users.remove(session);
+            System.out.println("有用户退出");
         }
     }
 
@@ -211,7 +212,7 @@ public class WebSocketServeice {
 
 
         List<Task> tasks = beanUtil.getTaskSipService().getTasksBySip(sip_id);
-        if (tasks.size() > 0) {
+        if (tasks!=null && tasks.size() > 0) {
             for (Task t : tasks) {
                 t.setStatus((byte) 3);
                 beanUtil.getTaskService().editTask(t);
@@ -222,6 +223,7 @@ public class WebSocketServeice {
             map.put("data", new Gson().toJson(map1));
         } else {
             map.put("code", -2);
+            map.put("data", "sip task not found,sip id:"+sip_id);
         }
         return new Gson().toJson(map);
     }
@@ -242,7 +244,8 @@ public class WebSocketServeice {
             return new Gson().toJson(map);
         }
         int status = task.getStatus();
-        if (status != 3) {
+
+        if (status != 3 ) {
             map.put("code", -2);
             map.put("data", "this task is not running, id:" + taskId);
             beanUtil.getWebSocketServeice().deleteTask(beanUtil.getWebSocketServeice().getUsers().get(session), (int) taskId);
