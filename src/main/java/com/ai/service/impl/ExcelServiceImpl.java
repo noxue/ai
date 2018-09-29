@@ -80,12 +80,13 @@ public class ExcelServiceImpl implements ExcelService {
             }
         }
         List<TaskUser> list = new ArrayList<>();
-        String regex="^[0-9]{1,7}$";
         for (int j=1;j<phone.size();j++){
             TaskUser user=new TaskUser();
             user.setTaskId(Long.parseLong("1"));
-            if(Pattern.matches(regex, phone.get(j))){
-                return new Message().error(4001, "请输入正确的手机号码");
+            if(!checkCellphone(phone.get(j))){
+                if(!checkTelephone(phone.get(j))){
+                    return new Message().error(4001, "请输入正确的手机号码,请检查"+(j+1)+"行");
+                }
             }
             user.setMobile(phone.get(j));
             user.setName(name.get(j));
@@ -197,5 +198,27 @@ public class ExcelServiceImpl implements ExcelService {
             }
         }
         return listArray;
+    }
+
+    /**
+     * 验证手机号码
+     * @param cellphone
+     * @return
+     */
+    public boolean checkCellphone(String cellphone) {
+        if(cellphone.length()!=11){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 验证固话号码
+     * @param telephone
+     * @return
+     */
+    public boolean checkTelephone(String telephone) {
+        String regex = "^(0\\d{2}-\\d{8}(-\\d{1,4})?)|(0\\d{3}-\\d{7,8}(-\\d{1,4})?)$";
+        return Pattern.matches(regex, telephone);
     }
 }
