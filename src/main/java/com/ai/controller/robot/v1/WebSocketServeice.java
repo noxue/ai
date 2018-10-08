@@ -44,50 +44,15 @@ public class WebSocketServeice {
     @Autowired
     private TemplateService templateService;
 
-    private Map<WebSocketSession, String> users = new HashMap<>();
+    private Set<WebSocketSession> users = new HashSet<>();
 
     public void deleteUser(WebSocketSession session) {
         synchronized (users){
             users.remove(session);
             System.out.println("有用户退出");
-        }
-    }
+            System.out.println("当前用户个数："+users.size());
 
-    public String on_auth(BeanUtil beanUtil, WebSocketSession session, String content) {
-
-        Auth auth = Utils.Json2Bean(content, Auth.class);
-        String appid = auth.getId();
-        String key = auth.getKey();
-
-        Gson gson = new Gson();
-        Map map = new HashMap();
-        map.put("action", "AuthFinish");
-        map.put("code", 0);
-        if (appid == null || "".equals(appid.trim()) || key == null || key.length() != 16) {
-            map.put("code", -1);
-            map.put("data", "appid or key is empty");
-            return gson.toJson(map);
         }
-
-        String robot_key = beanUtil.getRedisTemplate().opsForValue().get("robot_" + appid);
-        if (robot_key == null || "".equals(robot_key)) {
-            App app = beanUtil.getAppService().getAppById(Long.parseLong(appid));
-            if (app != null) {
-                robot_key = app.getKey();
-                beanUtil.getRedisTemplate().opsForValue().set("robot_" + appid, key);
-            }
-        }
-
-        if (!key.equals(robot_key)) {
-            map.put("code", -2);
-            map.put("data", "appid or key is not match");
-        }
-        WebSocketSession oldSession  = beanUtil.getWebSocketServeice().getSession(appid);
-        if (null!=oldSession){
-            beanUtil.getWebSocketServeice().getUsers().remove(oldSession);
-        }
-        beanUtil.getWebSocketServeice().getUsers().put(session, appid);
-        return gson.toJson(map);
     }
 
     public boolean workTime(String appid, String uid) {
@@ -97,8 +62,14 @@ public class WebSocketServeice {
         map.put("action", "WorkTimeUpdate");
         map.put("code", 0);
 
+        if (config==null){
+            map.put("code",-1);
+            map.put("msg","user "+uid+" work time is unset");
+            return sendMap(appid,map);
+        }
+
         Map map1 = new HashMap();
-        map1.put("uid", config.getUserId());
+        map1.put("uid", uid);
         map1.put("worktime", config.getValue());
         map.put("data", gson.toJson(map1));
 
@@ -233,6 +204,7 @@ public class WebSocketServeice {
         map.put("action", "TaskUserUpdate");
         map.put("code", 0);
 
+        String appid = session.getAttributes().get("appid").toString();
 
         long taskId = new JsonParser().parse(content).getAsJsonObject().get("task_id").getAsLong();
         long id = new JsonParser().parse(content).getAsJsonObject().get("id").getAsLong();
@@ -248,7 +220,7 @@ public class WebSocketServeice {
         if (status != 3 ) {
             map.put("code", -2);
             map.put("data", "this task is not running, id:" + taskId);
-            beanUtil.getWebSocketServeice().deleteTask(beanUtil.getWebSocketServeice().getUsers().get(session), (int) taskId);
+            beanUtil.getWebSocketServeice().deleteTask(appid, (int) taskId);
             return "";
         }
         List<TaskUser> taskUserList = beanUtil.getTaskUserService().getTaskUserAndUpdate(taskId);
@@ -268,7 +240,7 @@ public class WebSocketServeice {
         }
 
         if (!map.get("code").toString().equals("0")) {
-            beanUtil.getWebSocketServeice().deleteTask(beanUtil.getWebSocketServeice().getUsers().get(session), (int) taskId);
+            beanUtil.getWebSocketServeice().deleteTask(appid, (int) taskId);
             return "";
         }
 
@@ -334,8 +306,9 @@ public class WebSocketServeice {
     }
 
     public WebSocketSession getSession(String appid) {
-        for (WebSocketSession session : this.getUsers().keySet()) {
-            if (this.users.get(session).equals(appid)) {
+        for (WebSocketSession session : this.getUsers()) {
+            Map<String,Object> m = session.getAttributes();
+            if (m.get("appid").equals(appid)) {
                 return session;
             }
         }
@@ -415,15 +388,17 @@ public class WebSocketServeice {
     }
 
 
-    public Map<WebSocketSession, String> getUsers() {
+    public Set<WebSocketSession> getUsers() {
         return users;
     }
 
-    public void setUsers(Map<WebSocketSession, String> users) {
+    public void setUsers(Set<WebSocketSession> users) {
         this.users = users;
     }
 
-
+    public boolean addUser(WebSocketSession session) {
+        return this.users.add(session);
+    }
 
     public static boolean putMsg(WebSocketSession session, String msg) {
         boolean ok = false;

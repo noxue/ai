@@ -12,7 +12,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        webSocketHandlerRegistry.addHandler(myHandler(),"/robot")
+        webSocketHandlerRegistry.addHandler(myHandler(),"/robot").addInterceptors(new WebSocketHandshakeInterceptor())
                 .setAllowedOrigins("http://127.0.0.1","http://192.168.3.190","http://localhost");
     }
 

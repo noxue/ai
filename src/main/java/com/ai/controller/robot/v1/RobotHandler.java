@@ -3,6 +3,7 @@ package com.ai.controller.robot.v1;
 import com.ai.controller.robot.v1.bean.Auth;
 import com.ai.controller.robot.v1.bean.BaseAction;
 import com.ai.controller.robot.v1.utils.Utils;
+import com.ai.domain.bo.App;
 import com.ai.domain.bo.Gateway;
 import com.ai.domain.bo.Sim;
 import com.ai.service.GatewayService;
@@ -58,7 +59,17 @@ public class RobotHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
-        WebSocketServeice.putMsg(session, "{\"action\":\"NotAuth\"}\r\n\r\n");
+
+        String appid = getAppid(session);
+        String key = getKey(session);
+
+        App app = beanUtil.getAppService().getAppById(Long.parseLong(appid));
+        if (!(app!=null && app.getId()==Long.parseLong(appid) && app.getKey().equals(key))) {
+            session.close();
+            return;
+        }
+
+        beanUtil.getWebSocketServeice().addUser(session);
 
         class MyThread extends Thread {
 
@@ -95,14 +106,14 @@ public class RobotHandler extends TextWebSocketHandler {
         Thread myThread1 = new MyThread();
         myThread1.start();
 
+        authSuccess(appid);
     }
 
     private String getAppid(WebSocketSession session) {
-        return webSocketServeice.getUsers().get(session);
+        return session.getAttributes().get("appid").toString();
     }
-
-    private boolean checkAuth(WebSocketSession session) {
-        return this.getAppid(session) != null;
+    private String getKey(WebSocketSession session) {
+        return session.getAttributes().get("key").toString();
     }
 
     @Override
@@ -111,25 +122,12 @@ public class RobotHandler extends TextWebSocketHandler {
         super.handleTextMessage(session, message);
         String msg = message.getPayload();
 
-        System.out.println(webSocketServeice.getUsers().get(session) + msg);
-
         BaseAction action = Utils.Json2Bean(msg, BaseAction.class);
-        if (!action.getAction().equals("auth") && !this.checkAuth(session)) {
-            WebSocketServeice.putMsg(session, "{\"action\":\"NotAuth\"}\r\n\r\n");
-            return;
-        }
+
         String str = this.exec(session, action.getAction(), msg);
         if (str != null && !"".equals(msg)) {
             WebSocketServeice.putMsg(session, str + "\r\n\r\n");
         }
-
-        if (action.getAction().equals("auth") && this.checkAuth(session)) {
-            // auth success
-            String appid = webSocketServeice.getUsers().get(session);
-            authSuccess(appid);
-
-        }
-
     }
 
     @Override
