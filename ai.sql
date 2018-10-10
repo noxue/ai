@@ -498,7 +498,7 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` (`id`, `user_id`, `template_id`, `name`, `thread`, `total`, `called`, `created_at`, `start_at`, `finish_at`, `status`, `test`, `update_at`, `interrupt`, `follow`) VALUES (115,'admin',14,'测试',1,0,7,'2018-10-08 12:24:46','2018-10-08 12:24:46','2018-10-08 21:17:53',3,1,NULL,0,'');
+INSERT INTO `task` (`id`, `user_id`, `template_id`, `name`, `thread`, `total`, `called`, `created_at`, `start_at`, `finish_at`, `status`, `test`, `update_at`, `interrupt`, `follow`) VALUES (115,'admin',14,'测试',1,0,81,'2018-10-08 12:24:46','2018-10-08 12:24:46','2018-10-10 19:04:35',3,1,NULL,0,'');
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -708,4 +708,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-08 22:05:16
+-- Dump completed on 2018-10-10 21:35:17

@@ -65,7 +65,7 @@ public class WebSocketServeice {
         if (config==null){
             map.put("code",-1);
             map.put("msg","user "+uid+" work time is unset");
-            return sendMap(appid,map);
+            return sendMap(getSession(appid),map);
         }
 
         Map map1 = new HashMap();
@@ -73,7 +73,7 @@ public class WebSocketServeice {
         map1.put("worktime", config.getValue());
         map.put("data", gson.toJson(map1));
 
-        return sendMap(appid, map);
+        return sendMap(getSession(appid), map);
     }
 
     private Map getTplMap(TemplateService templateService, long id) {
@@ -98,12 +98,11 @@ public class WebSocketServeice {
 
     public String on_tpl(BeanUtil beanUtil, WebSocketSession session, String content) {
         String idStr = new JsonParser().parse(content).getAsJsonObject().get("content").getAsString();
-        Gson gson = new Gson();
-        return gson.toJson(getTplMap(beanUtil.getTemplateService(), Long.parseLong(idStr)));
+        return new Gson().toJson(getTplMap(beanUtil.getTemplateService(), Long.parseLong(idStr)));
     }
 
     public boolean tpl(String appid, long id) {
-        return sendMap(appid, getTplMap(templateService, id));
+        return sendMap(getSession(appid), getTplMap(templateService, id));
     }
 
     public boolean sim(String appid, long id) {
@@ -118,7 +117,7 @@ public class WebSocketServeice {
         } else {
             map.put("data", gson.toJson(sim));
         }
-        return sendMap(appid, map);
+        return sendMap(getSession(appid), map);
     }
 
     public String on_sim_tasks(BeanUtil beanUtil, WebSocketSession session, String content) {
@@ -285,13 +284,12 @@ public class WebSocketServeice {
         } else {
             map.put("data", gson.toJson(task));
         }
-        return sendMap(appid, map);
+        return sendMap(getSession(appid), map);
     }
 
-    boolean sendMap(String appid, Map map) {
+    boolean sendMap(WebSocketSession session, Map map) {
         boolean ok = false;
         Gson gson = new Gson();
-        WebSocketSession session = getSession(appid);
 
         if (session == null) {
             map.put("code", -1);
@@ -329,7 +327,7 @@ public class WebSocketServeice {
         map.put("action", name);
         map.put("data", id + "");
 
-        return sendMap(appid, map);
+        return sendMap(getSession(appid), map);
     }
 
     /**
@@ -364,7 +362,7 @@ public class WebSocketServeice {
         map.put("action", "GatewaysUpdate");
         map.put("code", 0);
         map.put("data", gson.toJson(pageInfo.getList()));
-        return sendMap(appid, map);
+        return sendMap(getSession(appid), map);
     }
 
     /**
@@ -384,7 +382,7 @@ public class WebSocketServeice {
         } else {
             map.put("data", gson.toJson(gateway));
         }
-        return sendMap(appid, map);
+        return sendMap(getSession(appid), map);
     }
 
 
@@ -402,6 +400,9 @@ public class WebSocketServeice {
 
     public static boolean putMsg(WebSocketSession session, String msg) {
         boolean ok = false;
+        if (session == null) {
+            return false;
+        }
         synchronized (WebSocketServeice.msgs) {
             ok = WebSocketServeice.msgs.add(new WebSocketMsg(session, msg));
         }

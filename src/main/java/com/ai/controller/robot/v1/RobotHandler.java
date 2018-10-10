@@ -89,9 +89,9 @@ public class RobotHandler extends TextWebSocketHandler {
                     }
                     try {
                         if (!msg.getSession().isOpen()) {
+                            WebSocketServeice.deleteMsg(msg);
                             continue;
                         }
-
                         msg.getSession().sendMessage(new TextMessage(msg.getMsg()));
                         WebSocketServeice.deleteMsg(msg);
                     } catch (IOException e) {
@@ -118,7 +118,6 @@ public class RobotHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-
         super.handleTextMessage(session, message);
         String msg = message.getPayload();
 
@@ -139,7 +138,7 @@ public class RobotHandler extends TextWebSocketHandler {
     public void authSuccess(String appid) {
         webSocketServeice.workTime(appid, "admin");
         webSocketServeice.gateways(appid);
-        webSocketServeice.tpl(appid, 2);
+//        webSocketServeice.tpl(appid, 14);
 
         PageInfo<Gateway> gatewayPageInfo = gatewayService.findGatewaysByAppId(1, 1000, appid);
         for (Gateway gateway : gatewayPageInfo.getList()) {
