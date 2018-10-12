@@ -10,12 +10,12 @@ public interface TaskUserDao extends TaskUserMapper{
     //根据taskId,test,type,share获取TaskUser
     List<TaskUser> selectTaskUserListByConditions(@Param("userId") String userId, @Param("taskId") String taskId,
                                                   @Param("name") String name,  @Param("type") String type,
-                                                  @Param("share") String share,@Param("status") String status);
+                                                  @Param("share") String share,@Param("status") String status,@Param("date") String date);
 
     //根据taskId,test,type,share获取TaskUser  导出2.0
     List<TaskUser> getTaskUserListByConditions(@Param("userId") String userId, @Param("taskId") String taskId,
                                                   @Param("name") String name,  @Param("type") String type,
-                                                  @Param("share") String share,@Param("status") String status);
+                                                  @Param("share") String share,@Param("status") String status,@Param("date") String date);
 
     //批量插入
     int insertBatch (List<TaskUser> list);

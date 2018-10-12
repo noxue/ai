@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -280,7 +281,7 @@ public class TaskController extends BasicAction{
         if(oldTask.getStatus() == 0){
             return new Message().error(5043, "当前任务已结束");
         }
-        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(1,500,appId,id,"","","","");
+        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(1,500,appId,id,"","","","","");
         if(taskUserList.getSize()==0){
             return new Message().error(5035, "当前任务没有客户信息，请在导入后继续操作");
         }
@@ -427,12 +428,16 @@ public class TaskController extends BasicAction{
         String type  =params.get("type");
         String name  =params.get("name");
         String taskId =params.get("taskId");
+        String date = params.get("date");
+        if(date.equals("null")){
+            date = "";
+        }
         pageNum = Integer.parseInt(params.get("page"));
 //        String roleId= accountService.loadAccountRoleId(appId);
 //            if(roleId.equals("100")){
 //            appId = "";
 //        }
-        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(pageNum,pageSize,appId,taskId,name,type,null,status);
+        PageInfo<TaskUser> taskUserList = taskUserService.findAllTaskUser(pageNum,pageSize,appId,taskId,name,type,null,status,date);
         if (taskUserList != null){
             return new Message().ok(0, "success").addData("taskUserList",taskUserList);
         } else {
@@ -471,7 +476,8 @@ public class TaskController extends BasicAction{
                 params.get("name") +","+
                 params.get("type") +"," +
                 params.get("share")+","+
-                params.get("status");
+                params.get("status")+","+
+                params.get("date");
         redisTemplate.opsForValue().set(uuid,form,30,TimeUnit.SECONDS);
         // redisTemplate.expire(uuid,60L,null);
         return new Message().ok(0,"success").addData("task",uuid);
@@ -488,7 +494,7 @@ public class TaskController extends BasicAction{
         PrintWriter out = response.getWriter();//放在第一句是会出现乱码
 
         String condition= redisTemplate.opsForValue().get(id);
-        String form[] = new String[6];
+        String form[] = new String[7];
         if(!StringUtils.isEmpty( condition)){
             String[] strs=condition.split(",");
             for(int i=0,len=strs.length;i<len;i++){
@@ -501,7 +507,7 @@ public class TaskController extends BasicAction{
         int sum = 0;
         do{
             PageInfo<TaskUser> taskUserList = taskUserService.exportTaskUser(sum++,500,
-                    form[0],form[1],form[2],form[3],form[4],form[5]);
+                    form[0],form[1],form[2],form[3],form[4],form[5],form[6]);
             total = taskUserList.getTotal();
             List<String[]>  listArray = excelService.formatList(taskUserList.getList());
             for (int i = 0; i < listArray.size(); i++) {

@@ -23,17 +23,18 @@ public class TaskUserServiceImpl implements TaskUserService {
 
     @Override
     public PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize,String userId, String taskId, String name,
-                                              String type, String share, String status) {
+                                              String type, String share, String status, String date) {
         PageHelper.startPage(pageNum, pageSize);
-        List<TaskUser> taskUserList = taskUserDao.selectTaskUserListByConditions(userId,taskId,name,type,share,status);
+
+        List<TaskUser> taskUserList = taskUserDao.selectTaskUserListByConditions(userId,taskId,name,type,share,status,date);
         PageInfo result = new PageInfo(taskUserList);
         return result;
     }
 
     @Override
-    public PageInfo<TaskUser> exportTaskUser(int pageNum, int pageSize, String userId, String taskId, String name, String type, String share, String status) {
+    public PageInfo<TaskUser> exportTaskUser(int pageNum, int pageSize, String userId, String taskId, String name, String type, String share, String status, String date) {
         PageHelper.startPage(pageNum, pageSize);
-        List<TaskUser> taskUserList = taskUserDao.getTaskUserListByConditions(userId,taskId,name,type,share,status);
+        List<TaskUser> taskUserList = taskUserDao.getTaskUserListByConditions(userId,taskId,name,type,share,status,date);
         PageInfo result = new PageInfo(taskUserList);
         return result;
     }

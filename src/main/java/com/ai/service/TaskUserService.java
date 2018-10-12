@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface TaskUserService {
 
-    PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize,String userId, String taskId, String name, String type, String share,String status);
+    PageInfo<TaskUser> findAllTaskUser(int pageNum, int pageSize,String userId, String taskId, String name, String type, String share,String status,String date);
     //导出excel 2.0 用于去掉多余的字段
-    PageInfo<TaskUser> exportTaskUser(int pageNum, int pageSize,String userId, String taskId, String name, String type, String share,String status);
+    PageInfo<TaskUser> exportTaskUser (int pageNum, int pageSize,String userId, String taskId, String name, String type, String share,String status,String date);
 
     List<TaskUser> selectTaskUserByTaskId(int id);
 

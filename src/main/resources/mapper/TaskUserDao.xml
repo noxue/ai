@@ -42,6 +42,9 @@
     <if test="status != null and status != ''">
        AND u.`status` = #{status}
     </if>
+    <if test="date != null and date != ''">
+       AND  DATE_FORMAT(u.`called_at`,'%Y-%m-%d') = #{date}
+    </if>
       order by u.id desc
   </select>
 
@@ -64,6 +67,9 @@
         </if>
         <if test="status != null and status != ''">
             AND u.`status` = #{status}
+        </if>
+        <if test="date != null and date != ''">
+            AND  DATE_FORMAT(u.called_at,'%Y-%m-%d') = #{date}
         </if>
         order by u.id desc
     </select>
